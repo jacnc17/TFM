@@ -1,0 +1,426 @@
+<!DOCTYPE HTML>
+
+
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+
+
+    <style>
+        .resizable {
+            width: 120px;
+            border-radius: 0.75rem;
+            padding: 20px;
+            margin: 1rem;
+            background-color: #29e;
+            color: white;
+            font-size: 20px;
+            font-family: sans-serif;
+            overflow: hidden;
+
+            touch-action: none;
+
+            /* This makes things *much* easier */
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Helvetica Neue, Helvetica, Arial;
+            background: rgb(244, 215, 201);
+            /* Old browsers */
+            background: -moz-linear-gradient(top, rgb(244, 215, 201) 0%, rgb(244, 226, 201) 100%);
+            /* FF3.6-15 */
+            background: -webkit-linear-gradient(top, rgb(244, 215, 201) 0%, rgb(244, 226, 201) 100%);
+            /* Chrome10-25,Safari5.1-6 */
+            background: linear-gradient(to bottom, rgb(244, 215, 201) 0%, rgb(244, 226, 201) 100%);
+            /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+            margin-bottom: 100px;
+        }
+
+        .header {
+            margin-top: 30px;
+        }
+
+        .header h1 {
+            margin-top: 10px;
+        }
+
+        h4 {
+            padding-bottom: 10px;
+        }
+
+        .prettyprinted {
+            margin-top: 5px;
+            border-top: none !important;
+            border-bottom: none !important;
+            border-right: none !important;
+            border-left: 1px solid rgba(0, 0, 0, .1) !important;
+            padding-left: 15px !important;
+            word-wrap: break-word !important;
+            overflow: default !important;
+            text-overflow: default !important;
+        }
+
+        .tinted {
+            background-color: #fff6b2;
+        }
+
+        .handle {
+            cursor: grab;
+        }
+
+        code {
+            color: #606;
+        }
+
+        .toc {
+            background-color: rgb(255, 255, 255, 0.5);
+            border: solid #444 1px;
+            padding: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            list-style: none;
+        }
+
+        .toc h5 {
+            margin-top: 8px;
+        }
+
+        .list-group-item:hover {
+            z-index: 0;
+        }
+
+        .input-section {
+            background-color: rgb(255, 255, 255, 0.5);
+            padding: 20px;
+        }
+
+        .square-section {
+            background-color: rgb(255, 255, 255, 0.5);
+        }
+
+
+        .square {
+            width: 20vw;
+            height: 20vw;
+            background-color: #00a2ff;
+            margin-top: 2vw;
+            margin-left: 2vw;
+            display: inline-block;
+            position: relative;
+        }
+
+        .swap-threshold-indicator {
+            background-color: #0079bf;
+            height: 100%;
+            display: inline-block;
+        }
+
+        .inverted-swap-threshold-indicator {
+            background-color: #0079bf;
+            height: 100%;
+            position: absolute;
+        }
+
+        .indicator-left {
+            left: 0;
+            top: 0;
+        }
+
+        .indicator-right {
+            right: 0;
+            bottom: 0;
+        }
+
+        .num-indicator {
+            position: absolute;
+            font-size: 50px;
+            width: 25px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+        }
+
+        .grid-square {
+            width: 100px;
+            height: 100px;
+            display: inline-block;
+            background-color: #fff;
+            border: solid 1px rgb(0, 0, 0, 0.2);
+            padding: 10px;
+            margin: 12px;
+        }
+
+        .nested-sortable,
+        .nested-1,
+        .nested-2,
+        .nested-3 {
+            margin-top: 5px;
+        }
+
+        .nested-1 {
+            background-color: #e6e6e6;
+        }
+
+        .nested-2 {
+            background-color: #cccccc;
+        }
+
+        .nested-3 {
+            background-color: #b3b3b3;
+        }
+
+        .frameworks {
+            background-color: rgb(255, 255, 255, 0.5);
+            border: solid rgb(0, 0, 0, 0.3) 1px;
+            padding: 20px;
+        }
+
+        .frameworks h3 {
+            margin-top: 5px;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            margin: 3.8px 0;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8.4px;
+            cursor: pointer;
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            background: rgba(48, 113, 169, 0);
+            border-radius: 1.3px;
+            border: 0.2px solid #010101;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            box-shadow: 0px 0px 0.9px #000000, 0px 0px 0px #0d0d0d;
+            border: 1.3px solid rgba(0, 0, 0, 0.7);
+            height: 16px;
+            width: 16px;
+            border-radius: 49px;
+            background: #ffffff;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -4px;
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background: rgba(54, 126, 189, 0);
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 8.4px;
+            cursor: pointer;
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            background: rgba(48, 113, 169, 0);
+            border-radius: 1.3px;
+            border: 0.2px solid #010101;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            box-shadow: 0px 0px 0.9px #000000, 0px 0px 0px #0d0d0d;
+            border: 1.3px solid rgba(0, 0, 0, 0.7);
+            height: 16px;
+            width: 16px;
+            border-radius: 49px;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        input[type=range]::-ms-track {
+            width: 100%;
+            height: 8.4px;
+            cursor: pointer;
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        input[type=range]::-ms-fill-lower {
+            background: rgba(42, 100, 149, 0);
+            border: 0.2px solid #010101;
+            border-radius: 2.6px;
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        }
+
+        input[type=range]::-ms-fill-upper {
+            background: rgba(48, 113, 169, 0);
+            border: 0.2px solid #010101;
+            border-radius: 2.6px;
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        }
+
+        input[type=range]::-ms-thumb {
+            box-shadow: 0px 0px 0.9px #000000, 0px 0px 0px #0d0d0d;
+            border: 1.3px solid rgba(0, 0, 0, 0.7);
+            height: 16px;
+            width: 16px;
+            border-radius: 49px;
+            background: #ffffff;
+            cursor: pointer;
+            height: 8.4px;
+        }
+
+        input[type=range]:focus::-ms-fill-lower {
+            background: rgba(48, 113, 169, 0);
+        }
+
+        input[type=range]:focus::-ms-fill-upper {
+            background: rgba(54, 126, 189, 0);
+        }
+
+        .blue-background-class {
+            background-color: #C8EBFB;
+        }
+
+        .col {
+            padding-right: 0;
+            margin-right: 15px;
+        }
+
+        .selected {
+            background-color: #f9c7c8;
+            border: solid red 1px !important;
+            z-index: 1 !important;
+        }
+
+        .highlight {
+            background-color: #B7F8C7;
+        }
+    </style>
+    <script>
+        interact('.resizable')
+            .resizable({
+                edges: { top: false, left: true, bottom: false, right: true },
+                listeners: {
+                    move: function (event) {
+                        let { x, y } = event.target.dataset
+
+                        x = (parseFloat(x) || 0) + event.deltaRect.left
+                        y = (parseFloat(y) || 0) + event.deltaRect.top
+
+                        Object.assign(event.target.style, {
+                            width: `${event.rect.width}px`,
+                            height: `${event.rect.height}px`,
+                            transform: `translate(${x}px, ${y}px)`
+                        })
+
+                        Object.assign(event.target.dataset, { x, y })
+                    }
+                }
+            })
+    </script>
+</head>
+
+<body>
+    <div class="resizable">
+        <p> Resize from any edge or corner </p>
+    </div>
+    <div class="resizable">
+        <p> Resize from any edge or corner </p>
+    </div>
+
+    <p>-----------</p>
+
+    <style>
+        .fila {
+            display: table;
+            width: 100%;
+            /*Optional*/
+            table-layout: fixed;
+            /*Optional*/
+            border-spacing: 10px;
+            /*Optional*/
+        }
+
+        .columna {
+            display: table-cell;
+
+
+            width: 120px;
+            border-radius: 0.75rem;
+            padding: 20px;
+            margin: 1rem;
+            background-color: #29e;
+            color: white;
+            font-size: 20px;
+            font-family: sans-serif;
+            overflow: hidden;
+
+            touch-action: none;
+
+
+            /*Optional*/
+        }
+    </style>
+    <div id="cloning" class="fila">
+
+        <div id="example3Left" class="list-group col">
+            <div class="columna">Item 1</div>
+            <div class="columna">Item 2</div>
+            <div class="columna">Item 3</div>
+            <div class="columna">Item 4</div>
+            <div class="columna">Item 5</div>
+            <div class="columna">Item 6</div>
+        </div>
+
+        <div id="example3Right" class="list-group col" style="background-color: #b3b3b3; width: 75%" ;>
+            <br />
+        </div>
+        <div id="papelera" class="list-group col" style="background-color: #243b32; width: 75%" ondragend="borra()"
+            ondragleave="borra()">
+            <br />
+        </div>
+    </div>
+
+    <script>
+        new Sortable(example3Left, {
+            group: {
+                name: 'shared',
+                pull: 'clone',
+                put: false // Do not allow items to be put into this list
+            },
+            animation: 150,
+            sort: false // To disable sorting: set sort to false
+        });
+
+        new Sortable(example3Right, {
+            group: 'shared',
+            animation: 150
+        });
+
+        new Sortable(papelera, {
+            group: 'shared',
+            animation: 150
+        });
+
+        // Función que elimina todos los elementos que se lleven al div "papelera".
+        function borra() {
+            var papelera = document.getElementById("papelera");
+            // console.log('borrando!');
+
+            var divs = papelera.getElementsByTagName('div');
+            for (var i = 0; i < divs.length; i += 1) {
+                // divArray.push(divs[i].innerHTML);
+                papelera.removeChild(divs[i]);
+
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All defaults demo</title>
+  <script src="https://unpkg.com/markerjs2/markerjs2.js"></script>
+  <script>
+    let sourceImage, targetRoot, maState;
+
+    // save references to the original image and its parent div (positioning root)
+    function setSourceImage(source) {
+      sourceImage = source;
+      targetRoot = source.parentElement;
+    }
+
+    function showMarkerArea(target) {
+      const markerArea = new markerjs2.MarkerArea(sourceImage);
+      // since the container div is set to position: relative it is now our positioning root
+      // end we have to let marker.js know that
+      markerArea.targetRoot = targetRoot;
+      markerArea.addEventListener("render", (event) => { 
+        target.src = event.dataUrl;
+        // save the state of MarkerArea
+        maState = event.state;
+        console.log (maState);
+      });
+      markerArea.show();
+      // if previous state is present - restore it
+      if (maState) {
+        markerArea.restoreState(maState);
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <div style="position: relative; display: flex; flex-direction: column; align-items: center; padding-top: 50px;">
+    <!-- we are putting a copy of the original image under the result image so it's always annotation-free -->
+    <img src="/logoUSAL.png" style="max-width: 600px;" onload="setSourceImage(this);" />
+    <img src="/logoUSAL.png" style="max-width: 600px; position: absolute;" onclick="showMarkerArea(this);" />
+  </div>
+</body>
+</html>

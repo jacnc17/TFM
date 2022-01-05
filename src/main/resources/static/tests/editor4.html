@@ -1,0 +1,31 @@
+<!doctype html>
+
+<body>
+    <a href="javascript:descarga()">Descargar archivo</a>
+    <script>
+        function descarga() {
+            const url = '/descarga';
+
+            fetch(url)
+                .then((resp) => resp.json())
+                .then(function (data) {
+                    let authors = data.results;
+                    return authors.map(function (author) {
+                        let li = createNode('li');
+                        let img = createNode('img');
+                        let span = createNode('span');
+                        img.src = author.picture.medium;
+                        span.innerHTML = `${author.name.first} ${author.name.last}`;
+                        append(li, img);
+                        append(li, span);
+                        append(ul, li);
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    </script>
+</body>
+
+</html>

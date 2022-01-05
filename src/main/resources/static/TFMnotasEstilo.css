@@ -1,0 +1,80 @@
+.arial {
+    font-family: Arial;
+    
+}
+
+.clase_recuadro_texto {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    background-color: rgba(255, 255, 255, 0.0);
+    border-left: 2px solid red;
+    border-right: 0px;
+    border-top:  none;
+    border-bottom:  0px;
+    text-overflow: clip;
+}
+
+.courier {
+    font-family: 'Courier New', monospace;
+}
+
+@font-face {
+    font-family: sansationlight;
+    src: url(/fuentes/SansationLight.ttf);
+}
+
+@font-face {
+    font-family: candara;
+    src: url(/fuentes/Candaral.ttf);
+}
+
+@font-face {
+    font-family: latoNormal;
+    src: url(/fuentes/Lato-Regular.ttf);
+}
+
+.latoNorm {
+    font-family: latoNormal;
+}
+
+
+
+.bold {
+    font-weight: bold !important;
+}
+
+.italic {
+    font-style: italic;
+}
+
+
+
+
+.nota_oculta > * {
+    opacity: .0 !important;
+}
+
+.nota > * {
+    opacity: .2 !important;
+}
+
+.nota_activa > * {
+    opacity: 1 !important;
+}
+
+.sansa {
+    font-family: sansationlight;
+}
+
+.traslucido {
+    opacity: 0.25;
+}
+
+.trebuchet {
+    font-family: 'Trebuchet MS', sans-serif;
+}
+
+.verdana {
+    font-family: Verdana, sans-serif;
+}
+

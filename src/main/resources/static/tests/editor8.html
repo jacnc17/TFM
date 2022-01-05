@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="/jquery/jquery-ui.css"> 
+    <style>
+        body {
+            position: relative;
+        }
+
+        .cuadro_texto {
+            /*transform: translate(-50%, -50%);*/
+            opacity: 1;
+            border: 1px solid black;
+            background-color: lightblue;
+            width: 270px;
+            height: 270px;
+            overflow: hidden;
+            /* resize: both; */
+            position: absolute !important;
+
+        }
+
+        .contenedor {
+            width: 600px;
+            height: 600px;
+            background-color: burlywood;
+            overflow: hidden;
+        }
+
+        .parrafo {
+            max-lines: 1;
+            overflow: inherit;
+            background-color: white;
+
+        }
+    </style>
+
+
+    <script>
+        var clickado = 0;
+
+        function saluda(evento) {
+            alert('adios');
+
+
+            //  document.removeChild(document[childElementCount-1]); 
+        }
+
+        function addTexto(evento) {
+            var rect = document.getElementById("new").getBoundingClientRect();
+            console.log(rect.top, rect.right, rect.bottom, rect.left);
+
+            // console.log ("addTexto : offsetX " + offsetX+ ", offsetY "+offsetY);
+
+            console.log(document.elementFromPoint(evento.clientX, evento.clientY).className);
+            elemento = document.elementFromPoint(evento.clientX, evento.clientY).className;
+
+            if (elemento == "contenedor") {
+
+                alert(evento.clientX + ":" + evento.clientY);
+
+                var div = document.createElement("div");
+                div.id = "miid";
+                div.className = "cuadro_texto";
+                div.style.left = evento.clientX - rect.left + 'px';
+                div.style.top = evento.clientY - rect.top + 'px';
+
+
+
+                div.onClick = saluda(evento);
+
+
+                var parrafo = document.createElement("INPUT");
+                parrafo.setAttribute("type", "text");
+
+                parrafo.className = "parrafo";
+                // parrafo.contentEditable = "true";
+                parrafo.textContent = "hola";
+                // parrafo.style.maxHeight = "inherit";
+                // parrafo.style.display = "table-row";
+                div.appendChild(parrafo);
+
+                document.getElementById("new").appendChild(div);
+
+                $('.cuadro_texto').draggable({ containment:[0, 0, rect.right-600/2 + rect.left*2, rect.bottom-600/2 + rect.top*2]}).resizable({ containment: "parent" });
+
+                if ((div.clientHeight + evento.clientX) > document.getElementById("new").clientHeight) {
+                    alert("se va: " + div.clientHeight + ", " + evento.clientX + " es más que " + document.getElementById("new").clientHeight);
+                    console.log(document.getElementById("new"));
+                }
+            }
+
+        }
+
+
+    </script>
+</head>
+
+<body>
+
+    <div id="new" class="contenedor" onclick="addTexto(event)">
+
+    </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+<!doctype html>
+
+<link rel="stylesheet" href="/dropzone/dropzone.css" />
+<script src="/dropzone/dropzone.js"></script>
+
+
+<!--
+Don't forget to give this container the dropzone-previews class 
+so the previews are formatted correctly.
+ -->
+<div id="previews" class="dropzone-previews" style="height: 100em; background-color: blue;">
+
+
+<button id="clickable">Click me to select files</button>
+
+<script>
+  new Dropzone(document.body, { // Make the whole body a dropzone
+    url: "/upload/url", // Set the url
+    previewsContainer: "#previews", // Define the container to display the previews
+    clickable: "#clickable" // Define the element that should be used as click trigger to select files.
+  });
+</script></div>
+</html>

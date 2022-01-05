@@ -1,0 +1,600 @@
+<!DOCTYPE HTML>
+
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta charset="utf-8">
+
+
+    <link th:rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.3.4.1.css}">
+    <script th:src="@{/jquery/jquery.3.5.1.js}"></script>
+    <script th:src="@{/bootstrap/bootstrap.3.4.1.js}"></script>
+
+
+
+    <link th:rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.css}" />
+    <script th:src="@{/jquery/jquery-1.12.4.js}"></script>
+    <script th:src="@{/jquery/jquery-ui-1.12.1.js}"></script>
+
+
+
+
+
+    <link th:rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.css}" />
+    <script th:src="@{/bootstrap/bootstrap.min.js}"></script>
+    <script th:src="@{/jquery/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{/jquery/jquery-ui.js}"></script>
+
+    <link th:rel="stylesheet" th:href="@{/jquery/jquery-ui.css}" />
+
+
+
+
+    <link th:rel="stylesheet" th:href="@{/bootstrap/bootstrap.cdn.css}" />
+
+
+    <link th:rel="stylesheet" th:href="@{/dropzone/dropzone.css}" />
+    <script th:src="@{/dropzone/dropzone.js}"></script>
+
+
+
+    <script th:src="@{/sortable/Sortable.js}"></script>
+
+    <link rel="stylesheet" href="TFMprincipalEstilo.css">
+    <link rel="stylesheet" href="TFMnotasEstilo.css">
+    <link rel="stylesheet" href="TFMmodalEstilo.css">
+
+    <script th:src="@{/interact/interact.min.js}"></script>
+
+
+    <script th:src="@{/toastr/toastr.min.js}"></script>
+    <link th:rel="stylesheet" th:href="@{/toastr/toastr.min.css}" />
+
+
+    <link rel="stylesheet" href="TFMMenuBoton.css">
+
+
+
+
+
+
+</head>
+
+
+<body>
+    
+    <div id="main">
+        <div id="principal">
+            <nav class="barra_menu navbar navbar-expand-lg navbar-light   static-top">
+                <div class="container">
+                    <a class="navbar-brand" href="#">Editor Vídeo</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarResponsive">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" id="myBtn">¿Qué es?</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="botonModal3">¿Cómo funciona?</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">¿Cómo está hecho?</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Créditos</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <img id="cabecera" src="imagenes/logoUSAL.png" style="height:60px">
+                </div>
+            </nav>
+
+            <div class="container" id="contenedor">
+                <div class="row">
+                    <div class="col-lg-8 mt-5">
+
+                        <div th:if="${message}">
+                            <h2 th:text="${message}" />
+                        </div>
+
+                        <div id="dropzoneEL" class="dropzone square">
+                            <div id="DIVdropzoneELEMENTOSfondo" style="position: absolute; top:0; bottom:0; left:0;right:0;z-index: -1;overflow: hidden" ;>
+
+                            </div>
+                            <form action="/upload" class="dropzone needsclick" id="DIVdropzoneELEMENTOS">
+
+                                <div class="dz-message needsclick">
+                                    <button id="botonZona" type="button" class="dz-button"></button>
+                                    <br />
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="cloning" class="fila">
+                <div id="misRecursos" class="scrollbar, scroller"></div>
+
+                <div id="miZonaEdicion" class="zonaEdicion" ondragend="recalcula_propiedades()"></div>
+
+                <div id="zonaInferior" style="display: flex; justify-content: revert;">
+
+                    <div style="padding: 20px; width:20%;">
+                        <a href="#" class="claseBoton" style="text-decoration: none" onclick="muestra_capa_notas()">
+                            <span>AÑADIR NOTAS</span>
+                        </a>
+                    </div>
+
+                    <div id="papelera" class="zonaPapelera" ondragend="borra()" ondragleave="borra()" style="float: left"></div>
+
+                    <div style="padding-top: 20px; padding-left: 40px;">
+                        <a href="#" class="claseBoton2" style="text-decoration: none" onclick="lanzaFetch()">
+                            <span>GENERAR VÍDEO</span>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="progreso" style="width:100%; height:0px; background-color:cornflowerblue;">
+                <div id="progreso_actual" style="width:0%;  height:0px; background-color:goldenrod;">
+
+                </div>
+            </div>
+
+            <div id="plantillaNota" style="display:none; width: 0px; padding-right:10px; padding-left:5px; padding-top:5px; border: 1px; border-color:red">
+                <div id="barraMenu" class="barraMenu" style="width: 570px;">
+                    <img class="btn btn-default" src="/bootstrap/images/arrows-move.svg" /
+                        style="height: 34px; width: 40px; transform:scale(0.7);margin-left: -9px;margin-right: -9px">
+                    <button class="btn btn-default botonH1" onclick="notasH1(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/type-h1.svg" /></button>
+                    <button class="btn btn-default botonH2" onclick="notasH2(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/type-h2.svg" /></button>
+                    <button class="btn btn-default botonH3" onclick="notasH3(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/type-h3.svg" /></button>
+                    <input id="colorpicker" type="color" class="colorpick btn btn-default boton_texto" value="#ffffff"
+                        style="height: 34px; width: 40px; transform:scale(0.7);margin: -9px;">
+
+                    <button class="btn btn-default boton_texto" onclick="notasToggleNegrita(this.parentNode.parentNode.getAttribute('id'))"
+                        style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/type-bold.svg" /></button>
+                    <button class="btn btn-default boton_texto" onclick="notasToggleCursiva(this.parentNode.parentNode.getAttribute('id'))"
+                        style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/type-italic.svg" /></button>
+
+                    <div class="dropdown boton_texto" style="display: inline-block;">
+                        <button class="btn btn-default" type="button" data-toggle="dropdown" style="transform:scale(0.7);margin: -9px;">
+                            <img src="/bootstrap/images/type.svg" />
+                            <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li class="arial" style="transform:scale(0.7);margin: -9px;">
+                                <a onclick="notasSetFuente(this.parentNode.parentNode.getAttribute('nota'), 'arial', 'recuadro');">Arial</a>
+                            </li>
+                            <li class="courier" style="transform:scale(0.7);margin: -9px;">
+                                <a onclick="notasSetFuente(this.parentNode.parentNode.getAttribute('nota'),'courier', 'recuadro');">Courier</a>
+                            </li>
+                            <li class="latoNorm" style="transform:scale(0.7);margin: -9px;">
+                                <a onclick="notasSetFuente(this.parentNode.parentNode.getAttribute('nota'),'latoNorm','recuadro');">Lato</a>
+                            </li>
+                            <li class="trebuchet" style="transform:scale(0.7);margin: -9px;">
+                                <a onclick="notasSetFuente(this.parentNode.parentNode.getAttribute('nota'),'trebuchet','recuadro');">Trebuchet</a>
+                            </li>
+                            <li class="verdana" style="transform:scale(0.7);margin: -9px;">
+                                <a onclick="notasSetFuente(this.parentNode.parentNode.getAttribute('nota'),'verdana','recuadro');">Verdana</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-default" onclick="nota_set_inicio(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/arrow-bar-right.svg" /></button>
+                    <button class="btn btn-default" onclick="nota_set_fin(this.parentNode.parentNode.getAttribute('id')) " style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/arrow-bar-left.svg" /></button>
+                    <button class="btn btn-default" onclick="nota_expande(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/arrows-expand.svg" style="transform:rotate(90deg);" /></button>
+                    <button class="btn btn-default" id="botonModalImagenes" onclick="muestraModal(this.parentNode.parentNode.getAttribute('id'))"
+                        style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/image.svg" /></button>
+                    <button class="btn btn-default" id="botonModalImagenes" onclick="acerca(this.parentNode.parentNode.getAttribute('id'))"
+                        style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/front.svg" /></button>
+                    <button class="btn btn-default" id="botonModalImagenes" onclick="aleja(this.parentNode.parentNode.getAttribute('id'))"
+                        style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/back.svg" /></button>
+                    <button class="btn btn-default" onclick="nota_borra(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
+                        <img src="/bootstrap/images/trash.svg" /></button>
+                </div>
+                <input id="recuadro" type="text" class="clase_recuadro_texto" autocomplete="off" tabindex="-1" style="opacity: 1 !important;" onfocus="limita_ancho(this)">
+            </div>
+        </div>
+
+
+        <div id="modal_que_es" class="modal" style="z-index: 50; " ;>
+            <!-- Modal content -->
+            <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;">
+                <div style=" background-image: url(imagenes/fondos/fondo1.png);           background-size: 100% 100%;">
+                    <span class="close" style="cursor:pointer;  width:100%; align-self: end;" onclick="modal2.style.display = 'none'; ">&times;</span>
+                    <p class="modal_cabecera">¡Bienvenid@!</p>
+                    <p class="modal_texto">En esta página web podrás <i>crear vídeos</i> a partir de cargar tus imágenes y vídeos favoritos.</p>
+                    <p class="modal_texto">Podrás crear un vídeo a partir de una foto, añadir notas y stickers, recortar vídeos y añadirlos las veces que quieras.</p>
+                    <p class="modal_texto">¡Y todo muy fácil, sólo con unos clicks! ¡Ahora podrás ser un experto editor!</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="modal_como_funciona" class="modal" style="z-index: 50; " ;>
+            <!-- Modal content -->
+            <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;">
+                <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%;">
+                    <span class="close" style="cursor:pointer;  width:100%; align-self: end;" onclick="modal3.style.display = 'none'; ">&times;</span>
+                    <p class="modal_cabecera">¿Cómo funciona?</p>
+                    <p class="modal_texto">Primero CARGA tus vídeos y fotos.</p>
+                    <p class="modal_texto">Después ARRÁSTRALOS a la zona de edición, donde puedes editarlos y recortarlos haciendo click sobre ellos.</p>
+                    <p class="modal_texto">AÑADE LAS NOTAS, eligiendo cuándo empiezan y dejan de verse, incluye stickers...</p>
+                    <p class="modal_texto">Por último GENERA TU VÍDEO, ¡y listo!</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="modalImagenes" class="modal" style="z-index: 50;" ;>
+            <!-- Modal content -->
+            <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;">
+                <span class="close" style="cursor:pointer;  width:100%;    align-self: end;" onclick="modal2.style.display = 'none'; ">&times;</span>
+                <p>Selecciona qué imagen quieres incluir en forma de nota:</p>
+                <div id="imagenes_miniaturas_notas"></div>
+            </div>
+        </div>
+
+
+        <script th:inline="javascript">
+            function recarga_stickers(id_nota) {
+                /////////// Carga de stikers
+                /*<![CDATA[*/
+                /*[# th:each="archivo, status: ${misStickers}"]*/ // Código Thymeleaf - se carga en TFMPrincipal el modelo 'misStickers'
+
+                // En caso de recarga de página se añade con mimetype válido 
+                // Creamos una imagen que irá dentro del botón
+                tmp_imagen = document.createElement("img");
+                tmp_imagen.src = [[${ archivo }]];
+                tmp_imagen.style = "max-height: 100%; max-width: 100%;";
+
+                // Creamos el botón (permitirá darle estilo)
+                tmp_boton = document.createElement("button");
+                tmp_boton.className = "btn but-outline-primary";
+                tmp_boton.style = "border:1; border-color:#f6931f; font-weight:bold; height:75px; max-height:75px; min-height:75px";
+                tmp_boton.onclick = function () { incluye_imagen_nota(id_nota, [[${ archivo }]], 1) };
+                tmp_boton.appendChild(tmp_imagen);
+
+                document.getElementById("imagenes_miniaturas_notas").appendChild(tmp_boton);
+                console.log("Añadiendo ", [[${ archivo }]]);
+
+                /*[/]*/
+                /*]]>*/
+            }
+    ////////////// Fin carga de stickers
+        </script>
+
+        <script>
+
+            // Gestión de modales.
+            var modal = document.getElementById("modal_que_es");
+            var modal2 = document.getElementById("modalImagenes");
+            var modal3 = document.getElementById("modal_como_funciona");
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("myBtn");
+            var btn3 = document.getElementById("botonModal3");
+
+            // Botón que abre el modal de imágenes
+            var btn2 = document.getElementById("botonModalImagenes");
+
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal 
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+
+            // Gestión de la pulsación del modal3
+            btn3.onclick = function () {
+                modal3.style.display = "block";
+            }
+
+
+            // Modal que se mostrará para poder elegir una imagen a incluir.
+            function muestraModal(id_nota) {
+                modal2.style.display = "block";
+                modal2.style.zIndex = "6000";
+
+                // Recuperamos las imágenes y vídeos que hay en el listado actual.
+                let recursos = document.getElementById("misRecursos").getElementsByClassName("clase_miniatura");
+
+                // Borramos el listado anterior de imágenes
+                document.getElementById("imagenes_miniaturas_notas").innerHTML = '';
+
+                // Recargamos los stickers
+                recarga_stickers(id_nota);
+
+                console.log(recursos);
+
+                // Recorremos los recursos y mostramos sólo las imágenes en el diálogo
+                for (i = 0; i < recursos.length; i++) {
+                    // Cada una de las imágenes candidatas.
+                    let recurso = recursos[i];
+
+                    // Sólo recuperamos las imágenes (no mostramos miniaturas de vídeos)
+                    if (recurso.getAttribute("tipo_contenido") == "img") {
+                        console.log(recurso.src);
+                        // Creamos una imagen que irá dentro del botón
+                        tmp_imagen = document.createElement("img");
+                        tmp_imagen.src = recurso.src
+                        tmp_imagen.style = "max-height: 100%; max-width: 100%;";
+
+                        // Creamos el botón (permitirá darle estilo)
+                        tmp_boton = document.createElement("button");
+                        tmp_boton.className = "btn but-outline-primary";
+                        tmp_boton.style = "border:1; border-color:#f6931f; font-weight:bold; height:75px; max-height:75px; min-height:75px";
+                        tmp_boton.onclick = function () { incluye_imagen_nota(id_nota, recurso.getAttribute("img_original"), 0) };
+                        tmp_boton.appendChild(tmp_imagen);
+
+                        document.getElementById("imagenes_miniaturas_notas").appendChild(tmp_boton);
+                    }
+                }
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+
+
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                } else if (event.target == modal2) {
+                    modal2.style.display = "none";
+                } else if (event.target == modal3) {
+                    modal3.style.display = "none";
+                }
+            }
+
+
+            // Función que añade una nota como imagen
+            function incluye_imagen_nota(id_nota, imagen_original, es_sticker) {
+                // alert ("hay que cambiar " +id_nota+ " para incluir "+imagen_original);
+                let input_borrar = document.getElementById(id_nota).getElementsByClassName("clase_recuadro_texto")[0];
+
+                // Si existía antes un input, se borra.
+                if (input_borrar != undefined) {
+                    input_borrar.remove();
+                }
+                else // Verificamos si había antes una imagen 
+                {
+                    let img_borrar = document.getElementById(id_nota).getElementsByClassName("clase_recuadro_imagen")[0];
+                    // Si existía antes la imagen, se borra
+                    if (img_borrar != undefined) {
+                        img_borrar.remove();
+                    }
+                }
+
+                // Se crea la nueva imagen
+                imagen = document.createElement("img");
+                imagen.id = id_nota + "_imagen_nota";
+                imagen.style = "max-height: 75px; opacity: 1 !important; ";
+                imagen.className = "clase_recuadro_imagen";
+                imagen.setAttribute("nota_asociada", id_nota);
+
+                // Recuperamos el tamaño de la imagen original, necesario para hacer el reescalado.
+                if (es_sticker == 0) {
+                    let tam = document.getElementById("img_oculta_" + imagen_original).naturalWidth + "x" + document.getElementById("img_oculta_" + imagen_original).naturalHeight;
+                    imagen.setAttribute("tam_original", tam);
+
+                    imagen.src = getBase() + "[[${ idSesion }]]/" + imagen_original;
+                }
+                else // Se trata de un sticker
+                {
+                    var tmp = document.createElement("img")
+                    tmp.src = imagen_original;
+                    imagen.src = imagen_original;
+                    console.log("Recuperando dimensiones de ", imagen_original);
+                    tmp.onload = function () { imagen.setAttribute("tam_original", tmp.naturalWidth + "x" + tmp.naturalHeight); }
+                }
+
+
+                // Se anexa la imagen
+                document.getElementById(id_nota).appendChild(imagen);
+                document.getElementById("barra_" + id_nota).style.width = "310px"; // Se hace un reset del ancho para reducir el espacio de influencia al mínimo.
+                // document.getElementsByClassName("barraMenu")[0].style.width="400px"; // Se hace un unset del ancho para reducir el espacio de influencia al mínimo.
+
+                // Se actualizarán los botones de la nota.
+                // Se empieza por eliminar los botones que no se utilizarán 
+                while (document.getElementById(id_nota).querySelector(".boton_texto") != undefined) {
+                    // console.log ("porqueryselector = ",document.getElementById(id_nota).querySelector(".boton_texto"));
+                    document.getElementById(id_nota).querySelector(".boton_texto").remove();
+                }
+
+                // Se cambia la acción del H1
+                if (document.getElementById(id_nota).querySelector(".botonH1") != undefined) {
+                    document.getElementById(id_nota).querySelector(".botonH1").onclick = function () { document.getElementById(id_nota + "_imagen_nota").style.maxHeight = "300px"; };
+                }
+                // Se cambia la acción del H2
+                if (document.getElementById(id_nota).querySelector(".botonH2") != undefined) {
+                    document.getElementById(id_nota).querySelector(".botonH2").onclick = function () { document.getElementById(id_nota + "_imagen_nota").style.maxHeight = "150px"; };
+                }
+                // Se cambia la acción del H3
+                if (document.getElementById(id_nota).querySelector(".botonH3") != undefined) {
+                    document.getElementById(id_nota).querySelector(".botonH3").onclick = function () { document.getElementById(id_nota + "_imagen_nota").style.maxHeight = "75px"; };
+                }
+
+                // Se oculta el modal
+                modal2.style.display = 'none';
+            }
+
+
+
+            // Método para bajar una capa de nota un puesto en el árbol DOM
+            function aleja(id_capa) {
+                var element = document.getElementById(id_capa);
+                console.log(element);
+                if (element.previousElementSibling)
+                    element.parentNode.insertBefore(element, element.previousElementSibling);
+            }
+
+
+            // Método para subir una capa de nota un puesto en el árbol DOM
+            function acerca(id_capa) {
+                var element = document.getElementById(id_capa);
+                if (element.nextElementSibling)
+                    element.parentNode.insertBefore(element.nextElementSibling, element);
+            }
+
+
+        </script>
+
+
+
+
+
+        <script th:src="@{/TFMMetodos.js}"></script>
+
+        <script th:inline="javascript">
+
+            /*<![CDATA[*/
+            Dropzone.autoDiscover = false;
+
+            // DROPZONE
+            $("#DIVdropzoneELEMENTOS").dropzone({
+                addRemoveLinks: true,
+                acceptedFiles: "image/jpeg,image/png,image/gif,.mp4,.mkv,.avi",
+                // maxFiles: 8,
+                // disablePreviews: true,
+                createImageThumbnails: false,
+
+                init: function () {
+                    let myDropzone = this;
+
+                    myDropzone.on('thumbnail', function (file, dataURL) {
+                        // OK console.log("INFO anadir_item_oculto = " + file.dataURL);
+                        // anadir_item_oculto(file, dataURL);
+                        // regenera_ultima_miniatura();
+                    });
+
+                    myDropzone.on("complete", function (file) {
+                        $('.dz-preview').remove(); // Se quita el thumbnail.
+                    });
+
+                    myDropzone.on("addedfile", function (file) {
+                        // Gestión de duplicados
+                        if (this.files.length) {
+                            var _i, _len;
+
+                            // Recorremos todos los archivos para ver si ya estaba incluido y así evitar duplicados.
+                            for (_i = 0, _len = this.files.length; _i < _len - 1; _i++) // -1 to exclude current file
+                            {
+                                // Si ya existía, no se procesa.
+                                if (this.files[_i].name === file.name && this.files[_i].size == file.size) {
+                                    this.removeFile(file);
+                                    alert("No se puede añadir el mismo archivo varias veces!");
+                                }
+                                else {
+                                    // console.log("verificado " + file.name + "(" + file.size + ") contra " + this.files[_i].name + " (" + this.files[_i].size + ")");
+                                }
+                            }
+                        }
+
+                    });
+
+                    // Sección para gestionar la recarga de la página (recorre los archivos en la variable thymeleaf "misArchivos"
+                    let callback = null; // Callback (opcional) para cuando haya acabado
+                    let crossOrigin = null; // Se añade al tag img para gstión del crossorigin
+                    let miniatura_resize = false; // Indica a dropzone si hay que hacer el resize de la miniatura
+                    let mockFilen; // Dimensiones del archivo
+
+                    /*[# th:each="archivo, status: ${misArchivos}"]*/ // Código Thymeleaf - se carga en TFMPrincipal el modelo 'misArchivos'
+                    var base = window.location.href.substr(0, window.location.href.lastIndexOf('/'));
+                    // archivo = window.location.href + [[${ archivo }]];
+                    archivo = base + [[${ archivo }]];
+                    // alert (archivo);
+
+                    ruta = [[${ archivo }]].split("/"); // Obtenemos el nombre del archivo (se usará en la miniatura)
+                    tam_nombre_archivo = ruta[ruta.length - 1];
+                    tam_archivo = tam_nombre_archivo.split("_")[0];
+                    nombre_archivo = tam_nombre_archivo.substr(tam_nombre_archivo.indexOf("_") + 1, tam_nombre_archivo.length - 1)
+
+                    mockFilen = { name: nombre_archivo, size: tam_archivo };
+                    myDropzone.displayExistingFile(mockFilen, archivo, callback, crossOrigin, miniatura_resize);
+                    this.files.push(mockFilen);    // add to files array
+
+                    // MIME
+                    var mime =  /*[[${misMimes[status.index]}]]*/ 'default';
+                    // FIN MIME 
+                    anadir_item_editor(tam_nombre_archivo, mime);
+
+                    regenera_miniatura([[${ idSesion }]], tam_nombre_archivo); // Thymeleaf
+
+                    // En caso de recarga de página se añade con mimetype válido 
+                    anadir_capa_oculta(tam_nombre_archivo, [[${ idSesion }]], mime);
+
+                    /*[/]*/
+
+                },
+
+
+                success: function (file, response) {
+                    toastr.success('Archivo ' + file.name + ' añadido correctamente');
+
+
+
+
+                    var idSesion = [[${ idSesion }]];
+                    idSesion.replace("\"", ""); // Se eliminan posibles comillas.
+
+                    // Método para añadir un nuevo item al editor
+                    var nombre_archivo = file.name.replace(' ', '_'); // Se evita el error producido por espacios en el nombre.
+                    id_imagen = file.size + "_" + nombre_archivo;
+                    anadir_item_editor(id_imagen, file.type);
+
+                    // Se actualiza la miniatura
+                    regenera_miniatura(idSesion, id_imagen); // Thymeleaf 
+
+                    // Se genera la capa oculta 
+                    // OK console.log("INFO addedfile anadir_item_oculto = " + id_imagen);
+                    // console.log("INFO ${pageContext.request.localName} = " + [[${#httpServletRequest.requestURI}]]);
+
+                    // Es necesario que añadir la capa oculta discrimine por mime type
+                    anadir_capa_oculta(id_imagen, idSesion, file.type);
+
+
+
+
+                }
+            });
+
+            /*]]>*/
+
+
+
+            /// Gestión de la recarga
+            window.onbeforeunload = function () {
+                return "Nono";
+            }
+        </script>
+
+
+    </div>
+</body>
+
+</html>

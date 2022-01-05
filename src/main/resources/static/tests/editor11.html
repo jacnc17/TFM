@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+    <!-- Remember to include jQuery :) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <!-- jQuery Modal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <link th:rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.css}" />
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        function H1(elemento) {
+            document.getElementById(elemento).style.fontSize = "6em";
+        }
+
+        function H2(elemento) {
+            document.getElementById(elemento).style.fontSize = "3em";
+        }
+
+        function H3(elemento) {
+            document.getElementById(elemento).style.fontSize = "1em";
+        }
+
+        function setFuente(fuente, nombre) {
+            estiloAnterior = document.getElementById(nombre).className;
+            claseFinal = "clase_recuadro_texto " + fuente;
+ 
+            if (estiloAnterior.includes("bold"))
+                claseFinal = claseFinal + " bold";
+            if (estiloAnterior.includes("italic"))
+                claseFinal = claseFinal + " italic";
+
+            document.getElementById(nombre).className = claseFinal;
+
+        }
+
+        function toggleNegrita(nombre) {
+            if (document.getElementById(nombre).className.includes("bold"))
+                document.getElementById(nombre).className = document.getElementById(nombre).className.replace(" bold", "");
+            else
+                document.getElementById(nombre).className = document.getElementById(nombre).className + " bold";
+
+
+        }
+
+        function toggleCursiva(nombre) {
+            if (document.getElementById(nombre).className.includes("italic"))
+                document.getElementById(nombre).className = document.getElementById(nombre).className.replace(" italic", "");
+            else
+                document.getElementById(nombre).className = document.getElementById(nombre).className + " italic";
+        }
+    </script>
+    <style>
+        .clase_recuadro_texto {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            width: 500%;
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        @font-face {
+            font-family: sansationlight;
+            src: url(/fuentes/SansationLight.ttf);
+        }
+
+        .sansa {
+            font-family: sansationlight;
+        }
+
+        @font-face {
+            font-family: latoNormal;
+            src: url(/fuentes/Lato-Regular.ttf);
+        }
+
+        .latoNorm {
+            font-family: latoNormal;
+        }
+
+        .arial {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .bold {
+            font-weight: bold !important;
+        }
+
+        .italic {
+            font-style: italic;
+        }
+
+        .courier {
+            font-family: 'Courier New', monospace;
+        }
+
+        .trebuchet {
+            font-family: 'Trebuchet MS', sans-serif;
+        }
+
+        .verdana {
+            font-family: Verdana, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+  <!-- Link to open the modal -->
+  <p><a href="#ex1" rel="modal:open">Open Modal</a></p>
+
+  
+    <!-- Modal HTML embedded directly into document -->
+    <div id="ex1" class="modal">
+        <p>Thanks for clicking. That felt good.</p>
+        <a href="#" rel="modal:close">Close</a>
+      </div>
+    <div id="padre" style="overflow:hidden; height: 500px; width: 500px; background-color: khaki;">
+
+        <div id="principal2"
+            style="width: 390px; background-color: rgba (255,255,0,10) ; padding-right:10px; padding-left:5px; padding-top:5px; border: 1px; border-color:red">
+            <img class="btn btn-default" src="/bootstrap/images/arrows-move.svg" / style="height: 34px; width: 40px">
+            <button class="btn btn-default" onclick="H1('recuadro')"><img
+                    src="/bootstrap/images/type-h1.svg" /></button>
+            <button class="btn btn-default" onclick="H2('recuadro')"><img
+                    src="/bootstrap/images/type-h2.svg" /></button>
+            <button class="btn btn-default" onclick="H3('recuadro')"><img
+                    src="/bootstrap/images/type-h3.svg" /></button>
+            <input id="colorpicker" type="color" class="btn btn-default" style="height: 34px; width: 40px">
+
+            <button class="btn btn-default " onclick="toggleNegrita('recuadro')"><img
+                    src="/bootstrap/images/type-bold.svg" /></button>
+            <button class="btn btn-default " onclick="toggleCursiva('recuadro')"><img
+                    src="/bootstrap/images/type-italic.svg" /></button>
+
+            <div class="dropdown" style=" display: inline-block;">
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"><img
+                        src="/bootstrap/images/type.svg" />
+                    <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item arial"> <a onclick="setFuente('arial', 'recuadro');">Arial</a> </li>
+                    <li class="courier"> <a onclick="setFuente('courier', 'recuadro');">Courier</a> </li>
+                    <li class="latoNorm"><a onclick="setFuente('latoNorm','recuadro');">Lato</a></li>
+                    <li class="sansa"><a onclick="setFuente('sansa','recuadro');">Sansation Ligh</a></li>
+                    <li class="trebuchet"><a onclick="setFuente('trebuchet','recuadro');">Trebuchet</a></li>
+                    <li class="verdana"><a onclick="setFuente('verdana','recuadro');">Verdana</a></li>
+                </ul>
+            </div>
+            <br>
+            <input id="INPUT" type="text" class="clase_recuadro_texto">
+        </div>
+    </div>
+
+
+
+    <button class="btn-default" onclick="myFunction()"><i class="fas fa-palette"></i>open box </button>
+
+
+    <script>
+        $("#principal2").draggable({}).resizable({});
+        $("#principal2_old").draggable({ containment: "parent" }).resizable({ containment: "parent", handles: "e" });
+
+        document.getElementById("colorpicker").addEventListener("change", watchColorPicker, false);
+
+        function watchColorPicker(event) {
+            document.getElementById("recuadro").style.color = event.target.value;
+        }
+    </script>
+
+    <style>
+
+
+
+    </style>
+    </head>
+
+    <ul>
+        <li style="font-weight: bold" ;><a onclick="setFuente('arialbold','recuadro');">Arial Negrita</a></li>
+    </ul>
+
+
+
+    
+</html>

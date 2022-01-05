@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- https://stackoverflow.com/questions/35538057/css-bootstrap-creating-elements-via-javascript -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta charset="utf-8">
+  
+    <script th:src="@{/popper/popper.min.js}"></script>
+
+    <link th:rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.css}" />
+    <script th:src="@{/bootstrap/bootstrap.min.js}"></script>
+
+
+
+
+    <!-- PARTE DRAGGABLE -->
+
+    <head>
+        <meta charset="utf-8">
+        <title>draggable demo</title>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+        <style>
+            #draggable {
+                width: 100px;
+                height: 100px;
+                background: #ccc;
+                resize: both;
+            }
+
+
+            #editable {
+
+                resize: both;
+            }
+
+            .form-control {
+                width: 90%;
+                height: 90%;
+                max-width: 90%;
+                max-height: 90%;
+                resize: none;
+
+                -webkit-box-sizing: border-box;
+                /* Safari/Chrome, other WebKit */
+                -moz-box-sizing: border-box;
+                /* Firefox, other Gecko */
+                box-sizing: border-box;
+                /* Opera/IE 8+ */
+            }
+
+            .crap {
+                width: 90%;
+
+            }
+
+            #areaTexto {
+                font-size: 20px;
+                border-color: rgba(0, 0, 0, 0);
+                background-color: rgba(0, 0, 0, 0);
+                display: block;
+                height: 90%;
+                max-height: 90%;
+                max-lines: 1;
+                resize:auto; 
+                text-align: left;
+                text-overflow: ellipsis;
+            }
+
+/*                 -webkit-box-sizing: border-box;
+ */                /* Safari/Chrome, other WebKit */
+/*                 -moz-box-sizing: border-box;
+ */                /* Firefox, other Gecko */
+/*                 box-sizing: border-box;
+ */                /* Opera/IE 8+ */
+/* /* /*                 resize: none;
+ */  */ */          
+
+
+
+            .mywidth {
+                width: 35em;
+                font-family: Verdana;
+                font-size: 1em;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+
+            .expandable-textarea {
+                border: 1px solid #ccc;
+                font-family: inherit;
+                font-size: inherit;
+                padding: 1px 6px;
+
+                display: block;
+                width: 100px;
+                overflow: hidden;
+                resize: both;
+                min-height: 40px;
+                line-height: 20px;
+            }
+
+            .clase_recuadro_texto {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                width: 100%;
+            }
+        </style>
+        <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+    </head>
+
+    <script>
+        function H1 (elemento)
+        {
+            document.getElementById (elemento).style.fontSize = "6em";
+        }
+
+        function H2 (elemento)
+        {
+            document.getElementById (elemento).style.fontSize = "3em";
+        }
+
+        function H3 (elemento)
+        {
+            document.getElementById (elemento).style.fontSize = "1em";
+        }
+</script>
+</head>
+
+<body>
+    <div id="principal" style="overflow:hidden; height: 200px; width: 200px; background-color: hotpink;">
+        <div id="editable" style="background-color: bisque; display: block;" class="form-group">
+            <img src="/logoUSAL.png">
+            <input type="text" id="areaTexto" contenteditable="true">Edit me!
+        </div>
+
+        <div id="draggable" class="form-group">
+            <label for="inputText" class="col-sm-2 control-label">Comments</label>
+            <div Class="col-sm-10">
+                <textarea class="form-control" id="inputText" placeholder="Write your comments here"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="padre" style="overflow:hidden; height: 500px; width: 500px; background-color: khaki;"> 
+
+        <div id="principal2" style="width: 300px; background-color: hotpink; padding-right:10px; padding-left:5px; padding-top:5px">
+            <img src="/bootstrap/images/arrows-move.svg"/>
+            <button  onclick= "H1('recuadro')"><img src="/bootstrap/images/type-h1.svg"/></button>
+            <button onclick= "H2('recuadro')"><img src="/bootstrap/images/type-h2.svg"/></button>
+            <button onclick= "H3('recuadro')" ><img src="/bootstrap/images/type-h3.svg"/></button>
+            <button ><img src="/bootstrap/images/palette.svg"/></button>
+
+
+
+                          <br>
+            <input id="recuadro" type="text" class="clase_recuadro_texto">
+        </div>
+    </div>
+
+<script>
+
+        $("#draggable").draggable({ containment: "parent" }).resizable({ containment: "parent" });
+        $("#editable").draggable({ containment: "parent" }).resizable({ containment: "parent" });
+        $("#principal2").draggable({ containment: "parent" }).resizable({ containment: "parent" , handles: "e"});
+    </script>
+</body>
+
+</html>

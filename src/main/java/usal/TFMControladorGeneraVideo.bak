@@ -1,0 +1,496 @@
+package usal.jac.tfm;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+
+import usal.jac.tfm.TFMUtils.TFMConstantes;
+import usal.jac.tfm.TFMUtils.TFMUtilidadesConversion;
+import usal.jac.tfm.TFMUtils.TFMUtils;
+
+@RestController
+@RequestMapping(value = "/creaVid", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+public class TFMControladorGeneraVideo {
+	@Value("${file.dirTrabajo}")
+	String directorioTrabajo;
+
+	@Value("${file.uploadDir}")
+	String dest;
+
+	@Value("${file.fuente}")
+	String fuente;
+
+	@Value("${file.rutaFFMPEG}")
+	String rutaFFMPEG;
+
+	private static final Logger logger = LoggerFactory.getLogger(TFMControladorGeneraVideo.class);
+
+	/**
+	 *
+	 */
+	@RequestMapping
+	public byte[] genera(@RequestBody List<TFMPeticion> peticion) throws IOException {
+		// Definición de variables
+		String nombre = ""; // Cada uno de los archivos que incluye la petición del cliente.
+
+		String idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId()); /
+																														
+		Process p;
+																										
+																														
+		logger.info("GENERANDO directorio de destino para " + idSesion);
+
+		Path fileStorageLocation = Paths.get(directorioTrabajo).toAbsolutePath().normalize();
+		logger.info("Recuperado fileStorageLocation general= " + fileStorageLocation);
+
+		String directorioDestino = TFMUtils.creaDirectorio(fileStorageLocation.toString(), dest);
+		logger.info("Directorio sesión creado/recuperado correctamente  " + directorioDestino);
+
+		String directorioDestinoSesion = TFMUtils.creaDirectorio(directorioDestino, idSesion);
+		logger.info("Directorio destino creado/recuperado correctamente para esta sesión " + directorioDestinoSesion);
+
+		String directorioDestinoVideo = TFMUtils.creaDirectorio(directorioDestinoSesion, "videoGenerado");
+		logger.info("Directorio destino del vídeo creado/recuperado correctamente para esta sesión "
+				+ directorioDestinoVideo);
+
+				Vector <List<String>> comandos = preparaSecuenciaArchivos(peticion, directorioDestinoSesion, directorioDestinoVideo);
+
+		// Recorremos la petición
+		for (int i = 0; i < comandos.size(); i++) {
+
+
+
+			// // Genera vídeo a partir de un texto
+			p = new ProcessBuilder(comandos.elementAt(i)).start();
+
+			
+
+			nombre = ((TFMPeticion) peticion.get(i)).getNombre();
+			logger.warn("preparaArchivos: nombre = " + nombre);
+
+			// ext = nombre.substring(nombre.lastIndexOf(".") + 1).toLowerCase();
+			// logger.warn("preparaArchivos: extensión = " + ext);
+
+			Path archivoOrigen = Paths.get(directorioDestinoSesion + File.separator + nombre);
+
+			// Si es jpg, no es necesario transformar y bastará con copiar.
+			// if (TFMConstantes.mimes_JPG.contains("image/"+ext)) {
+			if (TFMUtils.es_MIME_imagen(archivoOrigen)) {
+
+				try {
+					Files.copy(archivoOrigen, directorioDestinoSesion, StandardCopyOption.REPLACE_EXISTING);
+
+				} catch (IOException ex) {
+					System.err.format("I/O Error when copying file");
+				}
+			} else if (ext.equalsIgnoreCase("gif") || ext.equalsIgnoreCase("png")) {
+				TFMUtilidadesConversion.conviertePNG_GIFaJPG(archivoOrigen, archivoDestino);
+
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * @GetMapping(value = "/descarga", produces =
+	 *                   MediaType.MULTIPART_FORM_DATA_VALUE)
+	 *                   public @ResponseBody byte[] getImage() throws IOException {
+	 * @deprecated
+	 */
+	@RequestMapping
+	public byte[] generaOLD(@RequestBody List<TFMPeticion> peticion) throws IOException {
+		// Definición de variables
+		String idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId()); 
+		logger.info("GENERANDO directorio de destino para " + idSesion);
+
+		Path fileStorageLocation = Paths.get(directorioTrabajo).toAbsolutePath().normalize();
+		logger.info("Recuperado fileStorageLocation general= " + fileStorageLocation);
+
+		String directorioDestino = TFMUtils.creaDirectorio(fileStorageLocation.toString(), dest);
+		logger.info("Directorio sesión creado/recuperado correctamente  " + directorioDestino);
+
+		String directorioDestinoSesion = TFMUtils.creaDirectorio(directorioDestino, idSesion);
+		logger.info("Directorio destino creado/recuperado correctamente para esta sesión " + directorioDestinoSesion);
+
+		String directorioDestinoVideo = TFMUtils.creaDirectorio(directorioDestinoSesion, "videoGenerado");
+		logger.info("Directorio destino del vídeo creado/recuperado correctamente para esta sesión "
+				+ directorioDestinoVideo);
+
+		InputStream in = null; // Stream de bytes que será devuelto.
+		Process p;
+
+
+		// Para la inclusión de imágenes, en el directorio temporal se deben crear
+		// copias temporales de los archivos.
+		String directorioTemporal = TFMUtils.creaDirectorio(directorioDestinoVideo, 		 "deleteme");
+		// logger.info("Directorio TEMPORAL creado/recuperado correctamente " +
+		// directorioTemporal);
+
+		// Permite preparar los archivos para la generación del vídeo a partir de
+		// imágenes estáticas. Los archivos que serán utilizadas a la hora de llamar a
+		// FFMPEG (deben ser de la misma
+		// extensión y puestos en orden secuencial para funcionar).
+		Vector <List<String>> comandos = preparaSecuenciaArchivos(peticion, directorioDestinoSesion, directorioDestinoVideo);
+
+		// Ruta del archivo de destino: se llamará al archivo igual que el ID de sesión.
+		// TODO: configurar archivo de destino en la aplicación de usuario.
+		Path destinationFile = Paths.get(directorioDestinoVideo + File.separator + idSesion + ".mp4").toAbsolutePath()
+				.normalize();
+		logger.info("Archivo destino = " + destinationFile);
+
+		// TODO: lanzar asíncronamente.
+		try {
+			for (a =0; a < peticion.size(); a++)
+			{
+
+			// // Genera vídeo a partir de un texto
+			p = new ProcessBuilder(
+					rutaFFMPEG,
+					"-y",
+					"-r",
+					"1/2",
+					"-i",
+					directorioTemporal + File.separator + "archivo_%3d.jpg",
+					"-vf",
+					"\"scale=1280:720:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2\"",
+					"-r",
+					"25",
+					destinationFile.toString()).start();
+
+			String stderr = IOUtils.toString(p.getErrorStream(), Charset.defaultCharset());
+			String stdout = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
+
+			logger.info("stderr =" + stderr);
+			logger.info("stdout = " + stdout);
+
+			logger.info("fileStorageLocation= " + destinationFile.toString());
+
+			// ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			in = new FileInputStream(destinationFile.toString());
+
+			// Se borra el directorio deleteme
+			FileUtils.deleteDirectory(new File(directorioTemporal));
+			logger.info("Archivo borrado correctamente");
+
+		} catch (NullPointerException npe) {
+			npe.printStackTrace();
+			logger.error("An element of the command list is null");
+		} catch (IndexOutOfBoundsException iobe) {
+			iobe.printStackTrace();
+			logger.error("The command is an empty list (has size 0)");
+		} catch (SecurityException se) {
+			se.printStackTrace();
+			logger.error(
+					"A security manager exists and its checkExec method doesn't allow creation of the subprocess ");
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+			logger.error("An I/O error occurs ");
+		}
+
+		logger.info("Devolviendo array de bytes de " + in.available());
+
+		return IOUtils.toByteArray(in);
+	}
+
+	/**
+	 * Método para crear una secuencia de imágenes que FFMPEG podrá convertir en
+	 * vídeo.
+	 */
+	private Vector<List<String>> preparaSecuenciaArchivos(List<TFMPeticion> peticion, String directorioSesion,
+			String directorioDestinoVideo) {
+		// Definición de variables.
+		String nombre = "";
+		List<String> tmp_comandos = null;
+		Vector<List<String>> resultado = new Vector<List<String>>();
+		Path archivoOrigen;
+
+		logger.warn("preparaArchivos: INICIANDO para peticion " + peticion + " de tamaño " + peticion.size());
+
+		for (int i = 0; i < peticion.size(); i++) {
+			// Recuperamos el archivo en la posición i-ésima
+			nombre = ((TFMPeticion) peticion.get(i)).getNombre();
+
+			// Referenciamos la ruta del archivo en disco.
+			archivoOrigen = Paths.get(directorioSesion + File.separator + nombre);
+			logger.warn("preparaArchivos: procesando comando para {}. ", nombre);
+
+			// Si es una imagen
+			if (TFMUtils.esIMAGEN(archivoOrigen)) {
+				// Se limpia de la vuelta anterior de bucle
+				if (tmp_comandos != null)
+					tmp_comandos.clear();
+
+				tmp_comandos = Arrays.asList(rutaFFMPEG, "-y", "-r", "1/2", "-loop", "1", "-framerate", "30", "-t",
+						"10", "-i", archivoOrigen.toString(), "-f", "lavfi", "-i", "aevalsrc=0", "-shortest", "-vf",
+						"\"scale=1280:720:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2\"", "-r", "30",
+						directorioDestinoVideo + File.separator + "tmp" + i + ".ts");
+				// tmp_comandos.
+
+				resultado.add(tmp_comandos);
+				/*
+				 * ffmpeg -y -r 1/2 -loop 1 -framerate 30 -t 10 -i IMG_20210717_213139.jpg -f
+				 * lavfi -i aevalsrc=0 -shortest -vf
+				 * "scale=1280:720:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2"
+				 * -threads 4 -r 30 out1.mp4
+				 * 
+				 * ffmpeg -y -i out1.mp4 -vcodec h264 -preset fast -c:a aac -b:a 128k out1.ts
+				 */
+
+			}
+		}
+		return resultado;
+	}
+
+	// @RequestMapping
+	/*
+	 * public String generaOLD(@RequestBody List<TFMPeticion> peticion) {
+	 * 
+	 * //
+	 * //logger.error("INICIANDO!!!!!");
+	 * //logger.error("preticion.toString() = "+peticion.get(0).getNombre());
+	 * //
+	 * // logger.warn("preticion.toString() = "+preticion.getdatos().toString());
+	 * // logger.warn("preticion.toString() = "+preticion.imprime());
+	 * 
+	 * // Definición de variables
+	 * String idSesion =
+	 * RequestContextHolder.currentRequestAttributes().getSessionId(); // Recupera
+	 * el id de sesión
+	 * logger.info("GENERANDO directorio de destino para " + idSesion);
+	 * 
+	 * Path fileStorageLocation =
+	 * Paths.get(directorioTrabajo).toAbsolutePath().normalize();
+	 * logger.info("Recuperado fileStorageLocation general= " +
+	 * fileStorageLocation);
+	 * 
+	 * String directorioDestino =
+	 * TFMUtils.creaDirectorio(fileStorageLocation.toString(), dest);
+	 * logger.info("Directorio sesión creado/recuperado correctamente  " +
+	 * directorioDestino);
+	 * 
+	 * String directorioDestinoSesion = TFMUtils.creaDirectorio(directorioDestino,
+	 * idSesion);
+	 * logger.
+	 * info("Directorio destino creado/recuperado correctamente para esta sesión " +
+	 * directorioDestinoSesion);
+	 * 
+	 * String directorioDestinoVideo =
+	 * TFMUtils.creaDirectorio(directorioDestinoSesion, "videoGenerado");
+	 * logger.
+	 * info("Directorio destino del vídeo creado/recuperado correctamente para esta sesión "
+	 * + directorioDestinoVideo);
+	 * 
+	 * // Para la inclusión de imágenes, en el directorio temporal se deben crear
+	 * // copias temporales de los archivos.
+	 * String directorioTemporal = TFMUtils.creaDirectorio(directorioDestinoVideo,
+	 * "deleteme");
+	 * logger.info("Directorio TEMPORAL creado/recuperado correctamente  " +
+	 * directorioTemporal);
+	 * 
+	 * // Permite preparar los archivos para la generación del vídeo a partir de
+	 * // imágenes estáticas. Los archivos
+	 * // que serán utilizadas a la hora de llamar a FFMPEG (deben ser de la misma
+	 * // extensión y puestos en orden secuencial
+	 * // para funcionar).
+	 * preparaSecuenciaArchivos (peticion, directorioDestinoSesion,
+	 * directorioDestinoVideo, directorioTemporal);
+	 * 
+	 * // String path =
+	 * // "C:\\Users\\jac_n\\Formacion\\USAL\\2021_2022\\TFM\\ffmpeg\\bin\\";
+	 * // OK String dest =
+	 * //
+	 * "C:\\Users\\jac_n\\Formacion\\USAL\\2021_2022\\TFM\\code\\tfm\\target\\classes\\upload-dir\\";
+	 * //
+	 * //// BORRADO DE ARCHIVO
+	 * //String archivo_final = fileStorageLocation.toString() + File.separator +
+	 * dest
+	 * //+ File.separator + "output.mp4";
+	 * //File fileToDelete = FileUtils.getFile(archivo_final);
+	 * //boolean success = FileUtils.deleteQuietly(fileToDelete);
+	 * //logger.info("Archivo borrado correctamente = " + success);
+	 * //
+	 * 
+	 * // Ruta del archivo de destino: se llamará al archivo igual que el ID de
+	 * sesión.
+	 * // TODO: configurar archivo de destino en la aplicación de usuario.
+	 * Path destinationFile = Paths.get(directorioDestinoVideo + File.separator +
+	 * idSesion + ".mp4").toAbsolutePath()
+	 * .normalize();
+	 * logger.info("Archivo destino = " + destinationFile);
+	 * 
+	 * //
+	 * // C:\Users\jac_n\Formacion\USAL\2021_2022\TFM\ffmpeg\bin\ffmpeg -f lavfi -y
+	 * // -loglevel fatal -i color=c=white:s=800x600:d=10:rate=25:color=blue -vf
+	 * //
+	 * "drawtext=fontfile=/Users/jac_n/Formacion/USAL/2021_2022/Lato/Lato-Black.ttf:fontsize=90: fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text='hola'"
+	 * // C:\Users\jac_n\Formacion\USAL\2021_2022\TFM\output\
+	 * //
+	 * 37F6537BB97D8EBE6BB2D83DC2623287\output\37F6537BB97D8EBE6BB2D83DC2623287.mp4
+	 * //
+	 * // TODO: lanzar asíncronamente.
+	 * try {
+	 * 
+	 * // // Genera vídeo a partir de un texto
+	 * // Process p = new ProcessBuilder(
+	 * // rutaFFMPEG + File.separator + "ffmpeg ",
+	 * // "-f",
+	 * // "lavfi",
+	 * // "-y",
+	 * // "-loglevel",
+	 * // "fatal",
+	 * // "-i",
+	 * // "color=c=white:s=800x600:d=10:rate=25:color=blue",
+	 * // "-vf",
+	 * //
+	 * "\"drawtext=fontfile=/Users/jac_n/Formacion/USAL/2021_2022/Lato/Lato-Black.
+	 * ttf:fontsize=90:
+	 * // fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text='hola'\"",
+	 * // destinationFile.toString()).start();
+	 * 
+	 * // ffmpeg -r 1/5 -i ",img%03d.png -c:v libx264 -vf "fps=25,format=yuv420p"
+	 * // out.mp43
+	 * 
+	 * // FUNCIONA!: las imágenes se llaman IMG0.jpg, IMG1.jpg...
+	 * // C:\Users\jac_n\Formacion\USAL\2021_2022\TFM\ffmpeg\bin\ffmpeg -r 1/5
+	 * // -start_number 0 -i IMG%1d.jpg -r 25 EinsteinSlideShow.mp4
+	 * // -- PROBAR CON AL MENOS 3 ARCHIVOS???????? CON 2 FALLA ???????
+	 * // C:\Users\jac_n\Formacion\USAL\2021_2022\TFM\ffmpeg\bin\ffmpeg -r 1/5 -i
+	 * // archivo_%3d.jpg -r 10 out2.mp4
+	 * // C:\Users\jac_n\Formacion\USAL\2021_2022\TFM\ffmpeg\bin\ffmpeg -r 1/5 -i
+	 * // archivo_%3d.jpg -r 25 out2.mp4
+	 * // C:\Users\jac_n\Formacion\USAL\2021_2022\TFM\ffmpeg\bin\ffmpeg -r 1/2 -i
+	 * // archivo_%3d.jpg -vf scale=800:600,setsar=1:1 -r 25 out3.mp4
+	 * // C:\Users\jac_n\Formacion\USAL\2021_2022\TFM\ffmpeg\bin\ffmpeg -y -r 1/2 -i
+	 * // archivo_%3d.jpg -vf
+	 * //
+	 * "scale=1280:720:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2"
+	 * // -r 25 out3.mp4
+	 * //
+	 * 
+	 * // String comando = "-y -r 1/5 -start_number 0 -i "+directorioTemporal +
+	 * // File.separator + "archivo_%3d.jpg -r 25 "+destinationFile.toString();
+	 * 
+	 * Process p = new ProcessBuilder(
+	 * rutaFFMPEG,
+	 * "-y",
+	 * "-r",
+	 * "1/2",
+	 * // "-start_number",
+	 * // "0",
+	 * "-i",
+	 * directorioTemporal + File.separator + "archivo_%3d.jpg",
+	 * "-vf",
+	 * "\"scale=1280:720:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2\"",
+	 * "-r",
+	 * "25",
+	 * destinationFile.toString()).start();
+	 * // Process p = new ProcessBuilder (rutaFFMPEG, comando).start();
+	 * 
+	 * String stderr = IOUtils.toString(p.getErrorStream(),
+	 * Charset.defaultCharset());
+	 * String stdout = IOUtils.toString(p.getInputStream(),
+	 * Charset.defaultCharset());
+	 * 
+	 * logger.info("stderr =" + stderr);
+	 * logger.info("stdout = " + stdout);
+	 * 
+	 * // TODO: enviar archivo
+	 * 
+	 * } catch (NullPointerException npe) {
+	 * npe.printStackTrace();
+	 * logger.error("An element of the command list is null");
+	 * } catch (IndexOutOfBoundsException iobe) {
+	 * iobe.printStackTrace();
+	 * logger.error("The command is an empty list (has size 0)");
+	 * } catch (SecurityException se) {
+	 * se.printStackTrace();
+	 * logger.error(
+	 * "A security manager exists and its checkExec method doesn't allow creation of the subprocess "
+	 * );
+	 * } catch (IOException ioe) {
+	 * ioe.printStackTrace();
+	 * logger.error("An I/O error occurs ");
+	 * }
+	 * 
+	 * return "OK";
+	 * }
+	 */
+	/**
+	 * Método para crear una secuencia de imágenes que FFMPEG podrá convertir en
+	 * vídeo.
+	 * 
+	 * @deprecated
+	 */
+	private void preparaSecuenciaArchivosOLD(List<TFMPeticion> peticion, String directorioSesion,
+			String directorioDestinoVideo,
+			String directorioTemporal) {
+		// logger.error("preticion.toString() = "+peticion.get(0).getNombre()); */
+		// logger.warn("preticion.toString() = "+preticion.getdatos().toString());
+		// logger.warn("preticion.toString() = "+preticion.imprime());
+		String nombre = "";
+		String ext = "";
+		logger.warn("preparaArchivos: INICIANDO para peticion " + peticion + " de tamaño " + peticion.size());
+
+		for (int i = 0; i < peticion.size(); i++) {
+			nombre = ((TFMPeticion) peticion.get(i)).getNombre();
+			logger.warn("preparaArchivos: nombre = " + nombre);
+
+			ext = nombre.substring(nombre.lastIndexOf(".") + 1).toLowerCase();
+			logger.warn("preparaArchivos: extensión = " + ext);
+
+			Path archivoOrigen = Paths.get(directorioSesion + File.separator + nombre);
+			// Path archivoDestino = Paths.get(directorioTemporal + File.separator + i + "."
+			// + ext);
+			// Formato de 5 dígitos, empenzando por 00001
+			Path archivoDestino = Paths
+					.get(directorioTemporal + File.separator + "archivo_" + String.format("%03d", i) + ".jpg");
+
+			// logger.info("TFMConstantes.extensiones_jpg = " +
+			// TFMConstantes.extensiones_jpg.toString());
+
+			// Si es jpg, no es necesario transformar y bastará con copiar.
+			// if (TFMConstantes.mimes_JPG.contains("image/"+ext)) {
+			if (TFMUtils.esJPG(archivoOrigen)) {
+
+				/*
+				 * tamano = Long.parseLong(sTamano);
+				 * logger.warn("preparaArchivos: Tamaño = " + tamano +
+				 * ", nombre = "+nombre+", extensión = "+ext);
+				 */
+
+				try {
+					Files.copy(archivoOrigen, archivoDestino, StandardCopyOption.REPLACE_EXISTING);
+
+				} catch (IOException ex) {
+					System.err.format("I/O Error when copying file");
+				}
+			} else if (ext.equalsIgnoreCase("gif") || ext.equalsIgnoreCase("png")) {
+				TFMUtilidadesConversion.conviertePNG_GIFaJPG(archivoOrigen, archivoDestino);
+
+			}
+		}
+	}
+}

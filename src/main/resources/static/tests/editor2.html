@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+
+
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <p>-----------</p>
+
+    <style>
+        .fila {
+            display: table;
+            width: 100%;
+            /*Optional*/
+            table-layout: auto;
+            /*Optional*/
+            border-spacing: 10px;
+            /*Optional*/
+
+        }
+
+        .columna {
+            display: table-cell;
+            width: 120px;
+
+            border-radius: 0.75rem;
+            padding: 20px;
+            margin: 1rem;
+            background-color: #29e;
+            color: white;
+            font-size: 20px;
+            font-family: sans-serif;
+            overflow: hidden;
+
+            touch-action: none;
+        }
+
+        .zonaEdicion {
+            overflow: auto;
+            background-color: #b3b3b3;
+            width: 75%;
+            min-height: 2em;
+        }
+
+        .zonaPapelera {
+            background-color: #243b32;
+            width: 75%;
+            min-height: 2em;
+        }
+    </style>
+    <div id="cloning" class="fila">
+
+        <div id="example3Left">
+            <div class="columna">Item 1</div>
+            <div class="columna">Item 2</div>
+            <div class="columna">Item 3</div>
+            <div class="columna">Item 4</div>
+            <div class="columna">Item 5</div>
+            <div class="columna">Item 6</div>
+        </div>
+
+        <div id="example3Right" class="zonaEdicion">
+
+        </div>
+        <div id="papelera" class="list-group zonaPapelera" ondragend="borra()" ondragleave="borra()">
+
+        </div>
+    </div>
+
+    <script>
+        new Sortable(example3Left, {
+            group: {
+                name: 'shared',
+                pull: 'clone',
+                put: false // Do not allow items to be put into this list
+            },
+            animation: 150,
+            sort: false // To disable sorting: set sort to false
+        });
+
+        new Sortable(example3Right, {
+            group: 'shared',
+            animation: 150
+        });
+
+        new Sortable(papelera, {
+            group: 'shared',
+            animation: 150
+        });
+
+        // Función que elimina todos los elementos que se lleven al div "papelera".
+        function borra() {
+            var papelera = document.getElementById("papelera");
+            // console.log('borrando!');
+
+            var divs = papelera.getElementsByTagName('div');
+            for (var i = 0; i < divs.length; i += 1) {
+                // divArray.push(divs[i].innerHTML);
+                papelera.removeChild(divs[i]);
+
+            }
+        }
+    </script>
+</body>
+
+</html>

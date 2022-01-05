@@ -1,0 +1,114 @@
+/* html, body {
+    height: 100%;
+  } 
+  
+  https://codepen.io/avstorm/pen/oqKbLq
+  
+  */
+  
+  body {
+    display: grid;
+    font-family: Avenir, sans-serif;
+    color: #111;
+  }
+  
+
+  
+.claseBoton {
+    position: absolute;
+    margin: auto;
+    padding: 19px 22px;
+    transition: all 0.2s ease;
+  }
+  .claseBoton:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    border-radius: 28px;
+    background: rgba(255, 171, 157, 0.5);
+    width: 56px;
+    height: 56px;
+    transition: all 0.3s ease;
+  }
+  .claseBoton span {
+    position: relative;
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 900;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+/*   .claseBoton svg {
+    position: relative;
+    top: 0;
+    margin-left: 10px;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke: #111;
+    stroke-width: 2;
+    transform: translateX(-5px);
+    transition: all 0.3s ease;
+  } */
+  .claseBoton:hover:before {
+    width: 100%;
+    background: #ffab9d;
+  }
+/*   .claseBoton:hover svg {
+    transform: translateX(0);
+  } */
+  .claseBoton:active {
+    transform: scale(0.96);
+  }
+
+
+
+
+
+
+  .claseBoton2 {
+    position: absolute;
+    margin: auto;
+    padding: 19px 22px;
+    transition: all 0.2s ease;
+  }
+  .claseBoton2:before {
+      /*https://www.w3schools.com/css/css3_transitions.asp*/
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 200px;
+    display: block;
+    border-radius: 28px;
+    background: rgba(255, 171, 157, 0.5);
+    width: 56px;
+    height: 56px;
+    transition: all 0.3s ease;
+  }
+
+  .claseBoton2 span {
+    position: relative;
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 900;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+ 
+  .claseBoton2:hover:before {
+    width: 100%;
+    background: #ffab9d;
+    left: 0px;
+  }
+ 
+  .claseBoton2:active {
+    transform: scale(0.96);
+  }
+
+
+
+
