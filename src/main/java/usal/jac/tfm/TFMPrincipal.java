@@ -2,6 +2,7 @@ package usal.jac.tfm;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
@@ -32,6 +33,8 @@ public class TFMPrincipal {
 	static boolean purgado = false;
 
 	private static final Logger log = LoggerFactory.getLogger(TFMPrincipal.class);
+
+	public static File directorio_temporal; 
 
 	public static void main(String[] args) {
 		SpringApplication.run(TFMPrincipal.class, args);
@@ -80,13 +83,20 @@ public class TFMPrincipal {
 		model.addAttribute("misMimes", info_archivos.get(1) );
 		model.addAttribute("idSesion", idSesion);
 
+		// Creamos el directorio temporal
+		directorio_temporal = Files.createTempDirectory("tmpDirPrefix").toFile();
+
+		// https://www.baeldung.com/java-temp-directories
+		// Nos aseguramos de que se borrará al finalizar la MV
+		directorio_temporal.toPath().toFile().deleteOnExit();
+
 		// Recuperamos los stickers
-		ArrayList<String> info_stickers = new TFMControladorCargaArchivos().carga_archivos_servidor("classpath:/static/imagenes/stickers/*");
+		ArrayList<String> info_stickers = new TFMControladorCargaArchivos().carga_archivos_servidor("classpath:/static/imagenes/stickers/*", directorio_temporal);
 		model.addAttribute("misStickers", info_stickers);
 		log.info("misStickers {}", info_stickers);
 
 		// Se copian las fuentes del paquete a un directorio temporal
-		TFMUtils.creaDirectorioFuentes();
+		TFMUtils.creaDirectorioFuentes(directorio_temporal);
 
 		return "TFMprincipal";
 	}

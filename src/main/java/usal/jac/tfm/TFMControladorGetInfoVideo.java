@@ -27,8 +27,8 @@ public class TFMControladorGetInfoVideo {
 	@Value("${file.uploadDir}")
 	String dest;
 
-	@Value("${file.fuente}")
-	String fuente;
+/*	@Value("${file.fuente}")
+	String fuente; */
 
 	@Value("${file.rutaFFPROBRE}")
 	String rutaFFPROBRE;

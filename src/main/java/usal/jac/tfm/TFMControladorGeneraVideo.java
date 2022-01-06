@@ -4,16 +4,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.io.FileUtils;
@@ -42,9 +45,6 @@ public class TFMControladorGeneraVideo {
 
 	@Value("${file.uploadDir}")
 	String dest;
-
-	@Value("${file.fuente}")
-	String fuente;
 
 	@Value("${file.rutaFFMPEG}")
 	String rutaFFMPEG;
@@ -134,8 +134,8 @@ public class TFMControladorGeneraVideo {
 		
 		// Se lanza el proceso FFMPEG
 		p = new ProcessBuilder(Arrays.asList(rutaFFMPEG, "-y", "-i", cadenaConcat, "-vf",
-				"\"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:-1:-1:color=black"
-						+ "\"",
+				/* OKWINDOWS "\"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:-1:-1:color=black" + "\"" , */
+				"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:-1:-1:color=black",
 				"-bsf:a", "aac_adtstoasc", "-movflags", "faststart", "-fflags", "+discardcorrupt",
 				"-f", "mp4", "-threads", "8", archivo_intermedio.toString())).start();
 
@@ -229,28 +229,19 @@ public class TFMControladorGeneraVideo {
 				if (Files.exists(Paths.get(ruta))) {
 					// Se añade al vector de resultado, incluyendo la ruta
 					resultado.add(ruta);
-				} else // El archivo no se encuentra en el directorio de la sesión.
+				} //
+				else // El archivo no se encuentra en el directorio de la sesión.
 				{
 					try {
+ 						// Copiamos el recurso del interior del .jar al directorio de trabajo.
+						resultado.add(TFMPrincipal.directorio_temporal + File.separator + tmp_img_nota);
+						logger.info("carga_archivos_servidor: copiado a directorio {}", TFMPrincipal.directorio_temporal);
 
-						// Recuperamos la lista de archivos en el directorio de stickers
-						ClassLoader loader = this.getClass().getClassLoader();
-						ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(loader);
-						final Resource[] resources = resolver
-								.getResources("classpath:/static/imagenes/stickers/" + tmp_img_nota);
-
-						// Recorremos el listado de recursos.
-						for (final Resource archivo : resources) {
-							logger.info("carga_archivos_servidor: recuperado '{}'", archivo.getFilename());
-							FileUtils.copyToDirectory(new File(archivo.getURI()),
-									new File(Paths.get(directorioSesion).toUri()));
-							logger.info("carga_archivos_servidor: copiado a directorio {}", directorioSesion);
-
-							resultado.add(directorioSesion + File.separator + tmp_img_nota);
-						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+
+
 
 				}
 
@@ -281,7 +272,8 @@ public class TFMControladorGeneraVideo {
 		}
 
 		tmp.add("-filter_complex");
-		tmp.add("\"" + cadena_notas + "\"");
+		/* OKWINDOWS tmp.add("\"" + cadena_notas + "\""); */
+		tmp.add( cadena_notas );
 		tmp.add("-pix_fmt");
 		tmp.add("yuv420p");
 		tmp.add("-c:a");
@@ -587,7 +579,8 @@ public class TFMControladorGeneraVideo {
 	 * concatenación adecuada para generar el vídeo final.
 	 */
 	private String generaCadenaConcat(String directorio) {
-		String resultado = "\"concat:";
+		/* OKWINDOWS String resultado = "\"concat:"; */
+		String resultado = "concat:";
 
 		for (int i = 0; i < getTotalArchivos(); i++) {
 			if (i == 0)
@@ -596,7 +589,8 @@ public class TFMControladorGeneraVideo {
 				resultado = resultado.concat("|" + directorio + File.separator + "tmp" + i + ".ts");
 		}
 
-		return resultado + "\"";
+		/* OKWINDOWS return resultado + "\""; */
+		return resultado;
 	}
 
 	public int getTotalArchivos() {
@@ -659,7 +653,8 @@ public class TFMControladorGeneraVideo {
 						"-f", "lavfi",
 						"-i", "aevalsrc=0",
 						"-shortest",
-						"-vf", "\"scale=1280:720:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2\"",
+						/* OK WINDOWS "-vf", "\"scale=1280:720:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2\"", */
+						"-vf", "scale=1280:720:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2",
 						"-tune:v", "stillimage",
 						"-preset", "ultrafast",
 						"-threads", "8",
@@ -709,11 +704,19 @@ public class TFMControladorGeneraVideo {
 				// ffmpeg -y -i 21937515_MOV_1311.mp4 -vcodec h264 -preset fast -c:a aac -b:a
 				// 128k -threads 8 out0.ts
 
+				logger.warn ("preparaSecuenciaArchivos: procesando comando para {}. ALT! {}", nombre, convert(milis_desde));
+
 				// Se transforma a ts para igualar formatos antes de la concatenación.
-				tmp_comando = Arrays.asList(rutaFFMPEG, "-y", "-i", archivoOrigen.toString(),
+/* 	OKWINDOWS			tmp_comando = Arrays.asList(rutaFFMPEG, "-y", "-i", archivoOrigen.toString(),
 						"-ss", "" + milis_desde + "ms", "-t", "" + (milis_hasta - milis_desde) + "ms",
 						"-vcodec", "h264", "-preset", "fast", "-c:a", "aac", "-b:a", "128k", "-threads", "8",
-						directorioDestinoVideo + File.separator + "tmp" + i + ".ts");
+						directorioDestinoVideo + File.separator + "tmp" + i + ".ts"); */
+
+				tmp_comando = Arrays.asList(rutaFFMPEG, "-y", "-i", archivoOrigen.toString(),
+						"-ss",  convert(milis_desde), "-t",  convert(milis_hasta - milis_desde),
+						"-vcodec", "h264", "-preset", "fast", "-c:a", "aac", "-b:a", "128k", "-threads", "8",
+						directorioDestinoVideo + File.separator + "tmp" + i + ".ts"); 
+
 
 				resultado.add(tmp_comando);
 
@@ -722,4 +725,18 @@ public class TFMControladorGeneraVideo {
 		return resultado;
 	}
 
+
+
+	/**
+	 * Método para convertir un valor en milisegundos en su equivalente formateado como HH:MM:SS.mmm
+	*/
+	public String convert(long miliSeconds)
+	{
+		int hrs = (int) TimeUnit.MILLISECONDS.toHours(miliSeconds) % 24;
+		int min = (int) TimeUnit.MILLISECONDS.toMinutes(miliSeconds) % 60;
+		int sec = (int) TimeUnit.MILLISECONDS.toSeconds(miliSeconds) % 60;
+		int mils = (int) miliSeconds % 1000;
+		
+		return String.format("%02d:%02d:%02d.%03d", hrs, min, sec, mils);
+	}
 }

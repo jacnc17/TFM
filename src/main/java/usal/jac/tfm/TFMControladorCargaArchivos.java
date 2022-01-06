@@ -1,6 +1,7 @@
 package usal.jac.tfm;
 
 import java.io.File;
+import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -52,9 +54,11 @@ public class TFMControladorCargaArchivos {
 
 			Iterator<Path> it = tmp.iterator();
 			String mimetype = "";
+			Path a;
 			while (it.hasNext()) {
-				Path a = it.next();
+				a = it.next();
 
+				
 				// Añado el mime
 				mimetype = URLConnection.guessContentTypeFromName(a.toString());
 				lista_mimes.add(URLConnection.guessContentTypeFromName(a.toString()));
@@ -92,22 +96,32 @@ public class TFMControladorCargaArchivos {
 	 * Método que recupera los ficheros del servidor comunes a todas las sesiones  y
 	 * los devuelve en forma de lista.
 	 */
-	public ArrayList<String> carga_archivos_servidor(String directorio_servidor) {
+	public ArrayList<String> carga_archivos_servidor(String directorio_servidor, File directorio_temporal) {
+		// Definición de variables
 		ArrayList<String> lista_nombres = new ArrayList<String>();
+		URL inputUrl;
+		File dest; 
 
+		// En primer lugar, los copiamos a la lista de nombres
 		try {
 			// Recuperamos la lista de archivos en el directorio de stickers
 			ClassLoader loader = this.getClass().getClassLoader();
 			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(loader);
 			final Resource[] resources = resolver.getResources(directorio_servidor);
 
+
+
 			// Recorremos el listado de recursos.
 			for (final Resource archivo : resources) {
-				log.info ("carga_archivos_servidor: recuperado '{}'", archivo.getFilename());
 				lista_nombres.add( "imagenes/stickers/" + archivo.getFilename() );
+	
+				// Los vamos copiando al directorio temporal
+				inputUrl = getClass().getResource("/static/imagenes/stickers/" + archivo.getFilename());
+				dest = new File(directorio_temporal.getAbsolutePath() + File.separator +  archivo.getFilename()); 
+				FileUtils.copyURLToFile(inputUrl, dest);
+				log.info ("carga_archivos_servidor: recuperado '{}', copiado a {}", archivo.getFilename(), directorio_temporal.getAbsolutePath());
+
 			}
-
-
 	}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -256,7 +256,8 @@ public class TFMUtils {
                     "-i",
                     rutaOriginal,
                     "-vf",
-                    "\"scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:-1:-1:color=black\"",
+                    /* OKWINDOWS "\"scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:-1:-1:color=black\"", */
+                    "scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:-1:-1:color=black",
                     ruta_destino_video_mini_tmp).start();
 
             stderr = IOUtils.toString(p2.getErrorStream(), Charset.defaultCharset());
@@ -355,15 +356,14 @@ public class TFMUtils {
      * Método que creara un directorio temporal en el sistema y almacenará las
      * fuentes para que FFMPEG pueda acceder a ellas
      */
-    public static String creaDirectorioFuentes() {
+    public static String creaDirectorioFuentes(File directorio_temporal) {
         String propiedad = "";
         URL inputUrl;
         File dest;
-        File directorio_temporal;
+        ;
 
         try {
-            // Creamos el directorio temporal
-            directorio_temporal = Files.createTempDirectory("tmpDirPrefix").toFile();
+
             directorio_fuentes = directorio_temporal.getAbsolutePath();
             propiedad = System.getProperty("java.io.tmpdir");
             logger.info("Creado directorio temporal {}, propiedad en sistema {}", directorio_fuentes, propiedad);
@@ -384,9 +384,7 @@ public class TFMUtils {
                 FileUtils.copyURLToFile(inputUrl, dest);
             }
 
-            // https://www.baeldung.com/java-temp-directories
-            // Nos aseguramos de que se borrará al finalizar la MV
-            directorio_temporal.toPath().toFile().deleteOnExit();
+
 
             // FFMPEG espera el directorio de fuentes en formato UNIX, por lo que hay que transformarlo.
             if (directorio_fuentes.indexOf("\\") > 0) {
