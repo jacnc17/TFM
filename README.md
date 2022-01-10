@@ -13,6 +13,6 @@ Por ejemplo:
 
 Requisitos de ejecución:
  - JRE11 (desarrollado con OpenJDK17)
- - FFPROBE (incluye FFPROBE)
+ - FFMPEG (incluye FFPROBE)
 
 El fichero .jar incluye todas las librerías de las que depende el proyecto, así como los CSS y JS de terceros, de manera que no es necesaria una conexión a internet cuando se está ejecutando en local.
