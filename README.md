@@ -10,3 +10,9 @@ Arrancar el .jar como java -jar tfm-1.0.jar, especificando las variables de ento
   
 Por ejemplo:
   > java -jar tfm-1.0.jar --file.dirTrabajo="/home/usuario" --file.rutaFFMPEG="/usr/bin/ffmpeg" --file.rutaFFPROBRE="/usr/bin/ffprobe" 
+
+Requisitos de ejecución:
+ - JRE11 (desarrollado con OpenJDK17)
+ - FFPROBE (incluye FFPROBE)
+
+El fichero .jar incluye todas las librerías de las que depende el proyecto, así como los CSS y JS de terceros, de manera que no es necesaria una conexión a internet cuando se está ejecutando en local.
