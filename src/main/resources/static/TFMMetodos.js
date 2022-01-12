@@ -30,6 +30,13 @@ script2.src = '/jquery/jquery-ui.js';
 script2.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(script2);
 
+// Cargamos el JS de gestión de cookies
+var script3 = document.createElement('script');
+script3.src = '/TFMMetodosVariables.js';
+script3.type = 'text/javascript';
+document.getElementsByTagName('head')[0].appendChild(script3);
+
+
 // Variables para la gestión de las notas.
 var divNotas;
 var tabla_duraciones;
@@ -96,7 +103,7 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
         var iDiv = document.createElement('div');
         iDiv.id = "capa_oculta_" + nombre_archivo;
         iDiv.className = "capa_edicion_imagen";
-        iDiv.onclick = function () { oculta_capa('capa_oculta_' + nombre_archivo) };
+        iDiv.onclick = function () { oculta_capa('capa_oculta_' + nombre_archivo);   recalcula_propiedades_cookies()  };
 
         var divIntermedia = document.createElement('div');
         divIntermedia.onclick = function () { keep = 1; /* Si hacemos click en la capa intermedia, no se cerrará por click en la capa de edición */ };
@@ -231,11 +238,18 @@ function borra() {
     // ('borrando!');
 
     var divs = papelera.getElementsByTagName('div');
-    for (var i = 0; i < divs.length; i += 1) {
-        // divArray.push(divs[i].innerHTML);
-        papelera.removeChild(divs[i]);
 
+    // A priori sólo habrá uno, pero se hace un bucle.
+    for (var i = 0; i < divs.length; i += 1) {
+        // Se elimina de la tabla de propiedades.
+        console.log ("Borrando ",divs[i].id);
+        hashPropiedades.delete(divs[i].id);
+
+        papelera.removeChild(divs[i]);
     }
+
+    // Se actualiza el valor de las cookies
+    recalcula_propiedades_cookies ()
 }
 
 // Función para determinar en segundos la duración de un vídeo
@@ -354,7 +368,7 @@ function ventana_emergente(itemID) {
     let elemento = document.createElement("div");
     elemento.id = "layer_info_activa";
 
-    // alert("Ventana emergente : " + capa.id + ", id= "+itemID+", del original "+nombre_original);
+    console.log ("Ventana emergente : " + capa.id + ", id= "+itemID+", del original "+nombre_original);
     // alert(capa_edicion.id);
 
     // Nos aseguramos de que no hay más información en la capa.
@@ -371,7 +385,7 @@ function ventana_emergente(itemID) {
         let hasta = hashPropiedades.get(itemID).fin;
         let duracion = hashPropiedades.get(itemID).duracion_video;
 
-        console.log("ventana_emergente: itemID = " + itemID + ", inicio = " + desde + ", hasta =" + hasta);
+        console.log("ventana_emergente: itemID = " + itemID + ", inicio = " + desde + ", hasta =" + hasta + ", duracion = ",duracion);
 
         elemento.appendChild(genera_etiquetas_slide_rango());
         elemento.appendChild(genera_slide_rango(itemID, desde, hasta, duracion, hashPropiedades.get(itemID).nombre_original));
@@ -410,7 +424,6 @@ function genera_slide_rango(itemID, desde, hasta, duracion, nombre_orig) {
     var video = document.getElementById("video_oculto_" + nombre_orig); // Se añade prefijo del vídeo intermedio mp4 (convertido en servidor).
     video.currentTime = desde / step;
 
-
     $(function () {
         $("#slider-range").slider({
             id: "mi_slider",
@@ -439,10 +452,13 @@ function genera_slide_rango(itemID, desde, hasta, duracion, nombre_orig) {
                 $("#amount").val("Recorte desde el segundo " + desde + " hasta el " + hasta);
 
                 // Se recalcula el nuevo ancho
-                console.log("genera_slide_rango = recalculando ancho. Nueva duracion = " + hasta + " - " + desde);
-                console.log("genera_slide_rango = recalculando ancho. Nueva duracion = " + eval(hasta - desde));
+                // console.log("genera_slide_rango = recalculando ancho. Nueva duracion = " + hasta + " - " + desde);
+                // console.log("genera_slide_rango = recalculando ancho. Nueva duracion = " + eval(hasta - desde));
                 document.getElementById(itemID).style.minWidth = eval(hasta - desde) * 10 * ratio_visualizacion + "px";
                 document.getElementById(itemID).style.maxWidth = eval(hasta - desde) * 10 * ratio_visualizacion + "px";
+
+                // Gestión de info en cookies referente a la información de rangos, incio y fin, duración, etc.
+                recalcula_propiedades_cookies();
             }
         });
     });
@@ -493,8 +509,11 @@ function genera_slide(itemID, tiempo, nombre_orig) {
                 hashPropiedades.set(itemID, { nombre_original: nombre_orig, duracion: ui.value });
                 // alert (hashPropiedades);
                 console.log("genera_slide : " + nombre_orig + ", duracion " + hashPropiedades.get(itemID).duracion);
-                document.getElementById(itemID).style.minWidth = ui.value / ratio_visualizacion + "px";
-                document.getElementById(itemID).style.maxWidth = ui.value / ratio_visualizacion + "px";
+                document.getElementById(itemID).style.minWidth = ui.value * 10 * ratio_visualizacion + "px";
+                document.getElementById(itemID).style.maxWidth = ui.value * 10 * ratio_visualizacion + "px";
+
+                // Gestión de info en cookies referente a la información de rangos, incio y fin, duración, etc.
+                recalcula_propiedades_cookies();
             }
         });
         $("#amount").val("Duración: " + $("#slider-range-min").slider("value") + " segundos.");
@@ -799,7 +818,7 @@ function get_div_notas(duracion) {
         divNotas.id = "capa_notas";
         divNotas.className = "capa_edicion_imagen";
 
-        divNotas.onclick = function () { oculta_capa('capa_notas') };
+        divNotas.onclick = function () { oculta_capa('capa_notas'); };
 
         var divIntermedia = document.createElement('div');
         divIntermedia.onclick = function () { keep = 1; };
@@ -1362,7 +1381,7 @@ function miniatura_esperando(id_imagen) {
 
 // Función llamada cuando se añade un nuevo elemento en el área de edición.
 function recalcula_propiedades() {
-    // alert("recalculando");
+    console.log('Recalculando propiedades...');
 
     // Método para recuperar los elementos que hay en el área de edición
     let elementosEdicion = document.getElementById("miZonaEdicion").childNodes;
@@ -1371,6 +1390,8 @@ function recalcula_propiedades() {
     let nombre_original;
     let mime_objeto;
     let duracion_video;
+    let tmpPropiedades;
+
 
     // Recorremos el área de edición para mostrar los items EN ORDEN
     // Originalmente se excluía el primer elemento, que era un texto en blanco para forzar el tamaño del área
@@ -1407,17 +1428,52 @@ function recalcula_propiedades() {
 
             // Se añade el evento de click que abrirá la ventana emergente.
             elementosEdicion[ele].onclick = function () { ventana_emergente("ID" + timeStampInMs) };
+
+            // Añadimos la hash temporal a la hash de propiedades
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+            hashPropiedades = new Map([...hashPropiedades, ...tmpPropiedades])
         }
         else {
             //console.log('El elemento ya estaba antes, recuperando sus propiedades');
         }
     }
 
-    // Añadimos la hash temporal a la hash de propiedades
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
-    hashPropiedades = new Map([...hashPropiedades, ...tmpPropiedades])
 
+    recalcula_propiedades_cookies()
 }
+
+
+
+
+
+
+
+
+// Método que recalcula el valor de las cookies de los elementos de la zona de edición
+function recalcula_propiedades_cookies ()
+{
+    // Gestión de cookies.
+    // Se borran todas las cookies de este tipo.
+    deleteGrupoCookies("elementosEdicion");
+
+    // Se recorre para completar las cookies.
+    let elementosEdicionFinal = document.getElementById("miZonaEdicion").childNodes;
+
+    // console.log(hashPropiedades)
+
+    // Recorremos el área de edición para almacenar su valor actual
+    for (let ele = 0; ele < elementosEdicionFinal.length; ele++) {
+        document.cookie = "elementosEdicion."+ele+".nombre = " + elementosEdicionFinal[ele].id;  
+        document.cookie = "elementosEdicion."+ele+".nombre_original = " +  hashPropiedades.get (elementosEdicionFinal[ele].id).nombre_original; // elementosEdicionFinal[ele].getAttribute("data-nombre") ;  
+        document.cookie = "elementosEdicion."+ele+".duracion = " + hashPropiedades.get (elementosEdicionFinal[ele].id).duracion;  
+        document.cookie = "elementosEdicion."+ele+".duracion_video = " + hashPropiedades.get (elementosEdicionFinal[ele].id).duracion_video;  
+        document.cookie = "elementosEdicion."+ele+".inicio = " +hashPropiedades.get (elementosEdicionFinal[ele].id).inicio;  
+        document.cookie = "elementosEdicion."+ele+".fin = " + hashPropiedades.get (elementosEdicionFinal[ele].id).fin;  
+    }
+    // FIN gestión cookies
+}
+
+
 
 // Método que se llama para limitar el tamaño del recuadro de texto al tamaño de la capa contenedora.
 // Esto se hacer porque al escribir en el recuadro y exceder los límites de la capa se desplazaban todos los 
@@ -1482,6 +1538,10 @@ var observer = new MutationObserver(function (mutations) {
 
             // Se ajusta el ancho de la miniatura
             document.getElementById(tipo_anadido.id).style.maxWidth = (ratio_visualizacion * 100) + "px"; // Ratio testado : 45px = 10segundos.
+
+            
+            // Se hace visible la imagen
+            document.getElementById(tipo_anadido.id).style.visibility = "visible";
         }
         else if (tipo_anadido && tipo_anadido.className && tipo_anadido.className == "item_edicion item_edicion_video") // Si es vídeo
         {
@@ -1500,11 +1560,16 @@ var observer = new MutationObserver(function (mutations) {
                     // OK console.log("Mutation. document.getElementById : "+ document.getElementById("video_oculto_"+clip));
                     document.getElementById(clip).style.maxWidth = duracion * 10 * ratio_visualizacion + "px";
                     document.getElementById(clip).style.minWidth = duracion * 10 * ratio_visualizacion + "px";
+
+                    
+                    // Se hace visible la imagen
+                    document.getElementById(clip).style.visibility = "visible";
                 })
                 .catch(err => console.log(err))
 
 
         }
+
     }
 });
 

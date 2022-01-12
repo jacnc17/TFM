@@ -388,7 +388,7 @@ public class TFMControladorGeneraVideo {
 
 					// Se consideran dimensiones originales de 640 x 360. Se multiplican por 1.5 para llegar a 1280 x 720
 					posX = "" + (10 + (Float.parseFloat(posX) * 1.538461538)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468
-					posY = "" + (45 + (Float.parseFloat(posY) * 1.538461538)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 MÁS el alto de la barra
+					posY = "" + (45 + (Float.parseFloat(posY) * 1.538461538)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
 
 					// [1:v]scale2ref=(8/6)*ih/5/sar:ih/5[wm][outv];[outv][wm]overlay=20:20, Se recupera el tamaño de la imagen original, que viene en formato anchoxalto
 					// (ej 800x600)
@@ -444,15 +444,15 @@ public class TFMControladorGeneraVideo {
 					tam = notas.get(n).getTam();
 					if (tam == null || tam.equals("") || tam.equals("1em")) {
 						tam = "20";
-						posY = "" + ((60 + (Float.parseFloat(posY)) * 1.538461538)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 MÁS el alto de la barra
+						posY = "" + ((60 + (Float.parseFloat(posY)) * 1.538461538)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
 
 					} else if (tam.equals("3em")) {
 						tam = "63";
-						posY = "" + ((115 + (Float.parseFloat(posY)) * 1.538461538)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 MÁS el alto de la barra
+						posY = "" + ((115 + (Float.parseFloat(posY)) * 1.538461538)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
 
 					} else if (tam.equals("6em")) {
 						tam = "136";
-						posY = "" + ((190 + (Float.parseFloat(posY)) * 1.538461538)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 MÁS el alto de la barra
+						posY = "" + ((190 + (Float.parseFloat(posY)) * 1.538461538)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
 					}
 
 					///////////// Bloque de gestión de estilos
@@ -562,6 +562,10 @@ public class TFMControladorGeneraVideo {
 					if (n > 0)
 						resultado = resultado + ",";
 
+					// Se verifican caracteres especiales
+					texto = procesa_caracteres_especiales (texto);
+
+					// Se compone el resultado
 					resultado = resultado
 							+ "drawtext=fontfile=" + fichero_fuente + ":text='"
 							+ texto
@@ -727,9 +731,38 @@ public class TFMControladorGeneraVideo {
 
 
 
-	/**
+	
+	/** 
+	 * Método que procesará los posibles caracteres especiales introducidos por el usuario, de manera que FFMPEG no genere
+	 * error.
+	 * @param texto_original Texto introducido por el usuario.
+	 * @return String Texto con los caracteres sustituidos.
+	 */
+	private String procesa_caracteres_especiales (String texto_original)
+	{
+		// Definición de variables
+		String resultado;
+
+		// 1.- escapar \ como \\
+		// 2.- escapar " como \"
+		// 3.- sustituir ' por `
+		// 4.- escapar % como \\%
+
+		resultado = texto_original.replace("\\", "\\\\");
+		resultado = resultado.replace("\"", "\\\"");
+		resultado = resultado.replace("''", "´");
+		resultado = resultado.replace("%", "\\\\%");
+		
+		return resultado;
+	}
+
+
+	
+	/** 
 	 * Método para convertir un valor en milisegundos en su equivalente formateado como HH:MM:SS.mmm
-	*/
+	 * @param miliSeconds
+	 * @return String
+	 */
 	public String convert(long miliSeconds)
 	{
 		int hrs = (int) TimeUnit.MILLISECONDS.toHours(miliSeconds) % 24;

@@ -342,6 +342,7 @@
     touch-action: none;
     vertical-align: middle;
     width: 100px;
+    visibility: hidden;
 }
 
 .item_edicion_video {

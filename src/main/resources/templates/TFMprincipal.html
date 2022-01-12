@@ -1,13 +1,14 @@
 <!DOCTYPE HTML>
 
 
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" >
 
 <head>
 
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=yes">
     <meta charset="utf-8">
 
+    <title>Editor de vídeo - TFM</title>
 
     <link th:rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.3.4.1.css}">
     <script th:src="@{/jquery/jquery.3.5.1.js}"></script>
@@ -57,14 +58,14 @@
     <link rel="stylesheet" href="TFMMenuBoton.css">
 
 
-
+    <script type="text/javascript" src="TFMMetodosVariables.js"></script>
 
 
 
 </head>
 
 
-<body>
+<body onLoad="getVariablesEdicion()">
     
     <div id="main">
         <div id="principal">
@@ -91,7 +92,7 @@
                             </li>
                         </ul>
                     </div>
-                    <img id="cabecera" src="imagenes/logoUSAL.png" style="height:60px">
+                    <img id="cabecera" src="imagenes/logoUSAL.png" style="height:60px" alt="Logo USAL">
                 </div>
             </nav>
 
@@ -104,7 +105,7 @@
                         </div>
 
                         <div id="dropzoneEL" class="dropzone square">
-                            <div id="DIVdropzoneELEMENTOSfondo" style="position: absolute; top:0; bottom:0; left:0;right:0;z-index: -1;overflow: hidden" ;>
+                            <div id="DIVdropzoneELEMENTOSfondo" style="position: absolute; top:0; bottom:0; left:0;right:0;z-index: -1;overflow: hidden;">
 
                             </div>
                             <form action="/upload" class="dropzone needsclick" id="DIVdropzoneELEMENTOS">
@@ -153,27 +154,26 @@
 
             <div id="plantillaNota" style="display:none; width: 0px; padding-right:10px; padding-left:5px; padding-top:5px; border: 1px; border-color:red">
                 <div id="barraMenu" class="barraMenu" style="width: 570px;">
-                    <img class="btn btn-default" src="/bootstrap/images/arrows-move.svg" /
-                        style="height: 34px; width: 40px; transform:scale(0.7);margin-left: -9px;margin-right: -9px">
+                    <img class="btn btn-default" src="/bootstrap/images/arrows-move.svg" alt="Mover" style="height: 34px; width: 40px; transform:scale(0.7);margin-left: -9px;margin-right: -9px">
                     <button class="btn btn-default botonH1" onclick="notasH1(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/type-h1.svg" /></button>
+                        <img src="/bootstrap/images/type-h1.svg" alt="H1"/></button>
                     <button class="btn btn-default botonH2" onclick="notasH2(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/type-h2.svg" /></button>
+                        <img src="/bootstrap/images/type-h2.svg"alt="H2"/></button>
                     <button class="btn btn-default botonH3" onclick="notasH3(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/type-h3.svg" /></button>
+                        <img src="/bootstrap/images/type-h3.svg" alt="H3"/></button>
                     <input id="colorpicker" type="color" class="colorpick btn btn-default boton_texto" value="#ffffff"
                         style="height: 34px; width: 40px; transform:scale(0.7);margin: -9px;">
 
                     <button class="btn btn-default boton_texto" onclick="notasToggleNegrita(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/type-bold.svg" /></button>
+                        <img src="/bootstrap/images/type-bold.svg" alt="Negrita"/></button>
                     <button class="btn btn-default boton_texto" onclick="notasToggleCursiva(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/type-italic.svg" /></button>
+                        <img src="/bootstrap/images/type-italic.svg" alt="Cursiva"/></button>
 
                     <div class="dropdown boton_texto" style="display: inline-block;">
                         <button class="btn btn-default" type="button" data-toggle="dropdown" style="transform:scale(0.7);margin: -9px;">
-                            <img src="/bootstrap/images/type.svg" />
+                            <img src="/bootstrap/images/type.svg" alt="Tipo"/>
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             <li class="arial" style="transform:scale(0.7);margin: -9px;">
@@ -194,29 +194,29 @@
                         </ul>
                     </div>
                     <button class="btn btn-default" onclick="nota_set_inicio(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/arrow-bar-right.svg" /></button>
+                        <img src="/bootstrap/images/arrow-bar-right.svg" alt="Desde" /></button>
                     <button class="btn btn-default" onclick="nota_set_fin(this.parentNode.parentNode.getAttribute('id')) " style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/arrow-bar-left.svg" /></button>
+                        <img src="/bootstrap/images/arrow-bar-left.svg" alt="Hasta"/></button>
                     <button class="btn btn-default" onclick="nota_expande(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/arrows-expand.svg" style="transform:rotate(90deg);" /></button>
+                        <img src="/bootstrap/images/arrows-expand.svg" alt="Todo" style="transform:rotate(90deg);" /></button>
                     <button class="btn btn-default" id="botonModalImagenes" onclick="muestraModal(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
                         <img src="/bootstrap/images/image.svg" /></button>
-                    <button class="btn btn-default" id="botonModalImagenes" onclick="acerca(this.parentNode.parentNode.getAttribute('id'))"
+                    <button class="btn btn-default"  onclick="acerca(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/front.svg" /></button>
-                    <button class="btn btn-default" id="botonModalImagenes" onclick="aleja(this.parentNode.parentNode.getAttribute('id'))"
+                        <img src="/bootstrap/images/front.svg" alt="Acerca" /></button>
+                    <button class="btn btn-default"  onclick="aleja(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/back.svg" /></button>
+                        <img src="/bootstrap/images/back.svg" alt="Aleja" /></button>
                     <button class="btn btn-default" onclick="nota_borra(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/trash.svg" /></button>
+                        <img src="/bootstrap/images/trash.svg" alt="Borra" /></button>
                 </div>
                 <input id="recuadro" type="text" class="clase_recuadro_texto" autocomplete="off" tabindex="-1" style="opacity: 1 !important;" onfocus="limita_ancho(this)">
             </div>
         </div>
 
 
-        <div id="modal_que_es" class="modal" style="z-index: 50; " ;>
+        <div id="modal_que_es" class="modal" style="z-index: 50; ">
             <!-- Modal content -->
             <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;">
                 <div style=" background-image: url(imagenes/fondos/fondo1.png);           background-size: 100% 100%;">
@@ -230,7 +230,7 @@
             </div>
         </div>
 
-        <div id="modal_como_funciona" class="modal" style="z-index: 50; " ;>
+        <div id="modal_como_funciona" class="modal" style="z-index: 50; " >
             <!-- Modal content -->
             <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;">
                 <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%;">
@@ -245,7 +245,7 @@
             </div>
         </div>
 
-        <div id="modalImagenes" class="modal" style="z-index: 50;" ;>
+        <div id="modalImagenes" class="modal" style="z-index: 50;" >
             <!-- Modal content -->
             <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;">
                 <span class="close" style="cursor:pointer;  width:100%;    align-self: end;" onclick="modal2.style.display = 'none'; ">&times;</span>
