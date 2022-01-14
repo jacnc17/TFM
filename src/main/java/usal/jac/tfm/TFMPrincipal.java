@@ -5,18 +5,25 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.WebUtils;
 
 import usal.jac.tfm.TFMUtils.TFMConstantes;
+import usal.jac.tfm.TFMUtils.TFMInfoSesion;
 import usal.jac.tfm.TFMUtils.TFMUtils;
 
 
@@ -29,6 +36,9 @@ public class TFMPrincipal {
 
 	@Value("${file.uploadDir}")
 	String dest;
+
+	@Value("${server.servlet.session.timeout}")
+	String caducidad;
 
 	static boolean purgado = false;
 
@@ -43,9 +53,11 @@ public class TFMPrincipal {
 
 	}
 
-
+	@Autowired
+	private HttpServletRequest request;
 
 	@GetMapping("/")
+	/* public String inicio(Model model, @CookieValue("id_proyecto") String id_proyecto) throws IOException { */
 	public String inicio(Model model) throws IOException {
 
 		// Se borran los directorios temporales de la anterior ejecución -> evitamos saturar el servidor.
@@ -57,17 +69,57 @@ public class TFMPrincipal {
 		}
 
 
+
+		String id_proyecto = "";
+		
+		if (WebUtils.getCookie(request, "id_proyecto") != null)
+			id_proyecto = WebUtils.getCookie(request, "id_proyecto").getValue();
+
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("id_proyecto"+id_proyecto);
+		System.out.println("");
+		System.out.println("");
+
 		// OK String idSesion = RequestContextHolder.currentRequestAttributes().getSessionId(); // Recupera el id de sesión
-		String idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId()); // Recupera el id de sesión
-
-		// Se comprueba si esta sesión está ya registrada
-		if (idSesion == null)
+		String idSesion = "";
+		
+		if (!TFMUtils.checkSesion(directorioTrabajo, dest, id_proyecto))
 		{
-			// Si no lo estaba, se genera una nueva sesión. Para el usuario se manejará este id interno de sesión
-			idSesion = TFMConstantes.anadeSesion (RequestContextHolder.currentRequestAttributes().getSessionId());
-		} 
+			log.info("ARRANCANDO : se invalida sesión de usuario porque su directorio de trabajo no existía");
+			id_proyecto = null;
+		}
 
-		log.info("ARRANCANDO CON " + idSesion + ", en " + directorioTrabajo + File.separator + dest);
+		if (id_proyecto == null || id_proyecto.equals("")) {
+
+			idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId(),
+					caducidad); // Recupera el id de sesión
+
+			// Se comprueba si esta sesión está ya registrada
+			if (idSesion == null) {
+
+				// Si no lo estaba, se genera una nueva sesión. Para el usuario se manejará este id interno de sesión
+				idSesion = TFMConstantes.anadeSesion(RequestContextHolder.currentRequestAttributes().getSessionId(),
+						caducidad);
+
+				log.info("ARRANCANDO CON NUEVO " + idSesion + ", en " + directorioTrabajo + File.separator + dest);
+
+			} else {
+				log.info("ARRANCANDO CON SESION ESTABLE " + idSesion + ", en " + directorioTrabajo + File.separator + dest);
+
+			}
+			
+		} else {
+			idSesion = id_proyecto; // Recuperamos el id de sesión anterior
+
+			// Se actualiza en la tabla interna
+			TFMConstantes.infoSesion.put(RequestContextHolder.currentRequestAttributes().getSessionId(), new TFMInfoSesion(id_proyecto, caducidad));
+
+			log.info("ARRANCANDO CON SESION RECUPERADA " + idSesion + ", en " + directorioTrabajo + File.separator + dest);
+
+		}
+
 		log.info("Inicializando variables generales");
 		TFMConstantes.inicializaConstantes();
 
@@ -102,3 +154,5 @@ public class TFMPrincipal {
 	}
 
 }
+
+

@@ -2,21 +2,15 @@ package usal.jac.tfm.TFMUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
-import javax.print.attribute.HashAttributeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -24,9 +18,6 @@ import org.apache.commons.io.IOUtils;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.multipart.MultipartFile;
 
 import usal.jac.tfm.excepciones.TFMExcepcionArchivo;
@@ -39,6 +30,34 @@ public class TFMUtils {
     private static final Logger logger = LoggerFactory.getLogger(TFMUtils.class);
     public static String directorio_fuentes = "";
     private static Hashtable<String, String> avanceRenders = new Hashtable<String, String>();
+
+
+    /** 
+     * Método que determina si la sesión de un usuario sigue existiendo en el servidor.
+     */
+    public static boolean checkSesion(String directorioTrabajo, String dest, String id_proyecto) {
+        boolean resultado = false; // Por defecto se indica que no existe
+
+		Path fileStorageLocation = Paths.get(directorioTrabajo).toAbsolutePath().normalize();
+		logger.info("checkSesion. Recuperado fileStorageLocation general= " + fileStorageLocation);
+
+		String directorioDestino = TFMUtils.creaDirectorio(fileStorageLocation.toString(), dest);
+		logger.info("checkSesion. Directorio sesión creado/recuperado correctamente  " + directorioDestino);
+
+		String directorioDestinoSesion = TFMUtils.creaDirectorio(directorioDestino, id_proyecto);
+		logger.info("checkSesion. Directorio destino creado/recuperado correctamente para esta sesión " + directorioDestinoSesion);
+
+        File nuevoDirectorio = new File(directorioDestino, id_proyecto); // Directorio candidato a ser creado
+
+        logger.info("checkSesion. nuevoDirectorio = {}", nuevoDirectorio.toString());
+
+        // Si el directorio a crear existía
+        if (nuevoDirectorio.exists())
+            resultado = true; 
+
+        return resultado;
+    }
+
 
     /**
      * Método para crear un directorio de almacenaje en el servidor con la ruta que

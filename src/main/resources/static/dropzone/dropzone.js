@@ -7270,7 +7270,7 @@
         /**
          * The maximum filesize (in bytes) that is allowed to be uploaded.
          */
-        maxFilesize: 256,
+        maxFilesize: 2560,
 
         /**
          * The name of the file param that gets transferred.

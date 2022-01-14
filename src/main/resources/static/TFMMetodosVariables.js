@@ -1,7 +1,6 @@
 // Función para recuperar las variables. A esta función sólo se le llamará si se recarga la página.
-function getVariablesEdicion() {
-    // alert ("cargando");
-    console.log("Carga inicial. Se recuperan las posibles cookies de la sesión");
+function get_variables_edicion() {
+    // console.log("Carga inicial. Se recuperan las posibles cookies de la sesión");
 
     var listaArchivos = getCookie("elementosEdicion");
     // alert ("archivos = ",elementosEdicion);
@@ -28,9 +27,9 @@ function getVariablesEdicion() {
     // Recorro los recursos
     var recursos = document.getElementById("misRecursos").childNodes;
 
-    for (i = 0; i < recursos.length; i++) {
-        console.log("getVariablesEdicion  =", recursos[i]);
-    }
+    // for (i = 0; i < recursos.length; i++) {
+    //     console.log("getVariablesEdicion  =", recursos[i]);
+    // }
 
     // Recojo las cookies
     var fin = false;
@@ -38,21 +37,22 @@ function getVariablesEdicion() {
     var capa;
 
     while (!fin) {
-        var elto = getCookie("elementosEdicion." + indice + ".nombre_original");
-        console.log("> Se intenta recuperar la cookie = elementosEdicion." ,indice , ".nombre_original");
+        var elto = getCookie("elementosEdicion." + indice + ".nombre"); // nombre_original
+        // console.log("> Se intenta recuperar la cookie = elementosEdicion." ,indice , ".nombre_original");
         console.log("   Cookie recuperada = ", elto);
 
         if (elto == null || elto == "" || elto == undefined) {
             fin = true;
         } else {
             // De la cookie se recupera la capa original
-            let capa_original = document.getElementById(elto);
+            let nombre_original = getCookie("elementosEdicion." + indice + ".nombre_original"); 
+            let capa_original = document.getElementById(nombre_original) ;
             
             // Si la capa existe, había una edición anterior
             if (capa_original != undefined)
             {
                 let capa = capa_original.cloneNode(2);
-                console.log("       Recuperada capa clonada = ", capa);
+                // console.log("       Recuperada capa clonada = ", capa);
 
                 // Nos aseguramos de que es visible
                 capa.style.visibility = "visible";
@@ -64,6 +64,7 @@ function getVariablesEdicion() {
             }
             else // Si hay alguna capa que no se encuentra, se considera que es un resto de una edición anterior
             {
+                indice++;
 
             }
         }
@@ -120,11 +121,11 @@ function recalcula_propiedades_reload() {
 
     // Método para recuperar los elementos que hay en el área de edición
     let elementosEdicion = document.getElementById("miZonaEdicion").childNodes;
-    // console.log (elementosEdicion);
+     console.log (elementosEdicion);
     let nombre_capa;
     let mime_objeto;
     let tmpPropiedades = new Map();
-
+    let timeStampInMs;
 
     // Recorremos el área de edición para mostrar los items EN ORDEN
     // Originalmente se excluía el primer elemento, que era un texto en blanco para forzar el tamaño del área
@@ -133,13 +134,17 @@ function recalcula_propiedades_reload() {
 
         console.log('El elemento NO estaba antes, generando sus propiedades');
         // Se calcula el timestamp para darle un id único 
-        let timeStampInMs = window.performance && window.performance.now && window.performance.timing && window.performance.timing.navigationStart ? window.performance.now() + window.performance.timing.navigationStart : Date.now();
+        timeStampInMs = window.performance && window.performance.now && window.performance.timing && window.performance.timing.navigationStart ? window.performance.now() + window.performance.timing.navigationStart : Date.now();
+
+        // Se añade un random para evitar bug de firefox https://bugzilla.mozilla.org/show_bug.cgi?id=363258
+        let id_final = "ID" + timeStampInMs + Math.random();
 
         // Se recupera el valor del mime-type para determinar si es vídeo o imagen.
         mime_objeto = elementosEdicion[ele].getAttribute("mime-type");
 
         // Se le da un ID válido
-        elementosEdicion[ele].id = "ID" + timeStampInMs;
+        console.log ("ASIGNANDO TIMESTAMP", Date.now()+Math.random());
+        elementosEdicion[ele].id = id_final;
         elementosEdicion[ele].setAttribute("data-nombre", nombre_capa);       
 
         // En función del mime, se asignan los atributos
@@ -158,10 +163,8 @@ function recalcula_propiedades_reload() {
 
 
             // Se recalcula el nuevo ancho en el área de edición
-            // console.log("genera_slide_rango = recalculando ancho. Nueva duracion = " + hasta + " - " + desde);
-            // console.log("genera_slide_rango = recalculando ancho. Nueva duracion = " + eval(hasta - desde));
-            document.getElementById("ID" + timeStampInMs).style.minWidth = eval(_fin - _inicio) / step * 10 * ratio_visualizacion + "px";
-            document.getElementById("ID" + timeStampInMs).style.maxWidth = eval(_fin - _inicio) / step * 10 * ratio_visualizacion + "px";
+            document.getElementById(id_final).style.minWidth = eval(_fin - _inicio) / step * 10 * ratio_visualizacion + "px";
+            document.getElementById(id_final).style.maxWidth = eval(_fin - _inicio) / step * 10 * ratio_visualizacion + "px";
 
 
         }
@@ -174,13 +177,13 @@ function recalcula_propiedades_reload() {
             tmpPropiedades.set(elementosEdicion[ele].id, { nombre_original: nombre_capa, duracion: _duracion });
 
             // Se actualiza el ancho en la zona de edición
-            document.getElementById("ID" + timeStampInMs).style.minWidth = _duracion* 10 * ratio_visualizacion + "px";
-            document.getElementById("ID" + timeStampInMs).style.maxWidth = _duracion* 10 * ratio_visualizacion + "px"; 
+            document.getElementById(id_final).style.minWidth = _duracion* 10 * ratio_visualizacion + "px";
+            document.getElementById(id_final).style.maxWidth = _duracion* 10 * ratio_visualizacion + "px"; 
 
         }
 
         // Se añade el evento de click que abrirá la ventana emergente.
-        elementosEdicion[ele].onclick = function () { ventana_emergente("ID" + timeStampInMs) };
+        elementosEdicion[ele].onclick = function () { ventana_emergente(id_final) };
 
         // Añadimos la hash temporal a la hash de propiedades
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map

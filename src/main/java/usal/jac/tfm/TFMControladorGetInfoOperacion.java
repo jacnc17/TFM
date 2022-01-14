@@ -29,8 +29,8 @@ public class TFMControladorGetInfoOperacion {
 	@Value("${file.uploadDir}")
 	String dest;
 
-/* 	@Value("${file.fuente}")
-	String fuente; */
+	@Value("${server.servlet.session.timeout}")
+	String caducidad;
 
 	@Value("${file.rutaFFPROBRE}")
 	String rutaFFPROBRE;
@@ -43,7 +43,7 @@ public class TFMControladorGetInfoOperacion {
 	@GetMapping("/getInfoOperacion")
 	public String recupera_info() throws IOException {
 		// Definición de variables
-		String idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId());
+		String idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId(), caducidad);
 		String resultado = "";
 
 		//logger.info ("getInfoOperacion");

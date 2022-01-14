@@ -112,7 +112,7 @@ public final class TFMConstantes {
     /**
      * Recupera del singleton el identificador interno de sesión.
      */
-    public static String getInfoSesion(String idSesionNavegador) {
+    public static String getInfoSesion(String idSesionNavegador, String caducidad) {
         // System.out.println("getInfoSesion = " + idSesionNavegador);
 
         String resultado = null;
@@ -120,14 +120,15 @@ public final class TFMConstantes {
         TFMInfoSesion temp = infoSesion.get(idSesionNavegador);
 
         if (temp == null)
-            resultado =  TFMConstantes.anadeSesion (idSesionNavegador);
+            resultado =  TFMConstantes.anadeSesion (idSesionNavegador, caducidad);
         else
             resultado = temp.getIDsesion();
+
         return resultado;
     }
 
-    public static String anadeSesion(String idSesion) {
-        TFMInfoSesion temporal = new TFMInfoSesion();
+    public static String anadeSesion(String idSesion, String caducidad) {
+        TFMInfoSesion temporal = new TFMInfoSesion(caducidad);
 
         infoSesion.put(idSesion, temporal);
         return temporal.getIDsesion();

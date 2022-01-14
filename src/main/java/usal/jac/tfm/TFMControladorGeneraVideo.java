@@ -4,14 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.List;
@@ -19,14 +17,10 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +43,9 @@ public class TFMControladorGeneraVideo {
 	@Value("${file.rutaFFMPEG}")
 	String rutaFFMPEG;
 
+	@Value("${server.servlet.session.timeout}")
+	String caducidad;
+
 	private static final Logger logger = LoggerFactory.getLogger(TFMControladorGeneraVideo.class);
 
 	private int totalArchivos = 0;
@@ -60,7 +57,7 @@ public class TFMControladorGeneraVideo {
 	@RequestMapping
 	public byte[] genera(@RequestBody List<TFMPeticion> peticion) throws IOException {
 		// Definición de variables
-		String idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId());
+		String idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId(), caducidad);
 		Process p; // Proceso del sistema operativo
 		InputStream in = null; // Stream de bytes que será devuelto.
 		float avance = 10f; // Porcentaje de avance en el render

@@ -20,7 +20,7 @@ import usal.jac.tfm.TFMUtils.TFMConstantes;
 
 @RestController
 
-public class TFMControladorGetInfoVideo {
+public class TFMControladorActualizaIdProyecto {
 	@Value("${file.dirTrabajo}")
 	String directorioTrabajo;
 
@@ -33,13 +33,33 @@ public class TFMControladorGetInfoVideo {
 	@Value("${file.rutaFFPROBRE}")
 	String rutaFFPROBRE;
 
-	private static final Logger logger = LoggerFactory.getLogger(TFMControladorGetInfoVideo.class);
+	private static final Logger logger = LoggerFactory.getLogger(TFMControladorActualizaIdProyecto.class);
 
 	/**
 	 * Método GET para recuperar la duración de un vídeo cuyo nombre se pasa por parámetro en la petición GET
 	 */
-	@GetMapping("/getInfoVid/{id}")
+	@GetMapping("/actualizaIdProyecto/{id}")
 	public String recupera_info(@PathVariable String id) throws IOException {
+        logger.info ("ID RECUPERADO {}", id);
+
+        // public static Hashtable<String, TFMInfoSesion> infoSesion = new Hashtable<String, TFMInfoSesion>();
+        // Recorremos la hash de sesiones
+/*         for (int i = 0; i<TFMConstantes.infoSesion.size(); i++)
+        {
+            
+            logger.info ("sesion {}", id);
+
+        } */
+
+        TFMConstantes.infoSesion.forEach((key, value)->logger.info ("clave : {},} valor :  {}", key, value.getIDsesion()));
+
+		return TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId(), caducidad); // Recupera el id de sesión
+
+        
+
+        /// return "papaito";
+
+/* 
 		// Definición de variables
 		String idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId(), caducidad);
 		String resultado = "";
@@ -60,6 +80,8 @@ public class TFMControladorGetInfoVideo {
 		// Capturamos y devolvemos la duración del archivo en segundos (con precisión de millonésima de segundo! : 12.24000)
 		while (resultado.equals(""))
 		{
+
+
 			logger.info ("Duración de vídeo '{}' no recuperada. Reintentando. ", id	);
 
 			try{Thread.sleep(2000); } catch (Exception e) { e.printStackTrace(); } // TODO: paralelizar! Controlar número reintentos.
@@ -80,5 +102,6 @@ public class TFMControladorGetInfoVideo {
 		logger.info ("Duración de vídeo '{}' = {}", id, resultado);
 
 		return id+","+resultado;
+         */
 	}
 }

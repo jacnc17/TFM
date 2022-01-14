@@ -30,12 +30,17 @@ script2.src = '/jquery/jquery-ui.js';
 script2.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(script2);
 
-// Cargamos el JS de gestión de cookies
+// Cargamos el JS de gestión de cookies para los elementos de edición
 var script3 = document.createElement('script');
 script3.src = '/TFMMetodosVariables.js';
 script3.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(script3);
 
+// Cargamos el JS de gestión de cookies para las notas
+var script4 = document.createElement('script');
+script4.src = '/TFMMetodosNotas.js';
+script4.type = 'text/javascript';
+document.getElementsByTagName('head')[0].appendChild(script4);
 
 // Variables para la gestión de las notas.
 var divNotas;
@@ -242,7 +247,7 @@ function borra() {
     // A priori sólo habrá uno, pero se hace un bucle.
     for (var i = 0; i < divs.length; i += 1) {
         // Se elimina de la tabla de propiedades.
-        console.log ("Borrando ",divs[i].id);
+        // console.log ("Borrando ",divs[i].id);
         hashPropiedades.delete(divs[i].id);
 
         papelera.removeChild(divs[i]);
@@ -270,7 +275,7 @@ function notas_actualiza_visibilidad(valor_slide) {
     // Recorremos hashPropiedadesNotas para establecer la visibilidad.
     for (i = 0; i < hashPropiedadesNotas.size; i++) {
         let id_posicion = Array.from(hashPropiedadesNotas.keys())[i];
-        console.log("SLIDE: chequeando ", id_posicion, " con valor ", hashPropiedadesNotas.get(id_posicion));
+        // console.log("SLIDE: chequeando ", id_posicion, " con valor ", hashPropiedadesNotas.get(id_posicion));
 
         let rango = id_posicion.substr(0, 3);
 
@@ -281,7 +286,7 @@ function notas_actualiza_visibilidad(valor_slide) {
             var valor_ini = hashPropiedadesNotas.get(id_posicion);
             var valor_fin = hashPropiedadesNotas.get("fin_" + id_nota);
 
-            console.log("SLIDE: chequeando rango ", rango, " en ", valor_slide, " con id_nota ", id_nota, ", valor ini =", valor_ini, ", valor_fin  =", valor_fin);
+            // console.log("SLIDE: chequeando rango ", rango, " en ", valor_slide, " con id_nota ", id_nota, ", valor ini =", valor_ini, ", valor_fin  =", valor_fin);
 
             if (eval(valor_ini) <= eval(valor_slide) && eval(valor_fin) >= eval(valor_slide)) {
                 document.getElementById(id_nota).style.visibility = "inherit";
@@ -315,7 +320,7 @@ function notasH3(elemento) {
 }
 
 function notasSetFuente(padre, fuente, nombre) {
-    console.log("notasSetFuente. padre=",padre);
+    // console.log("notasSetFuente. padre=",padre);
     let cuadroTexto = document.getElementById(padre).getElementsByClassName("clase_recuadro_texto")[0];
 
     estiloAnterior = cuadroTexto.className;
@@ -368,8 +373,7 @@ function ventana_emergente(itemID) {
     let elemento = document.createElement("div");
     elemento.id = "layer_info_activa";
 
-    console.log ("Ventana emergente : " + capa.id + ", id= "+itemID+", del original "+nombre_original);
-    // alert(capa_edicion.id);
+    // console.log ("Ventana emergente : " + capa.id + ", id= "+itemID+", del original "+nombre_original);
 
     // Nos aseguramos de que no hay más información en la capa.
     if (document.getElementById("layer_info_activa"))
@@ -507,8 +511,7 @@ function genera_slide(itemID, tiempo, nombre_orig) {
                 $("#amount").val("Duración: " + ui.value + " segundos.");
 
                 hashPropiedades.set(itemID, { nombre_original: nombre_orig, duracion: ui.value });
-                // alert (hashPropiedades);
-                console.log("genera_slide : " + nombre_orig + ", duracion " + hashPropiedades.get(itemID).duracion);
+                // console.log("genera_slide : " + nombre_orig + ", duracion " + hashPropiedades.get(itemID).duracion);
                 document.getElementById(itemID).style.minWidth = ui.value * 10 * ratio_visualizacion + "px";
                 document.getElementById(itemID).style.maxWidth = ui.value * 10 * ratio_visualizacion + "px";
 
@@ -570,7 +573,7 @@ function genera_slide_notas(duracion) {
     // Se borra el anterior
     anterior = document.getElementById("mi_slider_notas");
     if (anterior != null) {
-        console.log("Se quita el anterior");
+        // console.log("Se quita el anterior");
         anterior.remove();
     }
 
@@ -591,7 +594,7 @@ function genera_slide_notas(duracion) {
             min: 0,
             max: duracion,
             create: function (event, ui) {
-                console.log(tabla_duraciones);
+                // console.log(tabla_duraciones);
                 muestra_captura(0, 0, tabla_fragmentos[0]);
 
                 // Actualizamos visibilidad de notas
@@ -653,7 +656,7 @@ function genera_slide_notas(duracion) {
 
             }
         });
-        console.log("EN principal");
+        // console.log("EN principal");
 
         $("#posicion_nota").val("Posición: 0.00 segundos.");
 
@@ -711,7 +714,7 @@ function muestra_captura(tiempo, posicion, offset) {
     else {
         video = document.getElementById("video_oculto_" + tabla_duraciones.get(tiempo))
         var inicio = tabla_fragmentos[posicion]; // inicio del vídeo
-        console.log("El vídeo empieza en ", inicio);
+        // console.log("El vídeo empieza en ", inicio);
 
         // Se calcula el fotograma a mostrar
         var pos_real = inicio + offset;
@@ -720,14 +723,14 @@ function muestra_captura(tiempo, posicion, offset) {
         // Se calcula cuando haya acabado la búsqueda, si no podría capturar la imagen del fotograma antes mostrado
         video.onseeked = (event) => {
 
-            console.log("Debe mostrarse el fotograma en ", pos_real, ", video.currentTime = ", video.currentTime);
+            // console.log("Debe mostrarse el fotograma en ", pos_real, ", video.currentTime = ", video.currentTime);
 
             const canvas = document.createElement("canvas");
             canvas.id = "canvas_captura";
             canvas.width = "832";
             canvas.height = "468";
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-            console.log(canvas);
+            // console.log(canvas);
             // console.log(canvas.toDataURL());
 
             if (document.getElementById("img_temporal") != null) {
@@ -838,7 +841,11 @@ function get_div_notas(duracion) {
         // elemento.innerHTML = itemID + ": " + hashPropiedades.get(itemID).duracion + " segundos";
         divIntermedia.appendChild(divMarcoEdicion);
         divIntermedia.appendChild(genera_etiquetas_slide_notas());
-        divIntermedia.appendChild(genera_slide_notas(duracion));
+        
+        // Consideramos la posibilidad de que no haya aún duración calculada (puede pasar si se recarga 
+        // la info de las notas desde cookies)
+        if (duracion > -1)
+            divIntermedia.appendChild(genera_slide_notas(duracion));
 
         divNotas.appendChild(divIntermedia);
 
@@ -847,7 +854,9 @@ function get_div_notas(duracion) {
     }
     else // Hay que actualizar la duración
     {
-        let slider_old = document.getElementById("slider_notas").remove();
+        if (document.getElementById("slider_notas") != null) {
+            let slider_old = document.getElementById("slider_notas").remove();
+        }
 
         var divIntermedia = document.getElementById("capa_intermedia_edicion_notas");
         divIntermedia.appendChild(genera_slide_notas(duracion));
@@ -869,7 +878,7 @@ function add_nota(evento) {
     var rect = document.getElementById("marco_oculto_notas").getBoundingClientRect();
     elemento = document.elementFromPoint(evento.clientX, evento.clientY).id;
     obj = document.elementFromPoint(evento.clientX, evento.clientY);
-    console.log("add_nota. click en ", elemento, "con keep = ", keep, " en el objeto = ",obj);
+    // console.log("add_nota. click en ", elemento, "con keep = ", keep, " en el objeto = ",obj);
 
     // Controlamos que no se haga click encima de otra nota (entonces querríamos editarla!)
     // if (keep == 0 && (elemento == "marco_oculto_notas" || elemento == "img_temporal")) {
@@ -939,7 +948,7 @@ function add_nota(evento) {
         if (posY > 405) 
             posY = 405;
 
-            // console.log("posY = ", posY);
+        // console.log("posY = ", posY);
         nota.style.top = posY + 'px';
 
         // Se hace foco en el recuadro de texto
@@ -951,7 +960,8 @@ function add_nota(evento) {
         nota.querySelector(".colorpick").setAttribute("input_asociado", "recuadro" + timeStampInMs);
 
 
-        // let campo_input = nota.getElementsByClassName("clase_recuadro_texto")[0];
+
+        // Añade la capacidad de arrastre
         $(nota).draggable({
             drag: function (event, ui) {
                 limita_ancho(recuadro_texto);
@@ -960,20 +970,54 @@ function add_nota(evento) {
                 {
                     ui.position.top = -30;
                 }
+
+
+                let id_recuadro_texto = "recuadro"+$(nota)[0].id.substring(5); // El id de nota viene con prefijo NOTA_
+                let id_recuadro_imagen = $(nota)[0].id+"_imagen_nota";
+
+                // Determinamos si es un recuadro de texto
+                if (document.getElementById(id_recuadro_texto) != null)
+                {
+
+                    // Recuperamos el id del cuadro de texto
+                    let tam = document.getElementById(id_recuadro_texto).style.fontSize;
+                    let color = document.getElementById(id_recuadro_texto).style.color;
+                    let clase = document.getElementById(id_recuadro_texto).className;
+                    let desde = hashPropiedadesNotas.get("ini_" + $(nota)[0].id);
+                    let hasta = hashPropiedadesNotas.get("fin_" + $(nota)[0].id);
+
+
+                    let texto =  document.getElementById(id_recuadro_texto).value;
+                    add_cookie_nota ( $(nota)[0].id, ui.position.left+"px", ui.position.top+"px", tam, texto, color, clase, desde, hasta);
+                }
+                else if (document.getElementById(id_recuadro_imagen) != null) // Es una imagen
+                {
+                    // function add_cookie_imagen(id_nota, izquierda, arriba, tam, desde, hasta, imagen){
+                    let tam = document.getElementById(id_recuadro_imagen).style.maxHeight;
+                    let desde = hashPropiedadesNotas.get("ini_" + $(nota)[0].id);
+                    let hasta = hashPropiedadesNotas.get("fin_" + $(nota)[0].id);
+                    let src =  document.getElementById(id_recuadro_imagen).src;
+
+                    add_cookie_imagen ( $(nota)[0].id, ui.position.left+"px", ui.position.top+"px", tam,  desde, hasta, src);
+                }
+
+
             }
         });
 
-        // recuadro_texto.onmouseout (actualiza_estilos_input(this));
 
-        // $('.cuadro_texto').draggable({ containment: [rect.left, rect.top, rect.right - ancho_nota, rect.bottom - alto_nota] }).resizable({ containment: "parent" });
+        // Se registra la cookie con la nota (inicialmente sin más propiedades)
+        add_cookie_nota (nota.id, nota.style.left, nota.style.top , "1em", "", "", "clase_recuadro_texto", 0, Number.MAX_VALUE );
+
+
     }
     else {
         keep = 0;
-        console.log("editando nota ", obj);
+        // console.log("editando nota ", obj);
 
         let nombre_barraMenu = "barra_"+obj.getAttribute("nota_asociada");
         let barraMenu = document.getElementById(nombre_barraMenu);
-        console.log("recuperando visibilidad menú  ", barraMenu);
+        // console.log("recuperando visibilidad menú  ", barraMenu);
 
         // Si se recuperó un elemento válido
         if (barraMenu != null)
@@ -998,8 +1042,8 @@ function add_nota(evento) {
 
 // Método que vigila los cambios de color de un texto.
 function addNota_watch(event) {
-    console.log(event);
-    console.log(event.target);
+    // console.log(event);
+    // console.log(event.target);
     nombre_nota = event.target;
 
     let input_asociado = event.target.getAttribute("input_asociado");
@@ -1019,7 +1063,7 @@ function nota_borra(id_nota) {
     hashPropiedadesNotas.delete("ini_" + id_nota);
     hashPropiedadesNotas.delete("fin_" + id_nota);
 
-    console.log(hashPropiedadesNotas);
+    // console.log(hashPropiedadesNotas);
 }
 
 // Expande la nota a lo largo de todo el vídeo
@@ -1032,19 +1076,19 @@ function nota_expande(id_nota) {
 // Determina el instante de inicio de una nota en función de la posición del scroll de tiempo.
 function nota_set_inicio(id_nota) {
     hashPropiedadesNotas.set("ini_" + id_nota, document.getElementById("slider_notas").getAttribute("pos"));
-    console.log(hashPropiedadesNotas);
+    // console.log(hashPropiedadesNotas);
 }
 
 // Establece el final de la nota a la posición del slider.
 function nota_set_fin(id_nota) {
     hashPropiedadesNotas.set("fin_" + id_nota, document.getElementById("slider_notas").getAttribute("pos"));
-    console.log(hashPropiedadesNotas);
+    // console.log(hashPropiedadesNotas);
 }
 
 // Establece el final de la nota al fin del vídeo.
 function nota_set_fin_hasta_final(id_nota) {
     hashPropiedadesNotas.set("fin_" + id_nota, Number.MAX_VALUE);
-    console.log(hashPropiedadesNotas);
+    // console.log(hashPropiedadesNotas);
 }
 
 // Método que, cada vez que se añade un archivo en la dropzone, crea un nuevo elemento 
@@ -1305,6 +1349,9 @@ function lanzaFetch() {
 
 // Método para volver a ocultar una capa.
 function oculta_capa(id_capa) {
+    // Se actualiza en las cookies el valor de todas la notas
+    almacena_notas_cookies ();
+
     if (keep == 0) {
         document.getElementById(id_capa).style.visibility = 'hidden';
         document.getElementById(id_capa).style.zIndex = 0;
@@ -1325,18 +1372,18 @@ function oculta_capa(id_capa) {
 function oculta_todas_notas() {
     let notas = document.getElementsByClassName("canvas_nota");
 
-    if (notas != null)
+
+    if (notas != null) {
         for (i = 0; i < notas.length; i++) {
             notas[i].style.visibility = 'hidden';
             notas[i].style.zIndex = 0;
         }
+    }
 }
 
 
-
+// Busca la miniatura
 function regenera_miniatura(idSesion, id_imagen) {
-
-
     // let actual = document.getElementById('misRecursos').childNodes[document.getElementById('misRecursos').childNodes.length - 1];
     let actual = document.getElementById(id_imagen);
     //console.log("actual = ", actual);
@@ -1345,11 +1392,20 @@ function regenera_miniatura(idSesion, id_imagen) {
     var tipo = "img"; // Indica si el tipo de contenido es imagen o vídeo
 
     // TODO: revisar captura de mime type para relacionar con el servidor.
-    if (id_imagen.endsWith(".mp4") || id_imagen.endsWith(".mkv") || id_imagen.endsWith(".avi")) {
+    // if (id_imagen.endsWith(".mp4") || id_imagen.endsWith(".mkv") || id_imagen.endsWith(".avi")) {
+    //     id_img += ".jpg";
+    //     tipo = "vid";
+    // }
+
+    // Recupera el mime type
+    let mime_type = actual.getAttribute("mime-type");
+
+    // Si es un vídeo, hay que buscar el .jpg
+    if (mimesVideo.some(v => mime_type.includes(v))) {
+        console.log ("regenera_miniatura. Es un vídeo");
         id_img += ".jpg";
         tipo = "vid";
     }
-
 
     //console.log('regenera_miniatura: img = ', id_img);
     //console.log('regenera_miniatura: id_imagen = ', id_imagen);
@@ -1385,7 +1441,7 @@ function recalcula_propiedades() {
 
     // Método para recuperar los elementos que hay en el área de edición
     let elementosEdicion = document.getElementById("miZonaEdicion").childNodes;
-    console.log (elementosEdicion);
+    // console.log (elementosEdicion);
     let timeStampInMs;
     let nombre_original;
     let mime_objeto;
@@ -1463,12 +1519,12 @@ function recalcula_propiedades_cookies ()
 
     // Recorremos el área de edición para almacenar su valor actual
     for (let ele = 0; ele < elementosEdicionFinal.length; ele++) {
-        document.cookie = "elementosEdicion."+ele+".nombre = " + elementosEdicionFinal[ele].id;  
-        document.cookie = "elementosEdicion."+ele+".nombre_original = " +  hashPropiedades.get (elementosEdicionFinal[ele].id).nombre_original; // elementosEdicionFinal[ele].getAttribute("data-nombre") ;  
-        document.cookie = "elementosEdicion."+ele+".duracion = " + hashPropiedades.get (elementosEdicionFinal[ele].id).duracion;  
-        document.cookie = "elementosEdicion."+ele+".duracion_video = " + hashPropiedades.get (elementosEdicionFinal[ele].id).duracion_video;  
-        document.cookie = "elementosEdicion."+ele+".inicio = " +hashPropiedades.get (elementosEdicionFinal[ele].id).inicio;  
-        document.cookie = "elementosEdicion."+ele+".fin = " + hashPropiedades.get (elementosEdicionFinal[ele].id).fin;  
+        document.cookie = "elementosEdicion."+ele+".nombre = " + elementosEdicionFinal[ele].id + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";  
+        document.cookie = "elementosEdicion."+ele+".nombre_original = " +  hashPropiedades.get (elementosEdicionFinal[ele].id).nombre_original  + "; expires=Thu, 1 Jan 2122 12:00:00 UTC"; // elementosEdicionFinal[ele].getAttribute("data-nombre") ;  
+        document.cookie = "elementosEdicion."+ele+".duracion = " + hashPropiedades.get (elementosEdicionFinal[ele].id).duracion + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";  
+        document.cookie = "elementosEdicion."+ele+".duracion_video = " + hashPropiedades.get (elementosEdicionFinal[ele].id).duracion_video + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";  
+        document.cookie = "elementosEdicion."+ele+".inicio = " +hashPropiedades.get (elementosEdicionFinal[ele].id).inicio + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";  
+        document.cookie = "elementosEdicion."+ele+".fin = " + hashPropiedades.get (elementosEdicionFinal[ele].id).fin + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";  
     }
     // FIN gestión cookies
 }
@@ -1533,7 +1589,7 @@ var observer = new MutationObserver(function (mutations) {
         if (tipo_anadido && tipo_anadido.className && tipo_anadido.className == "item_edicion item_edicion_imagen") // Si es imagen
         {
             // Se almacena en la hash la duración original
-            console.log("Mutation. Duración de " + tipo_anadido.id + "= " + duracion_defecto_img * step);
+            // console.log("Mutation. Duración de " + tipo_anadido.id + "= " + duracion_defecto_img * step);
             hashDuracionesOriginales.set(tipo_anadido.id, duracion_defecto_img * step);
 
             // Se ajusta el ancho de la miniatura

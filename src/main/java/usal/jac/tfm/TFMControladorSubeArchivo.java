@@ -36,6 +36,9 @@ public class TFMControladorSubeArchivo {
 	@Value("${file.rutaFFMPEG}")
 	String rutaFFMPEG;
 
+	@Value("${server.servlet.session.timeout}")
+	String caducidad;
+	
 	private static final Logger log = LoggerFactory.getLogger(TFMControladorSubeArchivo.class);
 
 	private String dirDestino = ""; // Ubicación de los archivos en el servidor, diferente para cada usuario.
@@ -56,7 +59,7 @@ public class TFMControladorSubeArchivo {
 		try {
 			// idSesion = RequestContextHolder.currentRequestAttributes().getSessionId(); // Recupera el id de sesión
 
-			idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId()); // Recupera el id de sesión
+			idSesion = TFMConstantes.getInfoSesion(RequestContextHolder.currentRequestAttributes().getSessionId(), caducidad); // Recupera el id de sesión
 
 			log.error("idSesion=" + idSesion);
 
