@@ -997,8 +997,12 @@ function add_nota(evento) {
                     let desde = hashPropiedadesNotas.get("ini_" + $(nota)[0].id);
                     let hasta = hashPropiedadesNotas.get("fin_" + $(nota)[0].id);
                     let src =  document.getElementById(id_recuadro_imagen).src;
+                    let tam_original = document.getElementById(id_recuadro_imagen).getAttribute("tam_original");
 
-                    add_cookie_imagen ( $(nota)[0].id, ui.position.left+"px", ui.position.top+"px", tam,  desde, hasta, src);
+
+                    console.log ("add_nota. Actualizando cookie: ", $(nota)[0].id, "  en rango (",desde,":",hasta,", src = ",src, ",tam = ", tam, ", tam_original =", tam_original);
+
+                    add_cookie_imagen ( $(nota)[0].id, ui.position.left+"px", ui.position.top+"px", tam,  desde, hasta, src, tam_original);
                 }
 
 
@@ -1259,7 +1263,10 @@ function lanzaFetch() {
                                 img_nota = img_nota.substring(img_nota.lastIndexOf("/") + 1); // Se deja sólo el nombre del archivo.
 
                                 // Se incluye el tamaño de la nota original en el JSON
-                                tamano_nota = document.getElementById("NOTA_" + id_nota + "_imagen_nota").getAttribute("tam_original");
+                               //  tamano_nota = document.getElementById("NOTA_" + id_nota + "_imagen_nota").getAttribute("tam_original");
+
+                                console.log ("FETCH: tamaño original =", document.getElementById("NOTA_" + id_nota + "_imagen_nota").naturalWidth + "x" + document.getElementById("NOTA_" + id_nota + "_imagen_nota").naturalHeight);
+                                tamano_nota = document.getElementById("NOTA_" + id_nota + "_imagen_nota").naturalWidth + "x" + document.getElementById("NOTA_" + id_nota + "_imagen_nota").naturalHeight
 
                                 // Como estilo se incluye la altura máxima
                                 estilo_nota = document.getElementById("NOTA_" + id_nota + "_imagen_nota").style.maxHeight;

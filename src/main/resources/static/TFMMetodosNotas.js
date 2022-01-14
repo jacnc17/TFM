@@ -40,7 +40,7 @@ function add_cookie_nota(id_nota, izquierda, arriba, tam, texto, color, clase, d
 
 
 // Método para registrar una cookie de una nota formada por una imagen
-function add_cookie_imagen(id_nota, izquierda, arriba, tam, desde, hasta, imagen){
+function add_cookie_imagen(id_nota, izquierda, arriba, tam, desde, hasta, imagen, tam_original){
     // Definición de variables.
     var fin = false;
     var indice = 0;
@@ -64,14 +64,15 @@ function add_cookie_imagen(id_nota, izquierda, arriba, tam, desde, hasta, imagen
     }
 
     document.cookie = "notas." + indice + ".id_nota = " + id_nota + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
-    document.cookie = "notas." + indice + ".tipo_nota = 'img' ; expires=Thu, 1 Jan 2122 12:00:00 UTC";
+    document.cookie = "notas." + indice + ".tipo_nota = img ; expires=Thu, 1 Jan 2122 12:00:00 UTC";
     document.cookie = "notas." + indice + ".izquierda = " + izquierda + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
     document.cookie = "notas." + indice + ".arriba = " + arriba + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
     document.cookie = "notas." + indice + ".tam = " + tam + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
     document.cookie = "notas." + indice + ".desde = " + desde + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
     document.cookie = "notas." + indice + ".hasta = " + hasta + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
     document.cookie = "notas." + indice + ".src = " + imagen + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
-
+    document.cookie = "notas." + indice + ".tam_original = " + tam_original + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
+    
     // Borra los posibles atributos de la cookie de texto
     deleteGrupoCookies("notas." + indice + ".texto");
     deleteGrupoCookies("notas." + indice + ".color");
@@ -199,24 +200,13 @@ function get_notas_cookies() {
                         ui.position.top = -30;
                     }
 
-/*                     // Recuperamos el id del cuadro de texto
-                    let id_recuadro_texto = "recuadro"+$(nota)[0].id.substring(5); // El id de nota viene con prefijo NOTA_
-                    let tam = document.getElementById(id_recuadro_texto).style.fontSize;
-                    let color = document.getElementById(id_recuadro_texto).style.color;
-                    let texto =  document.getElementById(id_recuadro_texto).value;
-                    let clase = document.getElementById(id_recuadro_texto).className;
-                    let desde = hashPropiedadesNotas.get("ini_" + $(nota)[0].id);
-                    let hasta = hashPropiedadesNotas.get("fin_" + $(nota)[0].id);
-
-                    add_cookie_nota ( $(nota)[0].id, ui.position.left+"px", ui.position.top+"px", tam, texto, color, clase, desde, hasta ); */
-                    let id_recuadro_texto = "recuadro"+$(nota)[0].id.substring(5); // El id de nota viene con prefijo NOTA_
-                    let id_recuadro_imagen = $(nota)[0].id+"_imagen_nota";
-    
+   
                     // Determinamos si es un recuadro de texto
-                    if (document.getElementById(id_recuadro_texto) != null)
+                    if (getCookie("notas." + indice + ".tipo_nota") == 'txt' )
                     {
     
                         // Recuperamos el id del cuadro de texto
+                        let id_recuadro_texto = "recuadro"+$(nota)[0].id.substring(5); // El id de nota viene con prefijo NOTA_
                         let tam = document.getElementById(id_recuadro_texto).style.fontSize;
                         let color = document.getElementById(id_recuadro_texto).style.color;
                         let clase = document.getElementById(id_recuadro_texto).className;
@@ -227,15 +217,20 @@ function get_notas_cookies() {
                         let texto =  document.getElementById(id_recuadro_texto).value;
                         add_cookie_nota ( $(nota)[0].id, ui.position.left+"px", ui.position.top+"px", tam, texto, color, clase, desde, hasta);
                     }
-                    else if (document.getElementById(id_recuadro_imagen) != null) // Es una imagen
+                    else if (getCookie("notas." + indice + ".tipo_nota") == 'img' ) // Es una imagen
                     {
-                        // function add_cookie_imagen(id_nota, izquierda, arriba, tam, desde, hasta, imagen){
+                        // Recuperamos los atributos de la imagen
+                        console.log ("get_notas_cookies: es imagen!");
+                        let id_recuadro_imagen = $(nota)[0].id+"_imagen_nota";
                         let tam = document.getElementById(id_recuadro_imagen).style.maxHeight;
                         let desde = hashPropiedadesNotas.get("ini_" + $(nota)[0].id);
                         let hasta = hashPropiedadesNotas.get("fin_" + $(nota)[0].id);
                         let src =  document.getElementById(id_recuadro_imagen).src;
-    
-                        add_cookie_imagen ( $(nota)[0].id, ui.position.left+"px", ui.position.top+"px", tam,  desde, hasta, src);
+                        let tam_original = getCookie("notas." + indice + ".tam_original");
+
+                        console.log ("get_notas_cookies. Actualizando cookie: ", id_recuadro_imagen, "  en rango (",desde,":",hasta,", src = ",src, ",tam = ", tam, ", tam_original =", tam_original);
+
+                        add_cookie_imagen ( $(nota)[0].id, ui.position.left+"px", ui.position.top+"px", tam,  desde, hasta, src, tam_original);
                     }
                 }
             });
@@ -243,22 +238,49 @@ function get_notas_cookies() {
 
 
             // Se determina si es una nota de texto o de imagen.
-            if (getCookie("notas." + indice + ".tipo_nota") == 'txt' )
+            if (getCookie("notas." + indice + ".tipo_nota") == 'img' )
             {
+                // console.log ("get_notas_cookies: es imagen2 !");
+                // Recuperamos las propiedades de la imagen 
                 let imagen_original = getCookie("notas." + indice + ".src");
-                let imagen = imagen_original.substring(imagen_original.lastIndexOf("/"));
-                let es_sticker = imagen_original.substring("imagenes/stickers/") === 0;
+                let es_sticker = imagen_original.substring("imagenes/stickers/") != -1;
+                let tamano =  getCookie("notas." + indice + ".tam");
 
-                console.log ("recuperando imagen ", imagen, ", ", es_sticker);
+                // Si hay un recuadro de texto asociado, se elimina.
+                let id_recuadro_texto = "recuadro"+$(nota)[0].id.substring(5); // El id de nota viene con prefijo NOTA_
+                if (document.getElementById(id_recuadro_texto) != null) {
+                    document.getElementById(id_recuadro_texto).remove();
+                }
+
+                console.log ("recuperando imagen ", imagen_original, ", ", es_sticker);
+                let _src = imagen_original.substring(getPosition(imagen_original, '/', 3)+1);
                 
-                incluye_imagen_nota(elto, imagen, es_sticker) 
-            }
+                incluye_imagen_nota(elto, _src, es_sticker) 
+                
+                // Se pone el tamaño correcto
+                document.getElementById($(nota)[0].id+"_imagen_nota").style.maxHeight = tamano;
 
+                // Indicamos el tamaño original
+                let tam_original = getCookie("notas." + indice + ".tam_original");
+                document.getElementById($(nota)[0].id+"_imagen_nota").setAttribute("tam_original", tam_original);
+            }
+            else 
+            {
+                console.log ("get_notas_cookies: NO! es imagen2 !", getCookie("notas." + indice + ".tipo_nota"));
+            }
 
             indice++;
         }
     }
 }
+
+
+// Función auxiliar
+
+function getPosition(string, subString, index) {
+    return string.split(subString, index).join(subString).length;
+  }
+  
 
 // Función para borrar un grupo de cookies específicas
 function deleteGrupoCookies(prefijo) {
@@ -310,8 +332,10 @@ function almacena_notas_cookies ()
                 {
                     // Recuperamos los atributos exclusivos de las imágenes.
                     let tam = document.getElementById(id_nota+"_imagen_nota").style.maxHeight;
+                    let tam_original = document.getElementById(id_nota+"_imagen_nota").getAttribute("tam_original");
 
-                    add_cookie_imagen(id_nota, izquierda, arriba, tam, desde, hasta, imagen);
+
+                    add_cookie_imagen(id_nota, izquierda, arriba, tam, desde, hasta, document.getElementById(id_nota+"_imagen_nota").src, tam_original);
                 }
                 else // Se trata de un recuadro de texto
                 {

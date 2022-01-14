@@ -396,10 +396,15 @@
                 imagen.style = "max-height: 75px; opacity: 1 !important; ";
                 imagen.className = "clase_recuadro_imagen";
                 imagen.setAttribute("nota_asociada", id_nota);
+                 
+                
 
-                // Recuperamos el tamaño de la imagen original, necesario para hacer el reescalado.
+
+                // Asignamos el temaño si es un sticker
                 if (es_sticker == 0) {
+                    // Recuperamos el tamaño de la imagen original, necesario para hacer el reescalado.
                     let tam = document.getElementById("img_oculta_" + imagen_original).naturalWidth + "x" + document.getElementById("img_oculta_" + imagen_original).naturalHeight;
+
                     imagen.setAttribute("tam_original", tam);
 
                     imagen.src = getBase() + "[[${ idSesion }]]/" + imagen_original;
@@ -407,10 +412,12 @@
                 else // Se trata de un sticker
                 {
                     var tmp = document.createElement("img")
+                    tmp.id = "tmp_"+tmp;
                     tmp.src = imagen_original;
                     imagen.src = imagen_original;
                     console.log("Recuperando dimensiones de ", imagen_original);
                     tmp.onload = function () { imagen.setAttribute("tam_original", tmp.naturalWidth + "x" + tmp.naturalHeight); }
+
                 }
 
 
@@ -441,6 +448,24 @@
 
                 // Se oculta el modal
                 modal2.style.display = 'none';
+
+                // Se actualiza la cookie
+                let _left = document.getElementById(id_nota).style.left;
+                let _top = document.getElementById(id_nota).style.top;
+                let _desde = hashPropiedadesNotas.get("ini_" + id_nota);
+                let _hasta = hashPropiedadesNotas.get("fin_" + id_nota);
+                let _tam = document.getElementById(id_nota + "_imagen_nota").style.maxHeight;
+                
+                let _tam_original = document.getElementById(imagen.id).getAttribute("tam_original");
+
+                console.log ( document.getElementById(imagen.id));
+                console.log ( document.getElementById(imagen.id).getAttribute("tam_original"));
+                console.log ( document.getElementById(imagen.id).getAttribute("nota_asociada"));
+
+                console.log ("Actualizando cookie: ", imagen.id, ", en (",_left,",",_top,"), en rango (",_desde,":",_hasta,", src = ",imagen.src, ",tam = ", _tam, ", tam_original =", _tam_original);
+
+                add_cookie_imagen ( id_nota, _left, _top, _tam,  _desde, _hasta, imagen.src, _tam_original);
+
             }
 
 
