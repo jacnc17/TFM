@@ -16,3 +16,7 @@ Requisitos de ejecución:
  - FFMPEG (incluye FFPROBE)
 
 El fichero .jar incluye todas las librerías de las que depende el proyecto, así como los CSS y JS de terceros, de manera que no es necesaria una conexión a internet cuando se está ejecutando en local.
+
+
+
+El trabajo se entrega bajo licencia <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1">CC BY-SA 4.0</a>.
