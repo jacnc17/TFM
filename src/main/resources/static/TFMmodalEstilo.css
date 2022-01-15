@@ -44,12 +44,14 @@ body {
 
 .modal_cabecera {
     font-family: fuente_custom;
-    font-size: 2em;
+    font-size: 40px;
+    line-height: 40px !important;;
 }
 
 .modal_texto {
     font-family: fuente_custom;
-    font-size: 1.5em;
+    font-size: 20px;
+    min-inline-size: 20px !important;
     list-style-type: circle;
 }
 
@@ -62,8 +64,11 @@ body {
     width: 80%;
     border-radius: 0%;
     height: 75%; 
-    max-width:60%; 
+    min-height: 75%;
+    
+    max-width:80%; 
     overflow: hidden; 
+    
 }
 
 /* The Close Button */

@@ -386,7 +386,17 @@
     margin-top: 0px !important;
 }
 
+p {
+    margin: 0px !important;
+    padding: 25px !important;
+    height: 25px !important;
+    max-height: 25px !important;
+}
 
+li {
+    padding: 15px !important;
+    max-height: 25px !important;
+}
 
 .parrafo {
     max-lines: 1;
@@ -503,7 +513,7 @@ body::before {
     font-family: 'fuente_custom';
     min-width: 250px;
     vertical-align: baseline;
-
+    align-self: flex-end;
 }
 
 .titulo_superior:hover {
@@ -511,7 +521,8 @@ body::before {
 }
 
 .titulos_superior_franja {
-    width: 60%;
+    width: 80%;
+    max-width: 800px;
     display: flex;
     vertical-align: baseline;
     justify-content: space-between;
@@ -526,8 +537,11 @@ body::before {
 
 .titulos_superior_opcion {
     align-self: flex-end;
-    color:gainsboro;
+    color: gainsboro;
     font-size: 1em;
+    line-height: 1em;
+    padding: 8px;
+
     font-family: 'fuente_custom';
     cursor: help;
 

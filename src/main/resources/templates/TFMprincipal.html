@@ -65,12 +65,14 @@
 </head>
 
 
-<body onLoad="get_sesion_anterior(); get_variables_edicion(); get_notas_cookies();" >
+<body onLoad="get_sesion_anterior(); get_variables_edicion(); get_notas_cookies();"  >
     
     <div id="main">
         <div id="borde_superior" style="width: 100%; background-color: black; padding:10px; padding-left:20px; display: flex;    min-height: 60px;">
-            <div class="titulo_superior" ><a>Editor Vídeo</a></div>
             <div class="titulos_superior_franja" draggable="false">
+                <div class="titulo_superior" draggable="false">
+                    <a  draggable="false">Editor Vídeo</a>
+                </div>
                 <div class="titulos_superior_opcion" draggable="false">
                     <a  id="myBtn" draggable="false">¿Qué es?</a>
                 </div>
@@ -149,6 +151,8 @@
                 </div>
             </div>
 
+
+
             <div id="plantillaNota" style="display:none; width: 0px; padding-right:10px; padding-left:5px; padding-top:5px; border: 1px; border-color:red">
                 <div id="barraMenu" class="barraMenu" style="width: 570px;">
                     <img class="btn btn-default" src="/bootstrap/images/arrows-move.svg" alt="Mover" style="height: 34px; width: 40px; transform:scale(0.7);margin-left: -9px;margin-right: -9px">
@@ -218,7 +222,7 @@
         <div id="modal_que_es" class="modal">
             <!-- Modal content -->
             <div  id="modal_que_es_contenido" class="modal-contenido" >
-                <div style=" background-image: url(imagenes/fondos/fondo1.png);           background-size: 100% 100%;">
+                <div style=" background-image: url(imagenes/fondos/fondo1.png);           background-size: 100% 100%; height:200px">
                     <span class="close" style="cursor:pointer; align-self: end;" onclick="modal2.style.height='0px'; modal2.style.maxHeight = '0px'">&times;</span>
                     <p class="modal_cabecera">¡Bienvenid@!</p>
                     <p class="modal_texto">En esta página web podrás <i>crear vídeos</i> con solo cargar tus imágenes y vídeos favoritos.</p>
@@ -232,7 +236,7 @@
         <div id="modal_como_funciona" class="modal"  >
             <!-- Modal content -->
             <div id="modal_como_funciona_contenido" class="modal-contenido" >
-                <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%;">
+                <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%; height:200px">
                     <span class="close" style="cursor:pointer; align-self: end;" onclick="modal3.style.height='0px'; modal3.style.maxHeight = '0px'">&times;</span>
                     <p class="modal_cabecera">¿Cómo funciona?</p>
                     <p class="modal_texto">Primero CARGA tus vídeos y fotos.</p>
@@ -247,21 +251,21 @@
         <div id="modal_como_esta_hecho" class="modal"  >
             <!-- Modal content -->
             <div id="modal_como_esta_hecho_contenido" class="modal-contenido">
-                <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%;">
+                <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%; height:200px">
                     <span class="close" style="cursor:pointer;  align-self: end;" onclick="modal4.style.height='0px'; modal4.style.maxHeight = '0px'">&times;</span>
                     <p class="modal_cabecera">¿Cómo está hecho?</p>
                     <p class="modal_texto">El editor de vídeo utiliza estas tecnologías en la parte cliente:</p>
-                    <li class="modal_texto"><img src="iconos/icons8-logotipo-de-javascript.svg" class="icono_ayuda">Javascript</li>
-                    <li class="modal_texto"><img src="iconos/icons8-css3.svg" class="icono_ayuda">CSS 3</li>
-                    <li class="modal_texto"><img src="iconos/icons8-html-5.svg" class="icono_ayuda">HTML 5</li>
-                    <li class="modal_texto"><img src="iconos/bootstrap-fill.svg" class="icono_ayuda" style="padding-left:2px; padding-right:13px">Bootstrap 3.4.1</li>
-                    <li class="modal_texto"><img src="iconos/icons8-jquery.svg" class="icono_ayuda">JQuery 3.6.0 y JQuery UI 1.12.4</li>
-                    <li class="modal_texto"><img src="iconos/dropzone.svg" class="icono_ayuda">Dropzone 5.9.3</li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://www.ecma-international.org/publications-and-standards/standards/ecma-262/"><img src="iconos/icons8-javascript.svg" class="icono_ayuda">Javascript</a></li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://www.w3.org/Style/CSS/specs.en.html"><img src="iconos/icons8-css3.svg" class="icono_ayuda">CSS 3</a></li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://www.w3.org/TR/2011/WD-html5-20110405/"><img src="iconos/icons8-html-5.svg" class="icono_ayuda">HTML 5</a></li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://getbootstrap.com/"><img src="iconos/bootstrap-fill.svg" class="icono_ayuda" style="padding-left:2px; padding-right:13px">Bootstrap 3.4.1</a></li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://jquery.com/"><img src="iconos/icons8-jquery.svg" class="icono_ayuda">JQuery 3.6.0 y JQuery UI 1.12.4</a></li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://www.dropzone.dev/js/"><img src="iconos/dropzone.svg" class="icono_ayuda">Dropzone 5.9.3</a></li>
                     <p/>
                     <p class="modal_texto">Y en la parte servidora:</p>
-                    <li class="modal_texto"><img src="iconos/icons8-logotipo-de-java-coffee-cup.svg" class="icono_ayuda">Java OpenJDK 17</li>
-                    <li class="modal_texto"><img src="iconos/icons8-logotipo-de-spring.svg" class="icono_ayuda">Spring-Boot 2.5.6</li>
-                    <li class="modal_texto"><img src="iconos/icons8-ffmpeg.svg" class="icono_ayuda">FFMPEG build 2021-09-22</li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://jdk.java.net/17/"><img src="iconos/icons8-logotipo-de-java-coffee-cup.svg" class="icono_ayuda">Java OpenJDK 17</a></li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://spring.io/projects/spring-boot"><img src="iconos/icons8-logotipo-de-spring.svg" class="icono_ayuda">Spring-Boot 2.5.6</a></li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://ffmpeg.org/ "><img src="iconos/icons8-ffmpeg.svg" class="icono_ayuda">FFMPEG build 2021-09-22</a></li>
                 </div>
 
             </div>
