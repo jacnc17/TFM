@@ -65,36 +65,33 @@
 </head>
 
 
-<body onLoad="get_sesion_anterior(); get_variables_edicion(); get_notas_cookies();">
+<body onLoad="get_sesion_anterior(); get_variables_edicion(); get_notas_cookies();" >
     
     <div id="main">
-        <div id="principal">
-            <nav class="barra_menu navbar navbar-expand-lg navbar-light   static-top">
-                <div class="container">
-                    <a class="navbar-brand" href="#">Editor Vídeo</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarResponsive">
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" id="myBtn">¿Qué es?</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="botonModal3">¿Cómo funciona?</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">¿Cómo está hecho?</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Créditos</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <img id="cabecera" src="imagenes/logoUSAL.png" style="height:60px" alt="Logo USAL">
+        <div id="borde_superior" style="width: 100%; background-color: black; padding:10px; padding-left:20px; display: flex;    min-height: 60px;">
+            <div class="titulo_superior" ><a>Editor Vídeo</a></div>
+            <div class="titulos_superior_franja" draggable="false">
+                <div class="titulos_superior_opcion" draggable="false">
+                    <a  id="myBtn" draggable="false">¿Qué es?</a>
                 </div>
-            </nav>
+                <div class="titulos_superior_opcion">
+                    <a id="botonModal3" draggable="false">¿Cómo funciona?</a>
+                </div>
+                <div class="titulos_superior_opcion">
+                    <a id="botonModal4" draggable="false">¿Cómo está hecho?</a>
+                </div>
+                <div class="titulos_superior_opcion">
+                    <a id="botonModal5" draggable="false">Créditos</a>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div id="principal">
+            <div style="height: 50px">
+            </div>
 
             <div class="container" id="contenedor">
                 <div class="row">
@@ -216,13 +213,15 @@
         </div>
 
 
-        <div id="modal_que_es" class="modal" style="z-index: 50; ">
+
+
+        <div id="modal_que_es" class="modal">
             <!-- Modal content -->
-            <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;">
+            <div  id="modal_que_es_contenido" class="modal-contenido" >
                 <div style=" background-image: url(imagenes/fondos/fondo1.png);           background-size: 100% 100%;">
-                    <span class="close" style="cursor:pointer;  width:100%; align-self: end;" onclick="modal2.style.display = 'none'; ">&times;</span>
+                    <span class="close" style="cursor:pointer; align-self: end;" onclick="modal2.style.height='0px'; modal2.style.maxHeight = '0px'">&times;</span>
                     <p class="modal_cabecera">¡Bienvenid@!</p>
-                    <p class="modal_texto">En esta página web podrás <i>crear vídeos</i> a partir de cargar tus imágenes y vídeos favoritos.</p>
+                    <p class="modal_texto">En esta página web podrás <i>crear vídeos</i> con solo cargar tus imágenes y vídeos favoritos.</p>
                     <p class="modal_texto">Podrás crear un vídeo a partir de una foto, añadir notas y stickers, recortar vídeos y añadirlos las veces que quieras.</p>
                     <p class="modal_texto">¡Y todo muy fácil, sólo con unos clicks! ¡Ahora podrás ser un experto editor!</p>
                 </div>
@@ -230,11 +229,11 @@
             </div>
         </div>
 
-        <div id="modal_como_funciona" class="modal" style="z-index: 50; " >
+        <div id="modal_como_funciona" class="modal"  >
             <!-- Modal content -->
-            <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;">
+            <div id="modal_como_funciona_contenido" class="modal-contenido" >
                 <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%;">
-                    <span class="close" style="cursor:pointer;  width:100%; align-self: end;" onclick="modal3.style.display = 'none'; ">&times;</span>
+                    <span class="close" style="cursor:pointer; align-self: end;" onclick="modal3.style.height='0px'; modal3.style.maxHeight = '0px'">&times;</span>
                     <p class="modal_cabecera">¿Cómo funciona?</p>
                     <p class="modal_texto">Primero CARGA tus vídeos y fotos.</p>
                     <p class="modal_texto">Después ARRÁSTRALOS a la zona de edición, donde puedes editarlos y recortarlos haciendo click sobre ellos.</p>
@@ -245,10 +244,53 @@
             </div>
         </div>
 
+        <div id="modal_como_esta_hecho" class="modal"  >
+            <!-- Modal content -->
+            <div id="modal_como_esta_hecho_contenido" class="modal-contenido">
+                <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%;">
+                    <span class="close" style="cursor:pointer;  align-self: end;" onclick="modal4.style.height='0px'; modal4.style.maxHeight = '0px'">&times;</span>
+                    <p class="modal_cabecera">¿Cómo está hecho?</p>
+                    <p class="modal_texto">El editor de vídeo utiliza estas tecnologías en la parte cliente:</p>
+                    <li class="modal_texto"><img src="iconos/icons8-logotipo-de-javascript.svg" class="icono_ayuda">Javascript</li>
+                    <li class="modal_texto"><img src="iconos/icons8-css3.svg" class="icono_ayuda">CSS 3</li>
+                    <li class="modal_texto"><img src="iconos/icons8-html-5.svg" class="icono_ayuda">HTML 5</li>
+                    <li class="modal_texto"><img src="iconos/bootstrap-fill.svg" class="icono_ayuda" style="padding-left:2px; padding-right:13px">Bootstrap 3.4.1</li>
+                    <li class="modal_texto"><img src="iconos/icons8-jquery.svg" class="icono_ayuda">JQuery 3.6.0 y JQuery UI 1.12.4</li>
+                    <li class="modal_texto"><img src="iconos/dropzone.svg" class="icono_ayuda">Dropzone 5.9.3</li>
+                    <p/>
+                    <p class="modal_texto">Y en la parte servidora:</p>
+                    <li class="modal_texto"><img src="iconos/icons8-logotipo-de-java-coffee-cup.svg" class="icono_ayuda">Java OpenJDK 17</li>
+                    <li class="modal_texto"><img src="iconos/icons8-logotipo-de-spring.svg" class="icono_ayuda">Spring-Boot 2.5.6</li>
+                    <li class="modal_texto"><img src="iconos/icons8-ffmpeg.svg" class="icono_ayuda">FFMPEG build 2021-09-22</li>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div id="modal_creditos" class="modal"  >
+            <!-- Modal content -->
+            <div id="modal_creditos_contenido" class="modal-contenido">
+                <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%;">
+                    <span class="close" style="cursor:pointer;  align-self: end;" onclick="modal5.style.height='0px'; modal5.style.maxHeight = '0px'">&times;</span>
+                    <p class="modal_cabecera">¿Cómo está hecho?</p>
+                    <p class="modal_texto">El editor de vídeo utiliza principalmente estas tecnologías:</p>
+                    <li class="modal_texto"><img src="iconos/icons8-logotipo-de-javascript.svg" class="icono_ayuda">Javascript</li>
+                    <li class="modal_texto"><img src="iconos/icons8-css3.svg" class="icono_ayuda">CSS</li>
+                    <li class="modal_texto"><img src="iconos/icons8-html-5.svg" class="icono_ayuda">HTML5</li>
+                    <li class="modal_texto"><img src="iconos/bootstrap-fill.svg" class="icono_ayuda" style="padding-left:2px; padding-right:13px">Bootstrap</li>
+                    <li class="modal_texto"><img src="iconos/icons8-jquery.svg" class="icono_ayuda">JQuery</li>
+                    <li class="modal_texto"><img src="iconos/dropzone.svg" class="icono_ayuda">Dropzone</li>
+                    <li class="modal_texto"><img src="iconos/icons8-ffmpeg.svg" class="icono_ayuda">FFMPEG</li>
+                </div>
+
+            </div>
+        </div>
+
         <div id="modalImagenes" class="modal" style="z-index: 50;" >
             <!-- Modal content -->
             <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;">
-                <span class="close" style="cursor:pointer;  width:100%;    align-self: end;" onclick="modal2.style.display = 'none'; ">&times;</span>
+                <span class="close" style="cursor:pointer;   align-self: end;" onclick="modal2.style.display = 'none'; ">&times;</span>
                 <p>Selecciona qué imagen quieres incluir en forma de nota:</p>
                 <div id="imagenes_miniaturas_notas"></div>
             </div>
@@ -289,10 +331,14 @@
             var modal = document.getElementById("modal_que_es");
             var modal2 = document.getElementById("modalImagenes");
             var modal3 = document.getElementById("modal_como_funciona");
+            var modal4 = document.getElementById("modal_como_esta_hecho");
+            var modal5 = document.getElementById("modal_creditos");
 
             // Get the button that opens the modal
             var btn = document.getElementById("myBtn");
             var btn3 = document.getElementById("botonModal3");
+            var btn4 = document.getElementById("botonModal4");
+            var btn5 = document.getElementById("botonModal5");
 
             // Botón que abre el modal de imágenes
             var btn2 = document.getElementById("botonModalImagenes");
@@ -303,12 +349,59 @@
 
             // When the user clicks the button, open the modal 
             btn.onclick = function () {
-                modal.style.display = "block";
+                // Recupero la altura del menú:
+                var altura_menu = document.getElementById("borde_superior").clientHeight;
+
+                document.getElementById("modal_que_es_contenido").style.marginTop= altura_menu+'px';
+                modal.style.height = "100%"
+                modal.style.maxHeight = "100%"
             }
 
             // Gestión de la pulsación del modal3
             btn3.onclick = function () {
-                modal3.style.display = "block";
+                //modal3.style.display = "block";
+                // Recupero la altura del menú:
+                var altura_menu = document.getElementById("borde_superior").clientHeight;
+
+                document.getElementById("modal_como_funciona_contenido").style.marginTop = altura_menu+'px';
+                modal3.style.height = "100%"
+                modal3.style.maxHeight = "100%"
+            }
+
+            // Gestión de la pulsación del modal4
+            btn4.onclick = function () {
+                // Recupero la altura del menú:
+                var altura_menu = document.getElementById("borde_superior").clientHeight;
+
+                document.getElementById("modal_como_esta_hecho_contenido").style.marginTop = altura_menu+'px';
+                modal4.style.height = "100%"
+                modal4.style.maxHeight = "100%"
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function () {
+                // modal.style.display = "none";
+                modal.style.height = "0%"
+                modal.style.maxHeight = "0%"
+                modal3.style.height = "0%"
+                modal3.style.maxHeight = "0%"               
+                modal4.style.height = "0%"
+                modal4.style.maxHeight = "0%"     
+                modal4.style.height = "0%"
+                modal5.style.maxHeight = "0%"  
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal2) {
+                    modal2.style.display = "none";
+
+                } else {
+                    event.target.style.height = "0%"
+                    event.target.style.maxHeight = "0%"
+                }
+
+
             }
 
 
@@ -353,23 +446,11 @@
                 }
             }
 
-            // When the user clicks on <span> (x), close the modal
-            span.onclick = function () {
-                modal.style.display = "none";
-            }
 
 
 
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                } else if (event.target == modal2) {
-                    modal2.style.display = "none";
-                } else if (event.target == modal3) {
-                    modal3.style.display = "none";
-                }
-            }
+
+
 
 
             // Función que añade una nota como imagen

@@ -755,6 +755,7 @@ function muestra_captura(tiempo, posicion, offset) {
     }
 }
 
+
 // Función que abrirá la sección de edición de notas
 function muestra_capa_notas() {
     // Recuperamos la duración actual del vídeo (sólo los elementos en la zona de edición).

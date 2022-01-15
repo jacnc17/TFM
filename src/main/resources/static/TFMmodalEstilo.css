@@ -3,52 +3,67 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 } */
 
+
+.icono_ayuda
+{
+    max-height: 20px;
+    padding-right: 10px;
+}
+
 /* The Modal (background) */
 .modal {
-    display: none;
-    /* Hidden by default */
-    position: fixed;
-    /* Stay in place */
-    z-index: 1;
-    /* Sit on top */
-    padding-top: 100px;
-    /* Location of the box */
+    /* display: none; */
+    /* position: fixed; */
+    /* z-index: 1; */
+    /* padding-top: 100px; */
     left: 0;
     top: 0;
     width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
+    height: 0%;
     overflow: auto;
-    /* Enable scroll if needed */
     background-color: rgb(0, 0, 0);
-    /* Fallback color */
     background-color: rgba(0, 0, 0, 0.4);
-    /* Black w/ opacity */
+    display:block;
+
+    max-height: 0%; 
+    overflow-y: hidden; /**/
+    transition-property: all;
+	transition-duration: .5s;
+	/*  transition-timing-function: cubic-bezier(0, 1, 0.25, 1); */
+    transition-timing-function: ease, cubic-bezier(0.1, 0.7, 1.0, 0.1);
 }
 
 
+
+
+@font-face {
+    font-family: 'fuente_custom';
+    src: url('/fuentes/GOTHIC.ttf');
+}
 
 
 .modal_cabecera {
-    font-family: candara;
+    font-family: fuente_custom;
     font-size: 2em;
-    font-weight: bold;
 }
 
 .modal_texto {
-    font-family: candara;
-    font-size: 1em;
-    font-weight: bold;
+    font-family: fuente_custom;
+    font-size: 1.5em;
+    list-style-type: circle;
 }
 
 /* Modal Content */
-.modal-content {
+.modal-contenido {
     background-color: #fefefe;
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+    border-radius: 0%;
+    height: 75%; 
+    max-width:60%; 
+    overflow: hidden; 
 }
 
 /* The Close Button */
@@ -65,7 +80,5 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
-
-
 
 
