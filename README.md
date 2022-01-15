@@ -1,5 +1,5 @@
-# TFM
-Repositorio para almacenar la aplicación del TFM
+# Editor de vídeo
+Repositorio para almacenar el código del TFM de Jaime Alba, consistente en una aplicación web para la anotación y edición de vídeo.
 
 Arrancar el .jar como java -jar tfm-1.0.jar, especificando las variables de entorno
   > file.dirTrabajo
