@@ -1099,7 +1099,7 @@ function nota_set_fin_hasta_final(id_nota) {
 // Método que, cada vez que se añade un archivo en la dropzone, crea un nuevo elemento 
 // arrastrable al sitio de edición. El nombre se compone para evitar duplicados.
 // Método asíncrono, el objeto file no se ha consolidado aún por lo que hay que pasar los parámetros "troceados"
-function anadir_item_editor(nombre_archivo, mimetypeArchivo) {
+function anadir_item_editor(nombre_archivo, mimetypeArchivo     ) {
     // ext = nombre_archivo.substring(nombre_archivo.lastIndexOf(".") + 1);
 
     // Se determina la capa que se ha arrastrado a la zona de dropzone.
@@ -1129,6 +1129,37 @@ function anadir_item_editor(nombre_archivo, mimetypeArchivo) {
     else // Aún no se dispone del mime type.
         iDiv.className = 'item_edicion';
 
+
+    // Gestión de elemento HOVER
+     iDiv.addEventListener('mouseover', function (evento) {
+        muestra_hover(iDiv);
+    });
+    iDiv.addEventListener('mouseout', function () {
+        oculta_hover(iDiv);
+    });
+    var event = new MouseEvent('mouseover', {
+        'view': window,
+        'bubbles': true,
+        'cancelable': true
+    });
+    var event2 = new MouseEvent('mouseout', {
+        'view': window,
+        'bubbles': true,
+        'cancelable': true
+    });
+    iDiv.dispatchEvent(event);
+    iDiv.dispatchEvent(event2);
+    
+      // Fin gestión elemento HOVER
+
+
+
+
+
+
+      
+    
+
     // Se añade el elemento al documento.
     document.getElementById('misRecursos').appendChild(iDiv);
 
@@ -1138,8 +1169,125 @@ function anadir_item_editor(nombre_archivo, mimetypeArchivo) {
     });
 }
 
+function muestra_hover(iDiv) {
+    console.log("HOVER ",iDiv.id);
+    if (document.getElementById("hover_"+iDiv.id)!=null) {
+
+        var detalle_img = document.getElementById("hover_"+iDiv.id); // TODO : video 
+        console.log("HOVER 2222222222222222222222222", detalle_img);
+
+        detalle_img.style.visibility="visible";
+
+    }
+}
 
 
+function oculta_hover (iDiv) {
+    // console.log("HOVER ",iDiv.id);
+    if (document.getElementById("hover_"+iDiv.id)!=null) {
+
+        var detalle_img = document.getElementById("hover_"+iDiv.id); // TODO : video 
+        // console.log("HOVER 3333333333333333", detalle_img);
+
+        detalle_img.style.visibility="hidden";
+
+    }
+}
+
+
+// Método que regenera los hovers sólo en la capa "misRecursos". Se regeneran todos 
+// en previsión de que haya algún elemento que se arrastre a la zona de edición (se 
+// quiere evitar que en la zona de edición haya hovers.
+function regenera_hovers ()
+{
+    // alert ("REGENERANDO H");
+
+    // Recuperamos los elementos de la capa de recursos
+    var recursos = document.getElementById("misRecursos").childNodes;
+
+
+
+    // Borramos todos los previos
+    borra_hovers()
+
+
+    console.log ("REGENERANDO H", document.getElementsByClassName("capa_hover"));
+
+
+    // Recorremos la lista de recursos
+    for (i = 0 ; i<recursos.length; i++)
+    {
+        let nombre_elto = recursos[i].id;
+
+        console.log (nombre_elto);
+        // console.log(document.getElementById("img_oculta_" + nombre_elto));
+        if (document.getElementById("img_oculta_" + nombre_elto) != null) {
+            console.log("BINGO! SE ENCONTRO img_oculta_" + nombre_elto);
+    
+            var detalle = document.createElement("span");
+            detalle.id = "hover_"+nombre_elto;
+            detalle.className = "capa_hover";
+            detalle.style.visibility="hidden";
+
+            var detalle_img = document.createElement("img");
+            detalle_img.src = document.getElementById("img_oculta_" + nombre_elto).src; // TODO : video 
+            detalle_img.style.position="absolute";
+            detalle_img.style.top="50px";
+            detalle_img.style.zIndex="50";
+            detalle_img.style.height="200px";
+            detalle_img.style.borderRadius="50px";
+            detalle_img.className ="capa_hover_imagen";
+            
+    
+            detalle_img.style.left = detalle_img.style.left + 50;
+            detalle.append(detalle_img);
+            document.getElementById(nombre_elto).appendChild(detalle);
+
+
+            // Gestión de elemento HOVER
+            iDiv = document.getElementById("misRecursos").childNodes[i];
+            iDiv.addEventListener('mouseover', function (evento) {
+                // console.log("EVENTO",evento.path[1].id);
+                muestra_hover(document.getElementById(evento.path[1].id));
+            });
+            iDiv.addEventListener('mouseout', function () {
+                oculta_hover(this);
+            });
+            var event = new MouseEvent('mouseover', {
+                'view': window,
+                'bubbles': true,
+                'cancelable': true
+            });
+            var event2 = new MouseEvent('mouseout', {
+                'view': window,
+                'bubbles': true,
+                'cancelable': true
+            });
+            iDiv.dispatchEvent(event);
+            iDiv.dispatchEvent(event2);
+            // Fin gestión elemento HOVER
+        }
+    }
+
+    
+}
+
+
+function borra_hovers () {
+    // Ocultamos todos los posibles hovers.
+    for (i=0; i<document.getElementsByClassName ("capa_hover").length; i++)
+    {
+        console.log("borrando ", document.getElementsByClassName ("capa_hover")[i]);
+        document.getElementsByClassName ("capa_hover")[i].remove();
+    }
+
+        // Ocultamos todos los posibles hovers.
+        for (i=0; i<document.getElementsByClassName ("capa_hover_imagen").length; i++)
+        {
+            console.log("borrando ", document.getElementsByClassName ("capa_hover_imagen")[i]);
+            document.getElementsByClassName ("capa_hover")[i].remove();
+        }
+}
 
 
 
@@ -1446,6 +1594,8 @@ function miniatura_esperando(id_imagen) {
 // Función llamada cuando se añade un nuevo elemento en el área de edición.
 function recalcula_propiedades() {
     console.log('Recalculando propiedades...');
+    
+
 
     // Método para recuperar los elementos que hay en el área de edición
     let elementosEdicion = document.getElementById("miZonaEdicion").childNodes;
@@ -1503,7 +1653,10 @@ function recalcula_propiedades() {
     }
 
 
-    recalcula_propiedades_cookies()
+    recalcula_propiedades_cookies();
+
+    regenera_hovers();
+
 }
 
 
@@ -1591,6 +1744,7 @@ new Sortable(papelera, {
 // Cuando se finalice la carga de un elemento, se actualizarán sus dimensiones en función
 // de su duración (fija si es imagen, la del vídeo si es un vídeo).
 var observer = new MutationObserver(function (mutations) {
+    //console.log("mutación!");
     // Se recorre la mutación observada
     for (m in mutations) {
         tipo_anadido = mutations[m].addedNodes[0];
@@ -1633,7 +1787,7 @@ var observer = new MutationObserver(function (mutations) {
 
 
         }
-
+        // regenera_hovers(); // Cuando se añade un nuevo elemento, se regeneran los hovers
     }
 });
 

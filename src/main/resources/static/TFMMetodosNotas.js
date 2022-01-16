@@ -354,19 +354,19 @@ function almacena_notas_cookies ()
                 // document.cookie = "notas." + cont + ".izquierda = " + notas.childNodes[indice].style.left + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
                 // document.cookie = "notas." + cont + ".arriba = " + notas.childNodes[indice].style.top + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
 
-                console.log ("almacena_notas_cookies = ",notas);
+                // console.log ("almacena_notas_cookies = ",notas);
                 cont++;
             }
 
                 indice++;
 
 
-            console.log ("almacena_notas_cookies");
+            // console.log ("almacena_notas_cookies");
 
         }
 
     }
 
-    console.log ("almacena_notas_cookies = ",notas);
+    // console.log ("almacena_notas_cookies = ",notas);
 }
 

@@ -10,6 +10,12 @@ body {
     padding-right: 10px;
 }
 
+.fondo_modal {
+    background-image: url(imagenes/fondos/fondo2.png);
+    background-size: 100% 200%; 
+    height:100%
+}
+
 /* The Modal (background) */
 .modal {
     /* display: none; */
@@ -65,9 +71,10 @@ body {
     border-radius: 0%;
     height: 75%; 
     min-height: 75%;
-    
+
     max-width:80%; 
     overflow: hidden; 
+    overflow-y: hidden; /**/
     
 }
 

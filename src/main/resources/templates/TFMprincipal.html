@@ -65,7 +65,7 @@
 </head>
 
 
-<body onLoad="get_sesion_anterior(); get_variables_edicion(); get_notas_cookies();"  >
+<body onLoad="get_sesion_anterior(); get_variables_edicion(); get_notas_cookies(); regenera_hovers()"  >
     
     <div id="main">
         <div id="borde_superior" style="width: 100%; background-color: black; padding:10px; padding-left:20px; display: flex;    min-height: 60px;">
@@ -222,7 +222,7 @@
         <div id="modal_que_es" class="modal">
             <!-- Modal content -->
             <div  id="modal_que_es_contenido" class="modal-contenido" >
-                <div style=" background-image: url(imagenes/fondos/fondo1.png);           background-size: 100% 100%; height:200px">
+                <div class="fondo_modal">
                     <span class="close" style="cursor:pointer; align-self: end;" onclick="modal2.style.height='0px'; modal2.style.maxHeight = '0px'">&times;</span>
                     <p class="modal_cabecera">¡Bienvenid@!</p>
                     <p class="modal_texto">En esta página web podrás <i>crear vídeos</i> con solo cargar tus imágenes y vídeos favoritos.</p>
@@ -236,7 +236,7 @@
         <div id="modal_como_funciona" class="modal"  >
             <!-- Modal content -->
             <div id="modal_como_funciona_contenido" class="modal-contenido" >
-                <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%; height:200px">
+                <div class="fondo_modal">
                     <span class="close" style="cursor:pointer; align-self: end;" onclick="modal3.style.height='0px'; modal3.style.maxHeight = '0px'">&times;</span>
                     <p class="modal_cabecera">¿Cómo funciona?</p>
                     <p class="modal_texto">Primero CARGA tus vídeos y fotos.</p>
@@ -251,7 +251,7 @@
         <div id="modal_como_esta_hecho" class="modal"  >
             <!-- Modal content -->
             <div id="modal_como_esta_hecho_contenido" class="modal-contenido">
-                <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%; height:200px">
+                <div class="fondo_modal">
                     <span class="close" style="cursor:pointer;  align-self: end;" onclick="modal4.style.height='0px'; modal4.style.maxHeight = '0px'">&times;</span>
                     <p class="modal_cabecera">¿Cómo está hecho?</p>
                     <p class="modal_texto">El editor de vídeo utiliza estas tecnologías en la parte cliente:</p>
@@ -261,7 +261,6 @@
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://getbootstrap.com/"><img src="iconos/bootstrap-fill.svg" class="icono_ayuda" style="padding-left:2px; padding-right:13px">Bootstrap 3.4.1</a></li>
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://jquery.com/"><img src="iconos/icons8-jquery.svg" class="icono_ayuda">JQuery 3.6.0 y JQuery UI 1.12.4</a></li>
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://www.dropzone.dev/js/"><img src="iconos/dropzone.svg" class="icono_ayuda">Dropzone 5.9.3</a></li>
-                    <p/>
                     <p class="modal_texto">Y en la parte servidora:</p>
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://jdk.java.net/17/"><img src="iconos/icons8-logotipo-de-java-coffee-cup.svg" class="icono_ayuda">Java OpenJDK 17</a></li>
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://spring.io/projects/spring-boot"><img src="iconos/icons8-logotipo-de-spring.svg" class="icono_ayuda">Spring-Boot 2.5.6</a></li>
@@ -272,20 +271,31 @@
         </div>
 
 
+
+
         <div id="modal_creditos" class="modal"  >
             <!-- Modal content -->
             <div id="modal_creditos_contenido" class="modal-contenido">
-                <div style=" background-image: url(imagenes/fondos/fondo2.png);           background-size: 100% 100%;">
+                <div class="fondo_modal">
                     <span class="close" style="cursor:pointer;  align-self: end;" onclick="modal5.style.height='0px'; modal5.style.maxHeight = '0px'">&times;</span>
-                    <p class="modal_cabecera">¿Cómo está hecho?</p>
-                    <p class="modal_texto">El editor de vídeo utiliza principalmente estas tecnologías:</p>
-                    <li class="modal_texto"><img src="iconos/icons8-logotipo-de-javascript.svg" class="icono_ayuda">Javascript</li>
-                    <li class="modal_texto"><img src="iconos/icons8-css3.svg" class="icono_ayuda">CSS</li>
-                    <li class="modal_texto"><img src="iconos/icons8-html-5.svg" class="icono_ayuda">HTML5</li>
-                    <li class="modal_texto"><img src="iconos/bootstrap-fill.svg" class="icono_ayuda" style="padding-left:2px; padding-right:13px">Bootstrap</li>
-                    <li class="modal_texto"><img src="iconos/icons8-jquery.svg" class="icono_ayuda">JQuery</li>
-                    <li class="modal_texto"><img src="iconos/dropzone.svg" class="icono_ayuda">Dropzone</li>
-                    <li class="modal_texto"><img src="iconos/icons8-ffmpeg.svg" class="icono_ayuda">FFMPEG</li>
+                    <p class="modal_cabecera">Créditos</p>
+                    <p class="modal_texto">Proyecto realizado por Jaime Alba.</p>
+                    <p class="modal_texto">TFM de la Especialidad de Ingeniería Informática por la Univesidad de Salamanca</p>
+                    <p/>
+                    <p class="modal_cabecera">Contacto</p>
+                    <p class="modal_texto"><a style="color:black;" target="_blank" href="mailto:jaime.alba.cepero@usal.es"><img src="iconos/envelope-fill.svg" class="icono_ayuda">jaime.alba.cepero@usal.es</a></p>
+                    <p class="modal_texto"><a style="color:black;" target="_blank" href="https://www.linkedin.com/in/jaime-alba-025a526/"><img src="iconos/linkedin.svg" class="icono_ayuda">Encuéntrame en LinkedIn.</a></p>
+                    <p class="modal_texto">
+                        <div style="width:100%; display: table-cell;">
+                            <a class="modal_texto" style="color:black;" target="_blank" href="https://github.com/jacnc17/TFM/">
+                                <img src="iconos/icons8-github.svg" class="icono_ayuda">Código disponible en GitHub.
+                            </a>
+                        </div>
+                        <div  style="display: table-cell;" >
+                           <a target="_blank" href="https://usal.es" style="cursor:pointer;  align-self: end;"><img src="imagenes/logoUSAL.png" style="max-height:50px"></a>
+                        </div>
+                    </p>
+        
                 </div>
 
             </div>
@@ -357,8 +367,9 @@
                 var altura_menu = document.getElementById("borde_superior").clientHeight;
 
                 document.getElementById("modal_que_es_contenido").style.marginTop= altura_menu+'px';
-                modal.style.height = "100%"
-                modal.style.maxHeight = "100%"
+                modal.style.height = "100%";
+                modal.style.maxHeight = "100%";
+                document.getElementById("modal_que_es_contenido").style.overflow = "auto"; 
             }
 
             // Gestión de la pulsación del modal3
@@ -368,8 +379,10 @@
                 var altura_menu = document.getElementById("borde_superior").clientHeight;
 
                 document.getElementById("modal_como_funciona_contenido").style.marginTop = altura_menu+'px';
-                modal3.style.height = "100%"
-                modal3.style.maxHeight = "100%"
+                modal3.style.height = "100%";
+                modal3.style.maxHeight = "100%";
+                document.getElementById("modal_como_funciona_contenido").style.overflow = "auto"; /**/
+
             }
 
             // Gestión de la pulsación del modal4
@@ -378,31 +391,74 @@
                 var altura_menu = document.getElementById("borde_superior").clientHeight;
 
                 document.getElementById("modal_como_esta_hecho_contenido").style.marginTop = altura_menu+'px';
-                modal4.style.height = "100%"
-                modal4.style.maxHeight = "100%"
+                modal4.style.height = "100%";
+                modal4.style.maxHeight = "100%";
+                document.getElementById("modal_como_esta_hecho_contenido").style.overflow = "auto"; /**/
+
+            }
+
+            // Gestión de la pulsación del modal5
+            btn5.onclick = function () {
+                // Recupero la altura del menú:
+                var altura_menu = document.getElementById("borde_superior").clientHeight;
+
+                document.getElementById("modal_creditos_contenido").style.marginTop = altura_menu+'px';
+                modal5.style.height = "100%";
+                modal5.style.maxHeight = "100%";
+                document.getElementById("modal_creditos_contenido").style.overflow = "auto"; 
+
             }
 
             // When the user clicks on <span> (x), close the modal
             span.onclick = function () {
                 // modal.style.display = "none";
-                modal.style.height = "0%"
-                modal.style.maxHeight = "0%"
-                modal3.style.height = "0%"
-                modal3.style.maxHeight = "0%"               
-                modal4.style.height = "0%"
-                modal4.style.maxHeight = "0%"     
-                modal4.style.height = "0%"
-                modal5.style.maxHeight = "0%"  
+                document.getElementById("modal_que_es_contenido").style.overflowy = "hidden"; /**/
+                document.getElementById("modal_como_funciona_contenido").style.overflowy = "hidden"; /**/
+                document.getElementById("modal_como_esta_hecho_contenido").style.overflowy = "hidden"; /**/
+                document.getElementById("modal_creditos_contenido").style.overflowy = "hidden"; /**/
+                document.getElementById("modal_que_es_contenido").style.overflow = "hidden"; /**/
+                document.getElementById("modal_como_funciona_contenido").style.overflow = "hidden"; /**/
+                document.getElementById("modal_como_esta_hecho_contenido").style.overflow = "hidden"; /**/
+                document.getElementById("modal_creditos_contenido").style.overflow = "hidden"; /**/
+
+                modal.style.height = "0%";
+                modal.style.maxHeight = "0%";
+                modal3.style.height = "0%";
+                modal3.style.maxHeight = "0%";               
+                modal4.style.height = "0%";
+                modal4.style.maxHeight = "0%";     
+                modal4.style.height = "0%";
+                modal5.style.maxHeight = "0%";  
+                modal5.style.height = "0%" ;
+
+
+
+
             }
 
             // When the user clicks anywhere outside of the modal, close it
             window.onclick = function (event) {
-                if (event.target == modal2) {
-                    modal2.style.display = "none";
+                
+                if (event.target == modal) {               
+                    modal.style.height = "0%";
+                    modal.style.maxHeight = "0%";
 
-                } else {
-                    event.target.style.height = "0%"
-                    event.target.style.maxHeight = "0%"
+                } else if (event.target == modal2) {
+                    modal2.style.height = "0%";
+                    modal2.style.maxHeight = "0%";
+
+                } else if (event.target == modal3) {
+                    modal3.style.height = "0%";
+                    modal3.style.maxHeight = "0%";
+
+                } else if (event.target == modal4) {
+                    modal4.style.height = "0%";
+                    modal4.style.maxHeight = "0%";
+
+                } else if (event.target == modal5) {
+                    modal5.style.height = "0%"
+                    modal5.style.maxHeight = "0%"
+
                 }
 
 
@@ -651,7 +707,7 @@
                     // MIME
                     var mime =  /*[[${misMimes[status.index]}]]*/ 'default';
                     // FIN MIME 
-                    anadir_item_editor(tam_nombre_archivo, mime);
+                    anadir_item_editor(tam_nombre_archivo, mime );
 
                     regenera_miniatura([[${ idSesion }]], tam_nombre_archivo); // Thymeleaf
 
