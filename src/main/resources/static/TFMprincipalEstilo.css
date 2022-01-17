@@ -151,12 +151,13 @@
     left: 80px;
     top: 0px;
     z-index: 50;
-    border-radius: 50px;
+    /* border-radius: 50px; */
 }
 
 .capa_hover_img {
     position: absolute;
     padding-left: 80px;
+    padding-right: 80px;
     top: 65px;
     left: -50px;
     /* width: 500px; */
@@ -181,6 +182,7 @@
 {
     position: absolute;
     padding-left: 80px;
+    padding-right: 80px;
     top: 65px;
     left: -50px;
     /* width: 500px; */

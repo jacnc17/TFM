@@ -1240,7 +1240,7 @@ function regenera_hovers ()
             detalle_img_txt.style.alignContent = "left";
             detalle_img_txt.style.position = "relative";
             detalle_img_txt.style.padding ="0px";
-            detalle_img_txt.style.paddingRight ="70px";
+            detalle_img_txt.style.paddingRight ="170px";
             detalle_img_txt.style.marginRight ="20px";
 
             info.append(detalle_img_txt);
@@ -1312,15 +1312,25 @@ function regenera_hovers ()
             info.style.height=""
             info.style.display= "table-row";
 
-            var detalle_img_txt =  document.createElement("span");
-            try { detalle_img_txt.innerHTML = nombre_elto.substring(nombre_elto.indexOf("_")+1) + "<br> Duración: N.A. s." } catch (exc) {}
-            detalle_img_txt.style.alignContent = "left";
-            detalle_img_txt.style.position = "relative";
-            detalle_img_txt.style.padding ="0px";
-            detalle_img_txt.style.paddingRight ="70px";
-            detalle_img_txt.style.marginRight ="20px";
+            var detalle_vid_txt =  document.createElement("span");
+            detalle_vid_txt.id = "etiq_video_hover_"+nombre_elto;
+            var dur_orig = document.getElementById(nombre_elto).getAttribute("dur_orig");         /* hashDuracionesOriginales.get(nombre_elto) */
+            // dur_orig = hashDuracionesOriginales.get("1480958_file_example_AVI_1280_1_5MG.avi");
+            // console.log ("Buscando ", nombre_elto, " en ", hashDuracionesOriginales, ":", dur_orig);
+/*             console.log ("Buscando duracion________________________________________________");
+            console.log (document.getElementById(nombre_elto));
+            console.log ("Buscando duracion de ", nombre_elto, "  :", dur_orig); */
 
-            info.append(detalle_img_txt);
+            // try { detalle_img_txt.innerHTML = nombre_elto.substring(nombre_elto.indexOf("_")+1) + "<br> Duración: "+dur_orig+" s." } catch (exc) {}
+            try { detalle_vid_txt.innerHTML = nombre_elto.substring(nombre_elto.indexOf("_")+1) } catch (exc) {}
+
+            detalle_vid_txt.style.alignContent = "left";
+            detalle_vid_txt.style.position = "relative";
+            detalle_vid_txt.style.padding ="0px";
+            detalle_vid_txt.style.paddingRight ="170px";
+            detalle_vid_txt.style.marginRight ="20px";
+
+            info.append(detalle_vid_txt);
 
             // Se añade la imagen de hover
            // detalle.append(detalle_img_txt);
@@ -1373,12 +1383,17 @@ function borra_hovers () {
         document.getElementsByClassName ("capa_hover")[i].remove();
     }
 
-            // Ocultamos todos los posibles hovers.
-            for (i=0; i<document.getElementsByClassName ("capa_hover_img").length; i++)
-            {
-                console.log("borrando ", document.getElementsByClassName ("capa_hover_img")[i]);
-                try { document.getElementsByClassName ("capa_hover_img")[i].style.visibility="hidden"; } catch (error) { console.log (error); }
-            } 
+    // Ocultamos todos los posibles hovers.
+    for (i = 0; i < document.getElementsByClassName("capa_hover_img").length; i++) {
+        console.log("borrando ", document.getElementsByClassName("capa_hover_img")[i]);
+        try { document.getElementsByClassName("capa_hover_img")[i].style.visibility = "hidden"; } catch (error) { console.log(error); }
+    }
+
+    // Ocultamos todos los posibles hovers.
+    for (i = 0; i < document.getElementsByClassName("capa_hover_vid").length; i++) {
+        console.log("borrando ", document.getElementsByClassName("capa_hover_vid")[i]);
+        try { document.getElementsByClassName("capa_hover_vid")[i].style.visibility = "hidden"; } catch (error) { console.log(error); }
+    } 
 }
 
 
@@ -1865,6 +1880,10 @@ var observer = new MutationObserver(function (mutations) {
 
                     // Se almacena en la hash la duración original
                     hashDuracionesOriginales.set(clip, duracion * step);
+
+                    console.log ("SETTING duracion________________________________________________", duracion);
+                    try { document.getElementById("etiq_video_hover_"+clip).innerHTML = clip + "<br> Duración: "+Number(duracion).toFixed(2)+" s." } catch (exc) {console.log (exc);}
+
                     // OK console.log("Mutation. VIDEO " + clip + ", duracion = " + duracion);
 
                     // OK console.log("Mutation. document.getElementById : "+ document.getElementById("video_oculto_"+clip));
@@ -1882,6 +1901,10 @@ var observer = new MutationObserver(function (mutations) {
         // regenera_hovers(); // Cuando se añade un nuevo elemento, se regeneran los hovers
     }
 });
+
+function formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+  }
 
 observer.observe(document.getElementById("misRecursos"), { attributes: false, childList: true, characterData: false, subtree: true });
 
