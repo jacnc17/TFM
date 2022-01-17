@@ -20,7 +20,7 @@ public final class TFMConstantes {
 
     public static Hashtable<String, TFMInfoSesion> infoSesion = new Hashtable<String, TFMInfoSesion>();
 
-    public static int altoMiniatura = 75;
+    public static int altoMiniatura = 300;
 
     /**
      * Método que se llamará al iniciar la aplicación

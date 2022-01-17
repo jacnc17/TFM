@@ -724,7 +724,7 @@ function muestra_captura(tiempo, posicion, offset) {
         video.onseeked = (event) => {
 
             // console.log("Debe mostrarse el fotograma en ", pos_real, ", video.currentTime = ", video.currentTime);
-
+            // Repinta el fotograma
             const canvas = document.createElement("canvas");
             canvas.id = "canvas_captura";
             canvas.width = "832";
@@ -734,11 +734,11 @@ function muestra_captura(tiempo, posicion, offset) {
             // console.log(canvas.toDataURL());
 
             if (document.getElementById("img_temporal") != null) {
-                console.log("caso 1");
+                // console.log("caso 1");
                 document.getElementById("img_temporal").src = canvas.toDataURL();
             }
             else {
-                console.log("caso 2");
+                // console.log("caso 2");
 
                 nueva_imagen = document.createElement('img');
 
@@ -1131,7 +1131,8 @@ function anadir_item_editor(nombre_archivo, mimetypeArchivo     ) {
 
 
     // Gestión de elemento HOVER
-     iDiv.addEventListener('mouseover', function (evento) {
+    console.log ("Gestión de elemento HOVER",iDiv);
+    iDiv.addEventListener('mouseover', function (evento) {
         muestra_hover(iDiv);
     });
     iDiv.addEventListener('mouseout', function () {
@@ -1150,18 +1151,11 @@ function anadir_item_editor(nombre_archivo, mimetypeArchivo     ) {
     iDiv.dispatchEvent(event);
     iDiv.dispatchEvent(event2);
     
-      // Fin gestión elemento HOVER
-
-
-
-
-
-
-      
-    
+      // Fin gestión elemento HOVER 
 
     // Se añade el elemento al documento.
     document.getElementById('misRecursos').appendChild(iDiv);
+
 
     // JQUERY
     $("#sortable").sortable({
@@ -1169,25 +1163,29 @@ function anadir_item_editor(nombre_archivo, mimetypeArchivo     ) {
     });
 }
 
+// Función que muestra un hover específico
 function muestra_hover(iDiv) {
-    console.log("HOVER ",iDiv.id);
+    // console.log("HOVER ",iDiv.id);
+    // Recupero todos los posibles hovers.
+
+
     if (document.getElementById("hover_"+iDiv.id)!=null) {
 
-        var detalle_img = document.getElementById("hover_"+iDiv.id); // TODO : video 
-        console.log("HOVER 2222222222222222222222222", detalle_img);
+        var detalle_img = document.getElementById("hover_"+iDiv.id); 
+        // console.log("HOVER mostrando", detalle_img);
 
         detalle_img.style.visibility="visible";
-
     }
 }
 
 
+// Método que esconde un hover específico
 function oculta_hover (iDiv) {
     // console.log("HOVER ",iDiv.id);
     if (document.getElementById("hover_"+iDiv.id)!=null) {
 
-        var detalle_img = document.getElementById("hover_"+iDiv.id); // TODO : video 
-        // console.log("HOVER 3333333333333333", detalle_img);
+        var detalle_img = document.getElementById("hover_"+iDiv.id);  
+        // console.log("HOVER ocultando", detalle_img);
 
         detalle_img.style.visibility="hidden";
 
@@ -1205,13 +1203,11 @@ function regenera_hovers ()
     // Recuperamos los elementos de la capa de recursos
     var recursos = document.getElementById("misRecursos").childNodes;
 
-
-
     // Borramos todos los previos
     borra_hovers()
 
 
-    console.log ("REGENERANDO H", document.getElementsByClassName("capa_hover"));
+    // console.log ("REGENERANDO H", document.getElementsByClassName("capa_hover"));
 
 
     // Recorremos la lista de recursos
@@ -1222,25 +1218,40 @@ function regenera_hovers ()
         console.log (nombre_elto);
         // console.log(document.getElementById("img_oculta_" + nombre_elto));
         if (document.getElementById("img_oculta_" + nombre_elto) != null) {
-            console.log("BINGO! SE ENCONTRO img_oculta_" + nombre_elto);
+            // console.log("BINGO! SE ENCONTRO img_oculta_" + nombre_elto);
     
-            var detalle = document.createElement("span");
+            var detalle = document.createElement("div");
             detalle.id = "hover_"+nombre_elto;
-            detalle.className = "capa_hover";
-            detalle.style.visibility="hidden";
+            detalle.className="capa_hover_img";
 
             var detalle_img = document.createElement("img");
-            detalle_img.src = document.getElementById("img_oculta_" + nombre_elto).src; // TODO : video 
-            detalle_img.style.position="absolute";
-            detalle_img.style.top="50px";
-            detalle_img.style.zIndex="50";
-            detalle_img.style.height="200px";
-            detalle_img.style.borderRadius="50px";
+            detalle_img.src = document.getElementById("img_oculta_" + nombre_elto).src;
             detalle_img.className ="capa_hover_imagen";
+            detalle_img.style.display= "table-row";
+
+            var info =   document.createElement("div");
+            info.style.fontFamily="fuente_custom";
+            info.style.width="100%";
+            info.style.height=""
+            info.style.display= "table-row";
+
+            var detalle_img_txt =  document.createElement("span");
+            try { detalle_img_txt.innerHTML = nombre_elto.substring(nombre_elto.indexOf("_")+1) + "<br>Duración por defecto: "+duracion_defecto_img+"s."; } catch (exc) {}
+            detalle_img_txt.style.alignContent = "left";
+            detalle_img_txt.style.position = "relative";
+            detalle_img_txt.style.padding ="0px";
+            detalle_img_txt.style.paddingRight ="70px";
+            detalle_img_txt.style.marginRight ="20px";
+
+            info.append(detalle_img_txt);
+
+            // Se añade la imagen de hover
+           // detalle.append(detalle_img_txt);
+           detalle.append(info);
+           detalle.append(detalle_img);
+
+ 
             
-    
-            detalle_img.style.left = detalle_img.style.left + 50;
-            detalle.append(detalle_img);
             document.getElementById(nombre_elto).appendChild(detalle);
 
 
@@ -1248,7 +1259,13 @@ function regenera_hovers ()
             iDiv = document.getElementById("misRecursos").childNodes[i];
             iDiv.addEventListener('mouseover', function (evento) {
                 // console.log("EVENTO",evento.path[1].id);
-                muestra_hover(document.getElementById(evento.path[1].id));
+                // console.log (evento.target);
+                if (evento.path) { // Basados en chrome
+                    muestra_hover(document.getElementById(evento.path[1].id));
+                }
+                else if (evento.target != undefined) {// FF
+                    try { muestra_hover(document.getElementById(evento.target[1].id)); } catch (error) {}
+                }
             });
             iDiv.addEventListener('mouseout', function () {
                 oculta_hover(this);
@@ -1267,9 +1284,84 @@ function regenera_hovers ()
             iDiv.dispatchEvent(event2);
             // Fin gestión elemento HOVER
         }
+        else if (document.getElementById("video_oculto_" + nombre_elto) != null) {
+            // console.log ("Es un vídeo: ",nombre_elto);
+            var detalle = document.createElement("div");
+            detalle.id = "hover_"+nombre_elto;
+            detalle.className="capa_hover_vid";
+
+            // Recuperamos la miniatura
+            var miniatura;
+            var referencia =  document.getElementById(nombre_elto);
+            if (referencia.childNodes[0])
+            {
+                miniatura = referencia.childNodes[0].src;
+                // console.log ("Es un vídeo: miniatura ",miniatura);
+            }
+
+            var detalle_img = document.createElement("img");
+            detalle_img.src = miniatura; 
+            detalle_img.className ="capa_hover_imagen";
+            detalle_img.style.display= "table-row";
+
+ 
+            
+            var info =   document.createElement("div");
+            info.style.fontFamily="fuente_custom";
+            info.style.width="100%";
+            info.style.height=""
+            info.style.display= "table-row";
+
+            var detalle_img_txt =  document.createElement("span");
+            try { detalle_img_txt.innerHTML = nombre_elto.substring(nombre_elto.indexOf("_")+1) + "<br> Duración: N.A. s." } catch (exc) {}
+            detalle_img_txt.style.alignContent = "left";
+            detalle_img_txt.style.position = "relative";
+            detalle_img_txt.style.padding ="0px";
+            detalle_img_txt.style.paddingRight ="70px";
+            detalle_img_txt.style.marginRight ="20px";
+
+            info.append(detalle_img_txt);
+
+            // Se añade la imagen de hover
+           // detalle.append(detalle_img_txt);
+           detalle.append(info);
+           detalle.append(detalle_img);
+
+           document.getElementById(nombre_elto).appendChild(detalle);
+
+
+            // Gestión de elemento HOVER
+            iDiv = document.getElementById("misRecursos").childNodes[i];
+            iDiv.addEventListener('mouseover', function (evento) {
+                // console.log("EVENTO",evento.path[1].id);
+                // console.log (evento.target);
+                if (evento.path) { // Basados en chrome
+                    muestra_hover(document.getElementById(evento.path[1].id));
+                }
+                else if (evento.target != undefined) {// FF
+                    try { muestra_hover(document.getElementById(evento.target[1].id)); } catch (error) {}
+                }
+            });
+            iDiv.addEventListener('mouseout', function () {
+                oculta_hover(this);
+            });
+            var event = new MouseEvent('mouseover', {
+                'view': window,
+                'bubbles': true,
+                'cancelable': true
+            });
+            var event2 = new MouseEvent('mouseout', {
+                'view': window,
+                'bubbles': true,
+                'cancelable': true
+            });
+            iDiv.dispatchEvent(event);
+            iDiv.dispatchEvent(event2);
+            // Fin gestión elemento HOVER        }
+        }
     }
 
-    
+
 }
 
 
@@ -1281,12 +1373,12 @@ function borra_hovers () {
         document.getElementsByClassName ("capa_hover")[i].remove();
     }
 
-        // Ocultamos todos los posibles hovers.
-        for (i=0; i<document.getElementsByClassName ("capa_hover_imagen").length; i++)
-        {
-            console.log("borrando ", document.getElementsByClassName ("capa_hover_imagen")[i]);
-            document.getElementsByClassName ("capa_hover")[i].remove();
-        }
+            // Ocultamos todos los posibles hovers.
+            for (i=0; i<document.getElementsByClassName ("capa_hover_img").length; i++)
+            {
+                console.log("borrando ", document.getElementsByClassName ("capa_hover_img")[i]);
+                try { document.getElementsByClassName ("capa_hover_img")[i].style.visibility="hidden"; } catch (error) { console.log (error); }
+            } 
 }
 
 

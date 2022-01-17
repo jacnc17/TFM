@@ -67,7 +67,7 @@
 
 <body onLoad="get_sesion_anterior(); get_variables_edicion(); get_notas_cookies(); regenera_hovers()"  >
     
-    <div id="main">
+    <div id="main" >
         <div id="borde_superior" style="width: 100%; background-color: black; padding:10px; padding-left:20px; display: flex;    min-height: 60px;">
             <div class="titulos_superior_franja" draggable="false">
                 <div class="titulo_superior" draggable="false">
@@ -92,29 +92,51 @@
 
 
         <div id="principal">
-            <div style="height: 50px">
+            <div style="height: 25px">
             </div>
 
             <div class="container" id="contenedor">
                 <div class="row">
-                    <div class="col-lg-8 mt-5">
+                    <p class="texto_unilinea" >Área de carga</p>
+
+                    <div class="col-lg-8 mt-5" style="display: flex; overflow-x: hidden;";>
+
+                        <div id="ayuda1" class="ayuda1_clase">
+                            <p class="texto_ayuda">Haz click en este área para cargar los archivos de imagen o vídeos que quieras añadir al proyecto.</p>
+                            <p class="texto_ayuda">También puedes arrastrarlos desde tu navegador.</p>
+                            <p class="texto_ayuda">Los clips cargados aparecerán abajo en el área de edición.</p>                            
+                        </div>
+                        <div id="ayuda1_boton">
+                            <button id="bt_ayuda1_boton" class="ayuda1_boton_clase">?</button>
+                        </div>
+                        <script>
+                            $( "#ayuda1"  ).click(function() {
+                                $( "#ayuda1" ).toggle( "slide", 1000, "swing");
+                            });
+                            $( "#bt_ayuda1_boton"  ).click(function() {
+                                $( "#ayuda1" ).toggle( "slide", 1000, "swing" );
+                            }); 
+                        </script>
 
                         <div th:if="${message}">
                             <h2 th:text="${message}" />
                         </div>
 
-                        <div id="dropzoneEL" class="dropzone square">
-                            <div id="DIVdropzoneELEMENTOSfondo" style="position: absolute; top:0; bottom:0; left:0;right:0;z-index: -1;overflow: hidden;">
 
-                            </div>
-                            <form action="/upload" class="dropzone needsclick" id="DIVdropzoneELEMENTOS">
-
-                                <div class="dz-message needsclick">
-                                    <button id="botonZona" type="button" class="dz-button"></button>
-                                    <br />
+                        <div id="dropzoneEL" class="dropzone square" style="width:100%">
+                            <div class="DIVdropzoneZoom">
+                                <div id="DIVdropzoneELEMENTOSfondo" class="DIVdropzoneELEMENTOSfondo">
+                            
                                 </div>
-
-                            </form>
+                                <form action="/upload" class="dropzone needsclick" id="DIVdropzoneELEMENTOS">
+                            
+                                    <div class="dz-message needsclick">
+                                        <button id="botonZona" type="button" class="dz-button"></button>
+                                        <br />
+                                    </div>
+                            
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,23 +144,80 @@
 
 
             <div id="cloning" class="fila">
-                <div id="misRecursos" class="scrollbar, scroller"></div>
 
-                <div id="miZonaEdicion" class="zonaEdicion" ondragend="recalcula_propiedades()"></div>
+                <div class="row" >
+                    <p class="texto_unilinea" >Área de recursos</p>
 
-                <div id="zonaInferior" style="display: flex; justify-content: revert;">
-
-                    <div style="padding: 20px; width:20%;">
-                        <a href="#" class="claseBoton" style="text-decoration: none" onclick="muestra_capa_notas()">
-                            <span>AÑADIR NOTAS</span>
-                        </a>
+                    <div id="ayuda2" class="ayuda2_clase">
+                        <p class="texto_ayuda">Aquí aparecerán los vídeos e imágenes que hayas cargado.</p>
+                        <p class="texto_ayuda">Arrástralos al área de edición tantas veces como quieras para añadirlos a tu vídeo.</p>
+                        <p class="texto_ayuda">Puedes ver su detalle pasando el ratón por encima.</p>
                     </div>
+                    <div id="ayuda2_boton">
+                        <button id="bt_ayuda2_boton" class="ayuda2_boton_clase">?</button>
+                    </div>
+                    <script>
+                        $( "#ayuda2"  ).click(function() {
+                            $( "#ayuda2" ).toggle( "slide", 1000, "swing");
+                        });
+                        $( "#bt_ayuda2_boton"  ).click(function() {
+                            $( "#ayuda2" ).toggle( "slide", 1000, "swing" );
+                        }); 
+                    </script>
 
+                    <div id="misRecursos" class="scrollbar, scroller" ></div>
+                </div>
+
+                <div>
+                    <p class="texto_unilinea" style="padding-left: 6px !important;">Área de edición</p>
+
+                    <div id="ayuda3" class="ayuda3_clase">
+                        <p class="texto_ayuda">Aquí están los vídeos e imágenes que aparecerán el tu vídeo.</p>
+                        <p class="texto_ayuda">Arrástralos dentro de este área para cambiar su orden, o llévalos a la papelera si no lo quieres usar.</p>
+                        <p class="texto_ayuda">Haz click sobre cada clip para hacer que las imágenes duren más o menos, o decidir qué parte del vídeo quieres que apareza.</p>                            
+                    </div>
+                    <div id="ayuda3_boton">
+                        <button id="bt_ayuda3_boton" class="ayuda3_boton_clase">?</button>
+                    </div>
+                    <script>
+                        $( "#ayuda3"  ).click(function() {
+                            $( "#ayuda3" ).toggle( "slide", 1000, "swing");
+                        });
+                        $( "#bt_ayuda3_boton"  ).click(function() {
+                            $( "#ayuda3" ).toggle( "slide", 1000, "swing" );
+                        }); 
+                    </script>
+                    <div id="miZonaEdicion" class="zonaEdicion" ondragend="recalcula_propiedades()"></div>
+                </div>
+
+                <div id="zonaInferior" class="row" style="display: flex; justify-content: revert;">
+                    <p class="texto_unilinea" style="padding-left: 20px !important;">Papelera</p>
+
+                    <div id="ayuda4" class="ayuda4_clase">
+                        <p class="texto_ayuda">Arrastra hasta aquí los clips del área de edición que ya no necesites.</p>
+                        <p class="texto_ayuda">La duración del vídeo se actualizará.</p>
+                        <p class="texto_ayuda">¡No te preocupes! Las notas no se perderán cuando quites un clip.</p>                            
+                    </div>
+                    <div id="ayuda4_boton">
+                        <button id="bt_ayuda4_boton" class="ayuda4_boton_clase">?</button>
+                    </div>
+                    <script>
+                        $( "#ayuda4"  ).click(function() {
+                            $( "#ayuda4" ).toggle( "slide", 1000, "swing");
+                        });
+                        $( "#bt_ayuda4_boton"  ).click(function() {
+                            $( "#ayuda4" ).toggle( "slide", 1000, "swing" );
+                        }); 
+                    </script>
                     <div id="papelera" class="zonaPapelera" ondragend="borra()" ondragleave="borra()" style="float: left"></div>
 
-                    <div style="padding-top: 20px; padding-left: 40px;">
-                        <a href="#" class="claseBoton2" style="text-decoration: none" onclick="lanzaFetch()">
-                            <span>GENERAR VÍDEO</span>
+                    <div style="width:28%; margin:0 auto; text-align: center;">
+                        <a href="#" class="claseBoton" style="text-decoration: none" onclick="muestra_capa_notas()">
+                            <span style="color:black">AÑADIR NOTAS</span>
+                        </a>
+
+                        <a href="#" class="claseBoton " style="text-decoration: none; position: relative; top: 60px" onclick="lanzaFetch()">
+                            <span style="color:black">GENERAR VÍDEO</span>
                         </a>
                     </div>
 
@@ -223,7 +302,7 @@
             <!-- Modal content -->
             <div  id="modal_que_es_contenido" class="modal-contenido" >
                 <div class="fondo_modal">
-                    <span class="close" style="cursor:pointer; align-self: end;" onclick="modal2.style.height='0px'; modal2.style.maxHeight = '0px'">&times;</span>
+                    <span class="close" style="cursor:pointer; align-self: end;" onclick="modal.style.height='0px'; modal.style.maxHeight = '0px'">&times;</span>
                     <p class="modal_cabecera">¡Bienvenid@!</p>
                     <p class="modal_texto">En esta página web podrás <i>crear vídeos</i> con solo cargar tus imágenes y vídeos favoritos.</p>
                     <p class="modal_texto">Podrás crear un vídeo a partir de una foto, añadir notas y stickers, recortar vídeos y añadirlos las veces que quieras.</p>
@@ -301,9 +380,9 @@
             </div>
         </div>
 
-        <div id="modalImagenes" class="modal" style="z-index: 50;" >
+        <div id="modalImagenes" class="modalStickers" style="z-index: 50;" >
             <!-- Modal content -->
-            <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;">
+            <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;padding: 20px;    margin:0 auto;">
                 <span class="close" style="cursor:pointer;   align-self: end;" onclick="modal2.style.display = 'none'; ">&times;</span>
                 <p>Selecciona qué imagen quieres incluir en forma de nota:</p>
                 <div id="imagenes_miniaturas_notas"></div>
@@ -336,7 +415,7 @@
                 /*[/]*/
                 /*]]>*/
             }
-    ////////////// Fin carga de stickers
+                ////////////// Fin carga de stickers
         </script>
 
         <script>
@@ -431,8 +510,9 @@
                 modal5.style.maxHeight = "0%";  
                 modal5.style.height = "0%" ;
 
-
-
+                document.getElementById("modalImagenes").style.overflowy = "hidden"; /**/
+                modal2.style.height = "0%";
+                modal2.style.maxHeight = "0%";
 
             }
 
@@ -444,8 +524,8 @@
                     modal.style.maxHeight = "0%";
 
                 } else if (event.target == modal2) {
-                    modal2.style.height = "0%";
-                    modal2.style.maxHeight = "0%";
+                    modal2.style.display = "none"; /**/
+
 
                 } else if (event.target == modal3) {
                     modal3.style.height = "0%";
@@ -463,6 +543,7 @@
 
 
             }
+
 
 
             // Modal que se mostrará para poder elegir una imagen a incluir.
@@ -505,12 +586,6 @@
                     }
                 }
             }
-
-
-
-
-
-
 
 
             // Función que añade una nota como imagen
@@ -631,7 +706,12 @@
         </script>
 
 
+        <script>
+            //////////// GESTION DE ANCHO DE ELEMENTOS
+            // #misRecursos
+            //////////// FIN GESTION DE ANCHO DE ELEMENTOS
 
+        </script>
 
 
         <script th:src="@{/TFMMetodos.js}"></script>
@@ -724,7 +804,6 @@
 
 
 
-
                     var idSesion = [[${ idSesion }]];
                     idSesion.replace("\"", ""); // Se eliminan posibles comillas.
 
@@ -743,6 +822,7 @@
                     // Es necesario que añadir la capa oculta discrimine por mime type
                     anadir_capa_oculta(id_imagen, idSesion, file.type);
 
+                    regenera_hovers();
 
 
 
@@ -757,6 +837,28 @@
             window.onbeforeunload = function () {
                 return "Nono";
             }
+
+            // Nos aseguramos que al cambiar su tamaño, el div de elementos no supere el ancho de la página
+            // (esto no se consigue con un width=100% porque los elementos se añaden dinámicamente).
+            function reportWindowSize() {
+                /* heightOutput.textContent = window.innerHeight; */
+                /* widthOutput.textContent = window.innerWidth; */
+                /* console.log("ANCHO: ",document.getElementById('misRecursos').offsetWidth); */
+                console.log("ANCHO: ",window.innerWidth);
+
+                document.getElementById('misRecursos').style.width = window.innerWidth-14+ "px";
+                document.getElementById('misRecursos').style.maxWidth = window.innerWidth-14+ "px";
+                document.getElementById('miZonaEdicion').style.width = window.innerWidth-30+ "px";
+               document.getElementById('miZonaEdicion').style.maxWidth = window.innerWidth-30+ "px";   
+            }
+
+            // Nos aseguramos que al cargar  el div de elementos no supere el ancho de la página
+            // (esto no se consigue con un width=100% porque los elementos se añaden dinámicamente).
+            window.onresize = reportWindowSize;
+            document.getElementById('misRecursos').style.width = window.innerWidth-14+ "px";
+            document.getElementById('misRecursos').style.maxWidth = window.innerWidth-14+ "px";
+            document.getElementById('miZonaEdicion').style.width = window.innerWidth-30+ "px";
+            document.getElementById('miZonaEdicion').style.maxWidth = window.innerWidth-30+ "px";
         </script>
 
 
