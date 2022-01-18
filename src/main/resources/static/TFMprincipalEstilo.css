@@ -211,13 +211,16 @@
     /* Enmarca el 640 x 360 */
     /* width: 500px; */
     /* max-width: 500px; */
-    width: 640px;
-    max-width: 640px;
+    width: 700px;
+    max-width: 700px;
     height: 500px;
     max-height: 500px;
     background-color: rgba(230, 230, 250, 1);
-    margin-top: 20px
+    margin-top: 20px;
+    border-radius: 20px;
+    border-style: dashed;
 }
+
 
 
 .capa_intermedia_edicion_nota {
@@ -230,6 +233,8 @@
     max-height: 560px;
     background-color: rgba(230, 230, 250, 1);
     margin-top: 20px;
+    border-radius: 20px;
+
 }
 
 
@@ -529,7 +534,7 @@
 }
 
 
-#misRecursos::-webkit-scrollbar-track {
+/* #misRecursos::-webkit-scrollbar-track {
     border: 1px solid black;
     background-color: #F5F5F5;
 }
@@ -542,21 +547,77 @@
 #misRecursos::-webkit-scrollbar-thumb {
     background-color: #000000;
 }
+ */
 
 
-#miZonaEdicion::-webkit-scrollbar-track {
+ /* Let's get this party started */
+/* https://css-tricks.com/examples/WebKitScrollbars/ */
+#misRecursos::-webkit-scrollbar {
+    width: 2px;
+    height: 5px;
+}
+ 
+/* Track */
+#misRecursos::-webkit-scrollbar-track {
+    /* -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);  */
+    -webkit-border-radius: 1px;
+    border-radius: 2px;
+}
+ 
+/* Handle */
+#misRecursos::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    background: rgba(79, 180, 242, 1); /* #29e;*/ 
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+#misRecursos::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+
+
+/* #miZonaEdicion::-webkit-scrollbar-track {
     border: 1px solid black;
     background-color: #F5F5F5;
 }
 
 #miZonaEdicion::-webkit-scrollbar {
-    width: 10px;
     background-color: #F5F5F5;
+    width: 3px;
 }
 
 #miZonaEdicion::-webkit-scrollbar-thumb {
     background-color: rgba(148, 223, 63, 0.5);
+} */
+
+
+/* Let's get this party started */
+/* https://css-tricks.com/examples/WebKitScrollbars/ */
+#miZonaEdicion::-webkit-scrollbar {
+    width: 2px;
+    height: 5px;
 }
+ 
+/* Track */
+#miZonaEdicion::-webkit-scrollbar-track {
+    /* -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);  */
+    -webkit-border-radius: 1px;
+    border-radius: 2px;
+}
+ 
+/* Handle */
+#miZonaEdicion::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    background: rgba(148, 223, 63, 0.5); 
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+#miZonaEdicion::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+
 
 .mt-5 {
     margin-top: 0px !important;
@@ -756,7 +817,7 @@ body::before {
     border-radius: 0px;
     padding-left: 15px;
     padding-top: 6px;
-
+    scrollbar-width: thin;
 }
 
 /* .zonaNotas {

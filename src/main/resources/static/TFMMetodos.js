@@ -100,10 +100,35 @@ function actualiza_barra_progreso (tiempo)
     }, tiempo);
 }
 
+// Funcion que mostrará el mensaje de ayuda en la ventana de recorte de imagen
+function muestraAyuda1() {
+    // Get the snackbar DIV
+    var x = document.getElementById("msjAyuda1");
+
+    // Add the "show" class to DIV
+    x.className = "show";
+
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+}
+
+
+// Funcion que mostrará el mensaje de ayuda en la ventana de recorte de vídeo
+function muestraAyuda2() {
+    // Get the snackbar DIV
+    var x = document.getElementById("msjAyuda2");
+
+    // Add the "show" class to DIV
+    x.className = "show";
+
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+} 
+
 // Añade la capa oculta con el item que se mostrará cuando se quiera editar un elemento.
 function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
     if (mime) {
-        //console.log("anadir_capa_oculta: CREANDO CAPA OCULTA PARA '" + nombre_archivo + ",', mime = ", mime);
+        // console.log("anadir_capa_oculta: CREANDO CAPA OCULTA PARA '" + nombre_archivo + ",', mime = ", mime);
 
         var iDiv = document.createElement('div');
         iDiv.id = "capa_oculta_" + nombre_archivo;
@@ -118,6 +143,34 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
         {
             divIntermedia.className = "capa_intermedia_edicion_imagen";
             divIntermedia.id = "capa_intermedia_" + nombre_archivo;
+
+// Marco de título
+var titulo = document.createElement('div');
+titulo.style.display="table";
+titulo.style.width="100%";
+titulo.style.paddingLeft="20px";
+titulo.style.paddingRight="20px";
+
+var tituloMarco =  document.createElement('div');
+tituloMarco.style.width="80%";
+tituloMarco.style.paddingBottom="20px";
+tituloMarco.style.overflow="hidden";
+tituloMarco.innerHTML = "<strong>Fichero: "+nombre_archivo.substring(nombre_archivo.indexOf("_")+1)+"</strong>"; 
+tituloMarco.style.display="table-cell";
+
+
+var ayuda =  document.createElement('div');
+ayuda.style.width="20%";
+ayuda.style.height="20px";
+ayuda.innerHTML="<a href='#' onclick='muestraAyuda1()'>?</a>";
+ayuda.style.textAlign="right";
+ayuda.style.display="table-cell";
+//ayuda.onclick="alert('holi')";
+
+
+
+titulo.append(tituloMarco);
+titulo.append(ayuda);
 
             // Marco de edición de proporciones 16/9
             var divMarcoEdicion = document.createElement('div');
@@ -136,7 +189,14 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
 
             // Se asignan los elementos generados.
             imgElement.src = origen_elemento_mini;
+
+divMarcoEdicion.appendChild(titulo);   
+
             divMarcoEdicion.appendChild(imgElement);
+
+
+
+
             divIntermedia.appendChild(divMarcoEdicion);
 
             iDiv.appendChild(divIntermedia);
@@ -148,10 +208,43 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             // Se asignan los atributos para la capa contenedora
             divIntermedia.className = "capa_intermedia_edicion_imagen";
             divIntermedia.id = "capa_intermedia_" + nombre_archivo + ".mp4";
+divIntermedia.style.backgroundColor = "rgb(218, 129, 136)"; // #da8188 rgb(218, 129, 136)
+
+// Marco de título
+var titulo = document.createElement('div');
+titulo.style.display="table";
+titulo.style.width="100%";
+/* titulo.style.paddingLeft="20px";
+titulo.style.paddingRight="20px"; */
+
+var tituloMarco =  document.createElement('div');
+tituloMarco.style.width="80%";
+tituloMarco.style.paddingBottom="10px";
+tituloMarco.style.overflow="hidden";
+tituloMarco.innerHTML = "<strong>Fichero: "+nombre_archivo.substring(nombre_archivo.indexOf("_")+1)+"</strong>"; 
+tituloMarco.style.display="table-cell";
+
+
+var ayuda =  document.createElement('div');
+ayuda.style.width="20%";
+ayuda.style.height="20px";
+ayuda.innerHTML="<a href='#' style='color:black' onclick='muestraAyuda2()'>?</a>";
+ayuda.style.textAlign="right";
+ayuda.style.display="table-cell";
+//ayuda.onclick="alert('holi')";
+
+
+
+titulo.append(tituloMarco);
+titulo.append(ayuda);
+
 
             // Marco de edición de proporciones 16/9
             var divMarcoEdicion = document.createElement('div');
             divMarcoEdicion.className = "clase_marco_oculto";
+
+divMarcoEdicion.style.maxHeight="400px";
+divMarcoEdicion.style.height="400px";
 
             // Creamos un elemento de vídeo mini (reducido en resolución) y se le asignan atributos.
             var origen_elemento_mini = getBase() + idSesion + '/miniaturas/mini_' + nombre_archivo + ".mp4";
@@ -169,6 +262,10 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             // Se asignan los elementos generados.
             videoElement.src = origen_elemento_mini;
             console.log("Video. Se asignan los elementos generados.");
+
+
+divMarcoEdicion.appendChild(titulo);   
+
 
             divMarcoEdicion.appendChild(videoElement);
             divIntermedia.appendChild(divMarcoEdicion);
@@ -389,7 +486,7 @@ function ventana_emergente(itemID) {
         let hasta = hashPropiedades.get(itemID).fin;
         let duracion = hashPropiedades.get(itemID).duracion_video;
 
-        console.log("ventana_emergente: itemID = " + itemID + ", inicio = " + desde + ", hasta =" + hasta + ", duracion = ",duracion);
+        // console.log("ventana_emergente: itemID = " + itemID + ", inicio = " + desde + ", hasta =" + hasta + ", duracion = ",duracion);
 
         elemento.appendChild(genera_etiquetas_slide_rango());
         elemento.appendChild(genera_slide_rango(itemID, desde, hasta, duracion, hashPropiedades.get(itemID).nombre_original));
@@ -482,8 +579,9 @@ function genera_etiquetas_slide_rango() {
 
     input_texto.type = "text";
     input_texto.id = "amount"; // Coincidirá también con el de genera_slide
-    input_texto.style = "padding:10px; width:100%; border:0; font-color:rgba(0,0,0,.55);; background-color: transparent;"
+    input_texto.style = "padding: 0px 10px 10px; width:100%; border:0 ; font-color:rgba(0,0,0,.55);; background-color: transparent;outline: none;";
     input_texto.readOnly = true;
+    input_texto.style.outline = "none";
 
     parrafo.appendChild(etiq);
     parrafo.appendChild(input_texto);
@@ -498,7 +596,8 @@ function genera_slide(itemID, tiempo, nombre_orig) {
     let mi_slider = document.createElement("div");
     mi_slider.id = "slider-range-min";
     mi_slider.style.width = "95%";
-    mi_slider.style.margin = "auto";
+    mi_slider.style.margin = "25px auto auto";
+    // mi_slider.style.marginTop = "10px";
 
     $(function () {
         $("#slider-range-min").slider({
@@ -536,31 +635,15 @@ function genera_etiquetas_slide() {
     etiq.for = "amount";
     input_texto.type = "text";
     input_texto.id = "amount"; // Coincidirá también con el de genera_slide
-    input_texto.readonly = true;
-    input_texto.style = "padding:10px; width:100%; border:0; font-color:rgba(0,0,0,.55);; background-color: transparent;"
-
-    parrafo.appendChild(etiq);
-    parrafo.appendChild(input_texto);
-
-    return parrafo;
-
-    /*
-        let parrafo = document.createElement("p");
-    let etiq = document.createElement("label");
-    let input_texto = document.createElement("input");
-
-    etiq.for = "amount";
-
-    input_texto.type = "text";
-    input_texto.id = "amount"; // Coincidirá también con el de genera_slide
-    input_texto.style = "padding:10px; width:100%; border:0; font-color:rgba(0,0,0,.55);; background-color: transparent;" 
+    input_texto.style = "padding:20px 10px 10px 10px; width:100%; border:0; font-color:rgba(0,0,0,.55);; background-color: transparent;"
     input_texto.readOnly = true;
+    input_texto.style.outline = "none";
 
     parrafo.appendChild(etiq);
     parrafo.appendChild(input_texto);
 
     return parrafo;
-    */
+
 }
 
 
@@ -675,14 +758,16 @@ function genera_etiquetas_slide_notas() {
     let input_texto = document.createElement("input");
 
     etiq.for = "posicion_nota";
+    parrafo.style =  "padding-top: 10px !important; padding-bottom: 35px !important;";
+
     // etiq.textContent = "Posición: ";
 
     input_texto.type = "text";
     input_texto.id = "posicion_nota"; // Coincidirá también con el de genera_slide
-    input_texto.readonly = true;
+    input_texto.readOnly = true;
     
     //  input_texto.style = "border:0; color:#f6931f; font-weight:bold;"
-    input_texto.style = "padding:10px; width:100%; border:0; font-color:rgba(0,0,0,.55);; background-color: transparent;"
+    input_texto.style = "padding:10px; width:100%; border:0; font-color:rgba(0,0,0,.55);; background-color: transparent; outline: none;"
 
     parrafo.appendChild(etiq);
     parrafo.appendChild(input_texto);
@@ -1215,8 +1300,9 @@ function regenera_hovers ()
     {
         let nombre_elto = recursos[i].id;
 
-        console.log (nombre_elto);
-        // console.log(document.getElementById("img_oculta_" + nombre_elto));
+        console.log ('Recorremos la lista de recursos : ',nombre_elto);
+
+        console.log(document.getElementById("img_oculta_" + nombre_elto));
         if (document.getElementById("img_oculta_" + nombre_elto) != null) {
             // console.log("BINGO! SE ENCONTRO img_oculta_" + nombre_elto);
     
@@ -1672,7 +1758,10 @@ function regenera_miniatura(idSesion, id_imagen) {
 
     //console.log('regenera_miniatura: img = ', id_img);
     //console.log('regenera_miniatura: id_imagen = ', id_imagen);
-    actual.innerHTML = "<img class='clase_miniatura' src='" + id_img + "' img_original='" + id_imagen + "' tipo_contenido='" + tipo + "' onError='miniatura_esperando(\"" + id_imagen + "\"); setTimeout(() => {regenera_miniatura(\"" + idSesion + "\", \"" + id_imagen + "\")}, 500);'>";
+
+    // let texto_alt = id_imagen + '.Haz click para fijar la duración.';
+
+    actual.innerHTML = "<img  class='clase_miniatura' src='" + id_img + "' img_original='" + id_imagen + "' tipo_contenido='" + tipo + "' onError='miniatura_esperando(\"" + id_imagen + "\"); setTimeout(() => {regenera_miniatura(\"" + idSesion + "\", \"" + id_imagen + "\")}, 500);'>";
 }
 
 
@@ -1730,6 +1819,9 @@ function recalcula_propiedades() {
             // Se le da un ID válido
             elementosEdicion[ele].id = "ID" + timeStampInMs;
             elementosEdicion[ele].setAttribute("data-nombre", nombre_original);
+            let texto_alt = nombre_original.substring(nombre_original.indexOf("_")+1) +'. Cambia su posición o haz click para fijar su duración.';
+            elementosEdicion[ele].setAttribute("alt",texto_alt);
+            elementosEdicion[ele].setAttribute("title",texto_alt);
 
             tmpPropiedades = new Map();
 
@@ -1755,7 +1847,11 @@ function recalcula_propiedades() {
             hashPropiedades = new Map([...hashPropiedades, ...tmpPropiedades])
         }
         else {
-            //console.log('El elemento ya estaba antes, recuperando sus propiedades');
+            console.log('El elemento ya estaba antes, recuperando sus propiedades', elementosEdicion[ele]);
+            let texto_alt = nombre_original.substring(nombre_original.indexOf("_")+1) +'. Cambia su posición o haz click para fijar su duración.';
+            elementosEdicion[ele].childNodes[0].setAttribute("alt",texto_alt);
+            elementosEdicion[ele].childNodes[0].setAttribute("title",texto_alt);
+
         }
     }
 
@@ -1881,8 +1977,8 @@ var observer = new MutationObserver(function (mutations) {
                     // Se almacena en la hash la duración original
                     hashDuracionesOriginales.set(clip, duracion * step);
 
-                    console.log ("SETTING duracion________________________________________________", duracion);
-                    try { document.getElementById("etiq_video_hover_"+clip).innerHTML = clip + "<br> Duración: "+Number(duracion).toFixed(2)+" s." } catch (exc) {console.log (exc);}
+                    console.log ("SETTING duracion________________________________________________", duracion, ".", clip);
+                    try { document.getElementById("etiq_video_hover_"+clip).innerHTML = clip.substring(clip.indexOf('_')+1) + "<br> Duración: "+Number(duracion).toFixed(2)+" s." } catch (exc) {console.log (exc);}
 
                     // OK console.log("Mutation. VIDEO " + clip + ", duracion = " + duracion);
 

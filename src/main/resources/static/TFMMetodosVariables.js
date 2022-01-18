@@ -147,6 +147,13 @@ function recalcula_propiedades_reload() {
         elementosEdicion[ele].id = id_final;
         elementosEdicion[ele].setAttribute("data-nombre", nombre_capa);       
 
+        // Se le da un ID válido
+        let texto_alt = nombre_capa.substring(nombre_capa.indexOf('_')+1) +'. Cambia su posición o haz click para fijar su duración.';
+        elementosEdicion[ele].setAttribute("alt",texto_alt);
+        elementosEdicion[ele].setAttribute("title",texto_alt);
+
+
+
         // En función del mime, se asignan los atributos
         if (mimesVideo.some(v => mime_objeto.includes(v))) {
             let _duracion = getCookie("elementosEdicion." + ele + ".duracion_video");
