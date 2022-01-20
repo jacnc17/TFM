@@ -148,7 +148,7 @@ function recalcula_propiedades_reload() {
         elementosEdicion[ele].setAttribute("data-nombre", nombre_capa);       
 
         // Se le da un ID válido
-        let texto_alt = nombre_capa.substring(nombre_capa.indexOf('_')+1) +'. Cambia su posición o haz click para fijar su duración.';
+        let texto_alt = "Fichero '" + nombre_capa.substring(nombre_capa.indexOf('_')+1) +"'.<br/>Cambia su posición o haz click para fijar su duración.";
         elementosEdicion[ele].setAttribute("alt",texto_alt);
         elementosEdicion[ele].setAttribute("title",texto_alt);
 

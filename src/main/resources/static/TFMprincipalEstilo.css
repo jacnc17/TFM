@@ -1,5 +1,5 @@
 .ayuda1_clase {
-    background-color: rgba(141, 172, 191, 1);
+    background-color: rgb(141, 172, 191);
     display:none;
     padding-left: 50px;
     width: 100%;
@@ -186,7 +186,7 @@
     top: 65px;
     left: -50px;
     /* width: 500px; */
-    background-color: rgb(218, 129, 136);
+    background-color: #da8188;
     height: 150px;
     z-index: 40;
     visibility: hidden;
@@ -507,6 +507,7 @@
     vertical-align: middle;
     width: 100px;
     visibility: hidden;
+    cursor: pointer;
 }
 
 .item_edicion_imagen {

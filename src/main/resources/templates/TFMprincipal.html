@@ -21,7 +21,23 @@
     <script th:src="@{/jquery/jquery-ui-1.12.1.js}"></script>
 
 
+    <script>
+            // JQuery para formatear los tooltips como HTML
+            $(function () {
+                $(document).tooltip({
+                    content: function (callback) {
+                        callback($(this).prop('title'));
+                    },
+                    position: {
+                        my: "left bottom-5",
+                        at: "left top"
+                    },
+                });
 
+            });
+
+
+    </script>
 
 
     <link th:rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.css}" />
@@ -234,28 +250,28 @@
 
             <div id="plantillaNota" style="display:none; width: 0px; padding-right:10px; padding-left:5px; padding-top:5px; border: 1px; border-color:red">
                 <div id="barraMenu" class="barraMenu" style="width: 570px;">
-                    <img class="btn btn-default" src="/bootstrap/images/arrows-move.svg" alt="Mover" style="height: 34px; width: 40px; transform:scale(0.7);margin-left: -9px;margin-right: -9px">
+                    <img class="btn btn-default" src="/bootstrap/images/arrows-move.svg" alt="Mover" title="Mover" style="height: 34px; width: 40px; transform:scale(0.7);margin-left: -9px;margin-right: -9px">
                     <button class="btn btn-default botonH1" onclick="notasH1(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/type-h1.svg" alt="H1"/></button>
+                        <img src="/bootstrap/images/type-h1.svg" alt="H1" title="Tamaño grande"/></button>
                     <button class="btn btn-default botonH2" onclick="notasH2(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/type-h2.svg"alt="H2"/></button>
+                        <img src="/bootstrap/images/type-h2.svg"alt="H2" title="Tamaño medio"/></button>
                     <button class="btn btn-default botonH3" onclick="notasH3(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/type-h3.svg" alt="H3"/></button>
+                        <img src="/bootstrap/images/type-h3.svg" alt="H3" title="Tamaño pequeño"/></button>
                     <input id="colorpicker" type="color" class="colorpick btn btn-default boton_texto" value="#ffffff"
-                        style="height: 34px; width: 40px; transform:scale(0.7);margin: -9px;">
+                        style="height: 34px; width: 40px; transform:scale(0.7);margin: -9px;" title="Elige un color y acepta con ENTER">
 
                     <button class="btn btn-default boton_texto" onclick="notasToggleNegrita(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/type-bold.svg" alt="Negrita"/></button>
+                        <img src="/bootstrap/images/type-bold.svg" alt="Negrita" title="Texto en negrita"/></button>
                     <button class="btn btn-default boton_texto" onclick="notasToggleCursiva(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/type-italic.svg" alt="Cursiva"/></button>
+                        <img src="/bootstrap/images/type-italic.svg" alt="Cursiva" title="Texto en cursiva"/></button>
 
                     <div class="dropdown boton_texto" style="display: inline-block;">
                         <button class="btn btn-default" type="button" data-toggle="dropdown" style="transform:scale(0.7);margin: -9px;">
-                            <img src="/bootstrap/images/type.svg" alt="Tipo"/>
+                            <img src="/bootstrap/images/type.svg" alt="Tipo" />
                             <span class="caret"></span></button>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" style="padding-bottom:25px">
                             <li class="arial" style="transform:scale(0.7);margin: -9px;">
                                 <a onclick="notasSetFuente(this.parentNode.parentNode.getAttribute('nota'), 'arial', 'recuadro');">Arial</a>
                             </li>
@@ -274,22 +290,22 @@
                         </ul>
                     </div>
                     <button class="btn btn-default" onclick="nota_set_inicio(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/arrow-bar-right.svg" alt="Desde" /></button>
+                        <img src="/bootstrap/images/arrow-bar-right.svg" alt="Desde" title="Inicia la nota en este fotograma"/></button>
                     <button class="btn btn-default" onclick="nota_set_fin(this.parentNode.parentNode.getAttribute('id')) " style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/arrow-bar-left.svg" alt="Hasta"/></button>
+                        <img src="/bootstrap/images/arrow-bar-left.svg" alt="Hasta" title="Termina la nota en este fotograma"/></button>
                     <button class="btn btn-default" onclick="nota_expande(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/arrows-expand.svg" alt="Todo" style="transform:rotate(90deg);" /></button>
+                        <img src="/bootstrap/images/arrows-expand.svg" alt="Todo" title="Mostrar la nota durante todo el vídeo" style="transform:rotate(90deg);" /></button>
                     <button class="btn btn-default" id="botonModalImagenes" onclick="muestraModal(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/image.svg" /></button>
+                        <img src="/bootstrap/images/image.svg" title="Cambia la nota por una imagen o sticker"/></button>
                     <button class="btn btn-default"  onclick="acerca(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/front.svg" alt="Acerca" /></button>
+                        <img src="/bootstrap/images/front.svg" alt="Acerca" title="Pon la nota delante de otras notas"/></button>
                     <button class="btn btn-default"  onclick="aleja(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/back.svg" alt="Aleja" /></button>
+                        <img src="/bootstrap/images/back.svg" alt="Aleja"  title="Pon la nota detrás de otras notas"/></button>
                     <button class="btn btn-default" onclick="nota_borra(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
-                        <img src="/bootstrap/images/trash.svg" alt="Borra" /></button>
+                        <img src="/bootstrap/images/trash.svg" alt="Borra"  title="Borra esta nota" /></button>
                 </div>
                 <input id="recuadro" type="text" class="clase_recuadro_texto" autocomplete="off" tabindex="-1" style="opacity: 1 !important;" onfocus="limita_ancho(this)">
             </div>
@@ -344,6 +360,7 @@
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://jdk.java.net/17/"><img src="iconos/icons8-logotipo-de-java-coffee-cup.svg" class="icono_ayuda">Java OpenJDK 17</a></li>
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://spring.io/projects/spring-boot"><img src="iconos/icons8-logotipo-de-spring.svg" class="icono_ayuda">Spring-Boot 2.5.6</a></li>
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://ffmpeg.org/ "><img src="iconos/icons8-ffmpeg.svg" class="icono_ayuda">FFMPEG build 2021-09-22</a></li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://www.thymeleaf.org/"><img src="iconos/icons8-thymeleaf.svg" class="icono_ayuda">Thymeleaf</a></li>
                 </div>
 
             </div>
@@ -859,6 +876,9 @@
             document.getElementById('misRecursos').style.maxWidth = window.innerWidth-14+ "px";
             document.getElementById('miZonaEdicion').style.width = window.innerWidth-30+ "px";
             document.getElementById('miZonaEdicion').style.maxWidth = window.innerWidth-30+ "px";
+
+
+
         </script>
 
 

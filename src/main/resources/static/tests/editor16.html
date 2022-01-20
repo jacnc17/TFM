@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Tooltip - Default functionality</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+  <script>
+    $(function () {
+        $(document).tooltip({
+            content: function (callback) {
+                callback($(this).prop('title'));
+            }
+        });
+    });
+
+
+  
+  </script>
+  <style>
+        .ui-tooltip {
+    max-width: 250px;
+}
+</style>
+</head>
+<body>
+ 
+<p><label for="age">Your age:</label><input id="age" title="We ask for your age only for statistical purposes."></p>
+<p>Hover the field to see the tooltip.</p>
+<img src="/bootstrap/images/arrows-move.svg" title="We ask for your age <br /> only for statistical purposes.">
+
+ 
+</body>
+</html>

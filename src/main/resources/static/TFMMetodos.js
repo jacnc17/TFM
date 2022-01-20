@@ -149,7 +149,7 @@ var titulo = document.createElement('div');
 titulo.style.display="table";
 titulo.style.width="100%";
 titulo.style.paddingLeft="20px";
-titulo.style.paddingRight="20px";
+titulo.style.paddingRight="00px";
 
 var tituloMarco =  document.createElement('div');
 tituloMarco.style.width="80%";
@@ -167,10 +167,16 @@ ayuda.style.textAlign="right";
 ayuda.style.display="table-cell";
 //ayuda.onclick="alert('holi')";
 
+var cierra = document.createElement('div');
+cierra.innerHTML = '&check;';
+cierra.style = "position: relative; position: relative; left: 60px; top: -15px; background-color: red; border: white; border-width: 2px; border-style: inset; height: 25px; border-radius: 50%; width: 25px; text-align: center; cursor: pointer; color: white;"
+
+
 
 
 titulo.append(tituloMarco);
 titulo.append(ayuda);
+titulo.append(cierra);
 
             // Marco de edición de proporciones 16/9
             var divMarcoEdicion = document.createElement('div');
@@ -225,6 +231,7 @@ tituloMarco.innerHTML = "<strong>Fichero: "+nombre_archivo.substring(nombre_arch
 tituloMarco.style.display="table-cell";
 
 
+
 var ayuda =  document.createElement('div');
 ayuda.style.width="20%";
 ayuda.style.height="20px";
@@ -233,10 +240,13 @@ ayuda.style.textAlign="right";
 ayuda.style.display="table-cell";
 //ayuda.onclick="alert('holi')";
 
-
+var cierra = document.createElement('div');
+cierra.innerHTML = "X";
+cierra.style = "position: relative;"
 
 titulo.append(tituloMarco);
 titulo.append(ayuda);
+titulo.append(cierra);
 
 
             // Marco de edición de proporciones 16/9
@@ -347,11 +357,13 @@ function borra() {
         // console.log ("Borrando ",divs[i].id);
         hashPropiedades.delete(divs[i].id);
 
-        papelera.removeChild(divs[i]);
+        try {papelera.removeChild(divs[i]); }catch (error) { }
     }
 
     // Se actualiza el valor de las cookies
     recalcula_propiedades_cookies ()
+
+    borra_tooltips ()
 }
 
 // Función para determinar en segundos la duración de un vídeo
@@ -919,9 +931,8 @@ function get_div_notas(duracion) {
         divMarcoEdicion.className = "clase_marco_oculto_notas";
         divMarcoEdicion.id = "marco_oculto_notas";
         divMarcoEdicion.onclick = function () { add_nota(event); };
-        /*         divMarcoEdicion.style.position ="fixed";
-                divMarcoEdicion.style.top ="0px";
-                divMarcoEdicion.style.left ="0px"; */
+        divMarcoEdicion.oncontextmenu = function () { add_nota(event); return false; }; // Captura del botón derecho
+
 
         // Recuperamos el valor actual de la duración (segundos para una imagen) o el rango para un vídeo.
         // elemento.innerHTML = itemID + ": " + hashPropiedades.get(itemID).duracion + " segundos";
@@ -1147,12 +1158,16 @@ function addNota_watch(event) {
 function nota_borra(id_nota) {
     // Se utiliza la variable keep para evitar el efecto "doble click", que originaba que al borrar una nota se creara otra en el mismo sitio.
     keep = 1;
+
+    // Se borra la nota
     document.getElementById(id_nota).remove();
 
-
+    // Se elimina el registro de notas
     hashPropiedadesNotas.delete("ini_" + id_nota);
     hashPropiedadesNotas.delete("fin_" + id_nota);
 
+    // Se borran los tooltips 
+    borra_tooltips ()
     // console.log(hashPropiedadesNotas);
 }
 
@@ -1458,6 +1473,7 @@ function regenera_hovers ()
     }
 
 
+
 }
 
 
@@ -1480,11 +1496,24 @@ function borra_hovers () {
         console.log("borrando ", document.getElementsByClassName("capa_hover_vid")[i]);
         try { document.getElementsByClassName("capa_hover_vid")[i].style.visibility = "hidden"; } catch (error) { console.log(error); }
     } 
+
+    borra_tooltips ()
+
 }
 
 
-
-
+// Se borran los posibles tooltips "rebeldes" -> bug en firefox 
+function borra_tooltips ()
+{
+        
+        let tips = document.getElementsByClassName("ui-tooltip ui-corner-all ui-widget-shadow ui-widget ui-widget-content");
+        if (tips != null) {
+            for (i = 0; i<tips.length; i++)
+            {
+                tips[i].remove();
+            }
+        }
+}    
 
 
 ///////////////////////// Gestión fetch: envío de formulario
@@ -1819,7 +1848,7 @@ function recalcula_propiedades() {
             // Se le da un ID válido
             elementosEdicion[ele].id = "ID" + timeStampInMs;
             elementosEdicion[ele].setAttribute("data-nombre", nombre_original);
-            let texto_alt = nombre_original.substring(nombre_original.indexOf("_")+1) +'. Cambia su posición o haz click para fijar su duración.';
+            let texto_alt ="Fichero '"+ nombre_original.substring(nombre_original.indexOf("_")+1) +"'.<br/>Cambia su posición o haz click para fijar su duración.";
             elementosEdicion[ele].setAttribute("alt",texto_alt);
             elementosEdicion[ele].setAttribute("title",texto_alt);
 
@@ -1848,7 +1877,8 @@ function recalcula_propiedades() {
         }
         else {
             console.log('El elemento ya estaba antes, recuperando sus propiedades', elementosEdicion[ele]);
-            let texto_alt = nombre_original.substring(nombre_original.indexOf("_")+1) +'. Cambia su posición o haz click para fijar su duración.';
+            let nom = elementosEdicion[ele].getAttribute('data-nombre');
+            let texto_alt = "Fichero '" + nom.substring(nom.indexOf("_")+1) +"'.<br/>Cambia su posición o haz click para fijar su duración.";
             elementosEdicion[ele].childNodes[0].setAttribute("alt",texto_alt);
             elementosEdicion[ele].childNodes[0].setAttribute("title",texto_alt);
 
