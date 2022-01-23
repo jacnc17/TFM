@@ -81,7 +81,7 @@
 </head>
 
 
-<body onLoad="get_sesion_anterior(); get_variables_edicion(); get_notas_cookies(); regenera_hovers()"  >
+<body onLoad="chequea_cookies();  get_sesion_anterior(); get_variables_edicion(); get_notas_cookies(); regenera_hovers(); "  >
     
     <div id="main" >
         <div id="borde_superior" style="width: 100%; background-color: black; padding:10px; padding-left:20px; display: flex;    min-height: 60px;">
@@ -356,6 +356,8 @@
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://getbootstrap.com/"><img src="iconos/bootstrap-fill.svg" class="icono_ayuda" style="padding-left:2px; padding-right:13px">Bootstrap 3.4.1</a></li>
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://jquery.com/"><img src="iconos/icons8-jquery.svg" class="icono_ayuda">JQuery 3.6.0 y JQuery UI 1.12.4</a></li>
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://www.dropzone.dev/js/"><img src="iconos/dropzone.svg" class="icono_ayuda">Dropzone 5.9.3</a></li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://sortablejs.github.io/Sortable/"><img src="iconos/sortable.png" class="icono_ayuda">Sortable 1.14.0</a></li>
+                    <li class="modal_texto"><a style="color:black;" target="_blank" href="https://interactjs.io/"><img src="iconos/interact.png" class="icono_ayuda">Interact 1.10.11</a></li>
                     <p class="modal_texto">Y en la parte servidora:</p>
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://jdk.java.net/17/"><img src="iconos/icons8-logotipo-de-java-coffee-cup.svg" class="icono_ayuda">Java OpenJDK 17</a></li>
                     <li class="modal_texto"><a style="color:black;" target="_blank" href="https://spring.io/projects/spring-boot"><img src="iconos/icons8-logotipo-de-spring.svg" class="icono_ayuda">Spring-Boot 2.5.6</a></li>
@@ -724,9 +726,13 @@
 
 
         <script>
-            //////////// GESTION DE ANCHO DE ELEMENTOS
-            // #misRecursos
-            //////////// FIN GESTION DE ANCHO DE ELEMENTOS
+            //////////// GESTION DE PULSACIÓN DE TECLAS
+            $(document).keyup(function(e) {
+                if (e.key === "Escape") { // escape key maps to keycode `27`
+                    oculta_todas_capas ();
+                }
+            });
+            //////////// GESTION DE PULSACIÓN DE TECLAS
 
         </script>
 
@@ -737,29 +743,44 @@
 
             /*<![CDATA[*/
             Dropzone.autoDiscover = false;
+            var total_archivos = 0;
 
             // DROPZONE
             $("#DIVdropzoneELEMENTOS").dropzone({
-                addRemoveLinks: true,
+                // addRemoveLinks: true,
+
+
                 acceptedFiles: "image/jpeg,image/png,image/gif,.mp4,.mkv,.avi",
-                // maxFiles: 8,
+                // maxFiles: 3, // Limita el TOTAL de archivos que se pueden subir
                 // disablePreviews: true,
-                createImageThumbnails: false,
+                parallelUploads: 5,
+                processingmultiple() {
+                    $('.progress-bar').show()
+                },
+                totaluploadprogress(uploadProgress) {
+                    $('.progress-bar').css('width', uploadProgress + '%')
+                },
+                createImageThumbnails: true,
 
                 init: function () {
                     let myDropzone = this;
+
+                    $('.dz-preview').remove(); // Se quitan todos los thumbnail.
 
                     myDropzone.on('thumbnail', function (file, dataURL) {
                         // OK console.log("INFO anadir_item_oculto = " + file.dataURL);
                         // anadir_item_oculto(file, dataURL);
                         // regenera_ultima_miniatura();
+
                     });
 
                     myDropzone.on("complete", function (file) {
-                        $('.dz-preview').remove(); // Se quita el thumbnail.
+                         console.log("Terminó ",file);
+                        // $('.dz-preview').remove(); // Se quita el thumbnail.
                     });
 
                     myDropzone.on("addedfile", function (file) {
+
                         // Gestión de duplicados
                         if (this.files.length) {
                             var _i, _len;
@@ -769,8 +790,11 @@
                             {
                                 // Si ya existía, no se procesa.
                                 if (this.files[_i].name === file.name && this.files[_i].size == file.size) {
+                                    toastr.warning(this.files[_i].name + ' ya se había incluido.');
+
                                     this.removeFile(file);
-                                    alert("No se puede añadir el mismo archivo varias veces!");
+                                    // alert("No se puede añadir el mismo archivo varias veces!");
+
                                 }
                                 else {
                                     // console.log("verificado " + file.name + "(" + file.size + ") contra " + this.files[_i].name + " (" + this.files[_i].size + ")");
@@ -816,10 +840,21 @@
                 },
 
 
+
                 success: function (file, response) {
                     toastr.success('Archivo ' + file.name + ' añadido correctamente');
 
-
+                    // Se comprueba el contador de archivos y se eliminan los thumbnails en caso de haber acabado.
+                    let total_subiendo = document.getElementsByClassName("dz-preview").length;
+                    total_archivos++;
+                    // console.log ("terminaron "+ total_archivos+" de un total de "+total_subiendo);
+                    // Si finalizaron las subidas de archivos
+                    if (total_archivos >= total_subiendo) 
+                    {
+                        // console.log ("se acabó");
+                        $('.dz-preview').remove(); // Se quitan todos los thumbnails
+                        total_archivos=0;
+                    }
 
                     var idSesion = [[${ idSesion }]];
                     idSesion.replace("\"", ""); // Se eliminan posibles comillas.
@@ -866,7 +901,7 @@
                 document.getElementById('misRecursos').style.width = window.innerWidth-14+ "px";
                 document.getElementById('misRecursos').style.maxWidth = window.innerWidth-14+ "px";
                 document.getElementById('miZonaEdicion').style.width = window.innerWidth-30+ "px";
-               document.getElementById('miZonaEdicion').style.maxWidth = window.innerWidth-30+ "px";   
+                document.getElementById('miZonaEdicion').style.maxWidth = window.innerWidth-30+ "px";   
             }
 
             // Nos aseguramos que al cargar  el div de elementos no supere el ancho de la página
@@ -878,7 +913,26 @@
             document.getElementById('miZonaEdicion').style.maxWidth = window.innerWidth-30+ "px";
 
 
+/* document.addEventListener('load', (event) => {
+console.log('fully loaded and parsed');doSomething();
+});
 
+function doSomething()
+{
+console.log ("PREVIOS !!! ");
+var mini_uploads = document.getElementsByClassName("dz-preview dz-complete dz-image-preview");
+if (mini_uploads != null && mini_uploads.length>0)
+{
+let longitud = mini_uploads.length;
+console.log ("PREVIOS = ",longitud);
+while ( document.getElementsByClassName("dz-preview dz-complete dz-image-preview") != null )
+{
+console.log ("QUITANDO  = ",mini_uploads[i]);
+document.getElementsByClassName("dz-preview dz-complete dz-image-preview")[0].remove();
+// mini_uploads[i].remove();// Se quitan todos los thumbnail. Si se pone en el complete se borran los que no han acabado aún
+}
+}
+} */
         </script>
 
 

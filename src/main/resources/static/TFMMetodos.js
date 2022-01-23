@@ -133,7 +133,7 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
         var iDiv = document.createElement('div');
         iDiv.id = "capa_oculta_" + nombre_archivo;
         iDiv.className = "capa_edicion_imagen";
-        iDiv.onclick = function () { oculta_capa('capa_oculta_' + nombre_archivo);   recalcula_propiedades_cookies()  };
+        // iDiv.onclick = function () { oculta_capa('capa_oculta_' + nombre_archivo);   recalcula_propiedades_cookies()  };
 
         var divIntermedia = document.createElement('div');
         divIntermedia.onclick = function () { keep = 1; /* Si hacemos click en la capa intermedia, no se cerrará por click en la capa de edición */ };
@@ -144,39 +144,40 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             divIntermedia.className = "capa_intermedia_edicion_imagen";
             divIntermedia.id = "capa_intermedia_" + nombre_archivo;
 
-// Marco de título
-var titulo = document.createElement('div');
-titulo.style.display="table";
-titulo.style.width="100%";
-titulo.style.paddingLeft="20px";
-titulo.style.paddingRight="00px";
+            // Marco de título, botón de cierre
+            var titulo = document.createElement('div');
+            titulo.style.display="table";
+            titulo.style.width="100%";
+            titulo.style.paddingLeft="20px";
+            titulo.style.paddingRight="00px";
 
-var tituloMarco =  document.createElement('div');
-tituloMarco.style.width="80%";
-tituloMarco.style.paddingBottom="20px";
-tituloMarco.style.overflow="hidden";
-tituloMarco.innerHTML = "<strong>Fichero: "+nombre_archivo.substring(nombre_archivo.indexOf("_")+1)+"</strong>"; 
-tituloMarco.style.display="table-cell";
-
-
-var ayuda =  document.createElement('div');
-ayuda.style.width="20%";
-ayuda.style.height="20px";
-ayuda.innerHTML="<a href='#' onclick='muestraAyuda1()'>?</a>";
-ayuda.style.textAlign="right";
-ayuda.style.display="table-cell";
-//ayuda.onclick="alert('holi')";
-
-var cierra = document.createElement('div');
-cierra.innerHTML = '&check;';
-cierra.style = "position: relative; position: relative; left: 60px; top: -15px; background-color: red; border: white; border-width: 2px; border-style: inset; height: 25px; border-radius: 50%; width: 25px; text-align: center; cursor: pointer; color: white;"
+            var tituloMarco =  document.createElement('div');
+            tituloMarco.style.width="80%";
+            tituloMarco.style.paddingBottom="20px";
+            tituloMarco.style.overflow="hidden";
+            tituloMarco.innerHTML = "<strong>Imagen: "+nombre_archivo.substring(nombre_archivo.indexOf("_")+1)+"</strong>"; 
+            tituloMarco.style.display="table-cell";
 
 
+            var ayuda =  document.createElement('div');
+            ayuda.style.width="20%";
+            ayuda.style.height="20px";
+            ayuda.innerHTML="<a href='#' onclick='muestraAyuda1()'>?</a>";
+            ayuda.style.textAlign="right";
+            ayuda.style.display="table-cell";
+
+            var cierra = document.createElement('div');
+            cierra.innerHTML = '&check;';
+            cierra.style = "position: relative; position: relative; left: 75px; top: -15px; border:   white; background-color: #ededed; border-width: 2px; border-style: inset; height: 25px; border-radius: 50%; width: 25px; text-align: center; cursor: pointer; color: black;"
+            cierra.onclick = function () { keep = 0; oculta_capa('capa_oculta_' + nombre_archivo);   recalcula_propiedades_cookies()  };
 
 
-titulo.append(tituloMarco);
-titulo.append(ayuda);
-titulo.append(cierra);
+
+            titulo.append(tituloMarco);
+            titulo.append(ayuda);
+            titulo.append(cierra);
+
+            // FIN  Marco de título, botón de cierre
 
             // Marco de edición de proporciones 16/9
             var divMarcoEdicion = document.createElement('div');
@@ -196,7 +197,7 @@ titulo.append(cierra);
             // Se asignan los elementos generados.
             imgElement.src = origen_elemento_mini;
 
-divMarcoEdicion.appendChild(titulo);   
+            divMarcoEdicion.appendChild(titulo);   
 
             divMarcoEdicion.appendChild(imgElement);
 
@@ -214,47 +215,50 @@ divMarcoEdicion.appendChild(titulo);
             // Se asignan los atributos para la capa contenedora
             divIntermedia.className = "capa_intermedia_edicion_imagen";
             divIntermedia.id = "capa_intermedia_" + nombre_archivo + ".mp4";
-divIntermedia.style.backgroundColor = "rgb(218, 129, 136)"; // #da8188 rgb(218, 129, 136)
+            divIntermedia.style.backgroundColor = "rgb(218, 129, 136)"; // #da8188 rgb(218, 129, 136)
 
-// Marco de título
-var titulo = document.createElement('div');
-titulo.style.display="table";
-titulo.style.width="100%";
-/* titulo.style.paddingLeft="20px";
-titulo.style.paddingRight="20px"; */
+            // Marco de título, botón de cierre
+            var titulo = document.createElement('div');
+            titulo.style.display="table";
+            titulo.style.width="100%";
+            /* titulo.style.paddingLeft="20px";
+            titulo.style.paddingRight="20px"; */
 
-var tituloMarco =  document.createElement('div');
-tituloMarco.style.width="80%";
-tituloMarco.style.paddingBottom="10px";
-tituloMarco.style.overflow="hidden";
-tituloMarco.innerHTML = "<strong>Fichero: "+nombre_archivo.substring(nombre_archivo.indexOf("_")+1)+"</strong>"; 
-tituloMarco.style.display="table-cell";
+            var tituloMarco =  document.createElement('div');
+            tituloMarco.style.width="80%";
+            tituloMarco.style.paddingBottom="10px";
+            tituloMarco.style.overflow="hidden";
+            tituloMarco.innerHTML = "<strong>Vídeo: "+nombre_archivo.substring(nombre_archivo.indexOf("_")+1)+"</strong>"; 
+            tituloMarco.style.display="table-cell";
 
 
 
-var ayuda =  document.createElement('div');
-ayuda.style.width="20%";
-ayuda.style.height="20px";
-ayuda.innerHTML="<a href='#' style='color:black' onclick='muestraAyuda2()'>?</a>";
-ayuda.style.textAlign="right";
-ayuda.style.display="table-cell";
-//ayuda.onclick="alert('holi')";
+            var ayuda =  document.createElement('div');
+            ayuda.style.width="20%";
+            ayuda.style.height="20px";
+            ayuda.innerHTML="<a href='#' style='color:black' onclick='muestraAyuda2()'>?</a>";
+            ayuda.style.textAlign="right";
+            ayuda.style.display="table-cell";
+            //ayuda.onclick="alert('holi')";
 
-var cierra = document.createElement('div');
-cierra.innerHTML = "X";
-cierra.style = "position: relative;"
+            var cierra = document.createElement('div');
+            cierra.innerHTML = '&check;';
 
-titulo.append(tituloMarco);
-titulo.append(ayuda);
-titulo.append(cierra);
+            cierra.style = "position: relative; position: relative; left: 75px; top: -15px;  background-color: #ededed;  border: white; border-width: 2px; border-style: inset; height: 25px; border-radius: 50%; width: 25px; text-align: center; cursor: pointer; color: black;"
+            cierra.onclick = function () {keep = 0; oculta_capa('capa_oculta_' + nombre_archivo);   recalcula_propiedades_cookies()  };
 
+
+            titulo.append(tituloMarco);
+            titulo.append(ayuda);
+            titulo.append(cierra);
+            // FIN Marco de título, botón de cierre
 
             // Marco de edición de proporciones 16/9
             var divMarcoEdicion = document.createElement('div');
             divMarcoEdicion.className = "clase_marco_oculto";
 
-divMarcoEdicion.style.maxHeight="400px";
-divMarcoEdicion.style.height="400px";
+            divMarcoEdicion.style.maxHeight="400px";
+            divMarcoEdicion.style.height="400px";
 
             // Creamos un elemento de vídeo mini (reducido en resolución) y se le asignan atributos.
             var origen_elemento_mini = getBase() + idSesion + '/miniaturas/mini_' + nombre_archivo + ".mp4";
@@ -274,7 +278,7 @@ divMarcoEdicion.style.height="400px";
             console.log("Video. Se asignan los elementos generados.");
 
 
-divMarcoEdicion.appendChild(titulo);   
+            divMarcoEdicion.appendChild(titulo);   
 
 
             divMarcoEdicion.appendChild(videoElement);
@@ -365,6 +369,20 @@ function borra() {
 
     borra_tooltips ()
 }
+
+
+// Función que se llamará para borrar posibles notas de ejecuciones anteriores, siempre que no haya items.
+function chequea_cookies ()
+{
+    // Si no hay elementos en la zona de carga, se deberán borrar las cookies de sesiones anteriores.
+    if (document.getElementById("misRecursos").childElementCount == 0)
+    {
+        // console.log ("borrando cookies de sesiones anterioes!");
+        deleteGrupoCookies("elementosEdicion");
+        deleteGrupoCookies("notas");
+    }
+}
+
 
 // Función para determinar en segundos la duración de un vídeo
 function get_duracion(itemID) {
@@ -1473,7 +1491,19 @@ function regenera_hovers ()
     }
 
 
-
+    // Se quitan los thumbnails del área de carga  -> en firefox se borra con  $('.dz-preview').remove(); en la página principal por el orden de carga del DOM.
+    var mini_uploads = document.getElementsByClassName("dz-preview dz-complete dz-image-preview");
+    if (mini_uploads != null && mini_uploads.length>0)
+    {
+        let longitud = mini_uploads.length;
+        //console.log ("PREVIOS = ",longitud);
+        while ( document.getElementsByClassName("dz-preview dz-complete dz-image-preview") != null )
+        {
+            // console.log ("QUITANDO  = ",mini_uploads[i]);
+            document.getElementsByClassName("dz-preview dz-complete dz-image-preview")[0].remove();
+            // mini_uploads[i].remove();// Se quitan todos los thumbnail. Si se pone en el complete se borran los que no han acabado aún
+        }
+    }
 }
 
 
@@ -1746,6 +1776,30 @@ function oculta_capa(id_capa) {
 }
 
 
+
+// Método para ocultar todas las capas de edición
+function oculta_todas_capas ()
+{
+    // Se oculta la capa de edición recorte de imágenes y vídeo 
+    let capas = document.getElementsByClassName("capa_edicion_imagen");
+
+    // Control de errores básico.
+    if (capas != null)
+    {
+        let total_capas = capas.length;
+        for (i=0; i<total_capas;i++)
+        {
+            try { 
+                capas[i].style.visibility = 'hidden'; 
+                capas[i].style.zIndex = 0; 
+                
+            } catch (excep) {}
+        }
+    }
+}
+
+
+
 // Método para ocultar todas las capas de notas
 function oculta_todas_notas() {
     let notas = document.getElementsByClassName("canvas_nota");
@@ -1954,18 +2008,16 @@ new Sortable(misRecursos, {
     group: {
         name: 'shared',
         pull: 'clone',
-        put: false // Do not allow items to be put into this list
+        put: false // No permite que se añadan elementos a esta lista
     },
     animation: 150,
-    sort: false // To disable sorting: set sort to false
+    sort: false // Deshabilita la ordenación.
 });
 
 new Sortable(miZonaEdicion, {
     group: 'shared',
     animation: 150
 });
-
-
 
 new Sortable(papelera, {
     group: 'shared',

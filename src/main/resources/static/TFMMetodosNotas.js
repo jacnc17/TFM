@@ -6,7 +6,7 @@ function add_cookie_nota(id_nota, izquierda, arriba, tam, texto, color, clase, d
     var capa;
 
     while (!fin) {
-        console.log ("add_cookie_nota");
+        // console.log ("add_cookie_nota");
 
         var elto = getCookie("notas." + indice + ".id_nota");
 
@@ -47,7 +47,7 @@ function add_cookie_imagen(id_nota, izquierda, arriba, tam, desde, hasta, imagen
     var capa;
 
     while (!fin) {
-        console.log ("add_cookie_imagen");
+        // console.log ("add_cookie_imagen");
 
         var elto = getCookie("notas." + indice + ".id_nota");
 

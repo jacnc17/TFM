@@ -791,7 +791,9 @@ body::before {
     color: white;
 }
 
-
+#toast-container > div {
+    width: 450px;
+}
 
 .zonaEdicion {
     background-image: url('bootstrap/images/externo.svg');
@@ -852,7 +854,7 @@ body::before {
 
 
 .zonaPapelera {
-    background-image: url('bootstrap/images/trash.svg');
+    background-image: url('bootstrap/images/trash_dim.svg');
     background-color: rgba(0, 0, 0, 0.15);
     background-position: center;
     background-repeat: no-repeat;
