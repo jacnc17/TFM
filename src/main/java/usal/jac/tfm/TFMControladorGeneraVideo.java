@@ -237,11 +237,7 @@ public class TFMControladorGeneraVideo {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-
-
-
 				}
-
 			}
 		}
 

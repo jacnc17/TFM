@@ -238,6 +238,18 @@
 }
 
 
+.clase_boton_bora_proyectos {
+        background-color: yellow;
+        width: 200px; 
+       /*  height:104px; */ /* Altura del dropzone + ajuste de 15 por los bordes*/
+        z-index:30; 
+        margin-top: -26px;
+        position:relative;
+        margin-left: auto; 
+        margin-right: 0px;
+        border: 0px;
+}
+
 
 .clase_marco_oculto_notas {
     max-height: 488px;
@@ -487,6 +499,11 @@
     padding-left: 15px;
 }
 
+
+h6 {
+    font-family: 'fuente_custom';
+    font-size: medium;    
+}
 
 
 .item_edicion {
@@ -794,6 +811,21 @@ body::before {
 #toast-container > div {
     width: 450px;
 }
+
+.ui-dialog .ui-dialog-titlebar {
+    background-color: rgba(242, 208, 109, 1);
+}
+
+.ui-dialog-title
+{
+    font-family: 'fuente_custom' !important;
+    font-size: medium;    
+}
+
+.ui-button {
+    font-family: 'fuente_custom' !important;
+}
+
 
 .zonaEdicion {
     background-image: url('bootstrap/images/externo.svg');

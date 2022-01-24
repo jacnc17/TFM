@@ -1511,24 +1511,115 @@ function borra_hovers () {
     // Ocultamos todos los posibles hovers.
     for (i=0; i<document.getElementsByClassName ("capa_hover").length; i++)
     {
-        console.log("borrando ", document.getElementsByClassName ("capa_hover")[i]);
+        // console.log("borrando ", document.getElementsByClassName ("capa_hover")[i]);
         document.getElementsByClassName ("capa_hover")[i].remove();
     }
 
     // Ocultamos todos los posibles hovers.
     for (i = 0; i < document.getElementsByClassName("capa_hover_img").length; i++) {
-        console.log("borrando ", document.getElementsByClassName("capa_hover_img")[i]);
+        // console.log("borrando ", document.getElementsByClassName("capa_hover_img")[i]);
         try { document.getElementsByClassName("capa_hover_img")[i].style.visibility = "hidden"; } catch (error) { console.log(error); }
     }
 
     // Ocultamos todos los posibles hovers.
     for (i = 0; i < document.getElementsByClassName("capa_hover_vid").length; i++) {
-        console.log("borrando ", document.getElementsByClassName("capa_hover_vid")[i]);
+        // console.log("borrando ", document.getElementsByClassName("capa_hover_vid")[i]);
         try { document.getElementsByClassName("capa_hover_vid")[i].style.visibility = "hidden"; } catch (error) { console.log(error); }
     } 
 
     borra_tooltips ()
 
+}
+
+
+
+
+
+
+
+// Método que borrará el proyecto y todos los archivos cargados. No reversible
+function borra_proyecto ()
+{
+    let message = "Mensajito";
+    $('<div></div>').appendTo('body')
+        .html('<div><h6>¿Quieres empezar un proyecto nuevo?<p/>ATENCIÓN: tendrás que subir de nuevo todos los archivos para usarlos otra vez.</h6></div>')
+        .dialog({
+            modal: true,
+            title: 'Borrar proyecto',
+            zIndex: 10000,
+            autoOpen: true,
+            width: '400px',
+            resizable: false,
+            buttons: {
+                Sí: function () {
+                    $(this).dialog("close");
+
+                    // Se hace la petición de borrado
+                    fetch("/borraProyecto/")
+                    .then(response => response.text())
+                    .then((response) => {
+                        // Si tuvo éxito
+                        if (response == '') {
+                            console.log("Respuesta OK, borrando información del navegador");
+                            deleteGrupoCookies("notas");
+                            deleteGrupoCookies("elementosEdicion");
+                            document.getElementById("misRecursos").textContent ='';
+                            document.getElementById("miZonaEdicion").textContent ='';
+
+                            /* ;
+                            myDropzone.removeAllFiles();
+                            $(".dz-message").removeClass("hidden"); 
+var myDropzone = Dropzone.forElement("#imageFile")
+console.log ("Dropzone = "+myDropzone);
+
+myDropzone.removeAllFiles();*/
+
+
+
+                            hashPropiedades = new Map(); // Propiedades de los vídeos recortados.
+                            hashDuracionesOriginales = new Map();
+                            hashPropiedadesNotas = new Map();  // Propiedades de las notas.
+
+                            toastr.success ("Información borrada correctamente.");
+                        }
+                        else // algún problema en el borrado!
+                        {
+                            toastr.error (response);
+                        }
+                    })
+                },
+                Cancelar: function () {
+                    $(this).dialog("close");
+                }
+            },
+            close: function (event, ui) {
+                $(this).remove();
+            }
+        });
+    
+/*     if (confirm("¿Borrar proyecto?") == true) {
+        fetch("/borraProyecto/")
+            .then(response => response.text())
+            .then((response) => {
+
+                if (response == '') {
+                    console.log("Respuesta OK, borrando información del navegador");
+                    deleteGrupoCookies("notas");
+                    deleteGrupoCookies("elementosEdicion");
+                    document.getElementById("misRecursos").textContent ='';
+                    document.getElementById("miZonaEdicion").textContent ='';
+                    toastr.success ("Información borrada correctamente.");
+
+                }
+                else // algún problema en el borrado!
+                {
+                    toastr.error (response);
+                }
+            })
+
+
+        
+    } */
 }
 
 

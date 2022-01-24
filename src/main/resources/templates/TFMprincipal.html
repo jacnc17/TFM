@@ -164,6 +164,8 @@
                 <div class="row" >
                     <p class="texto_unilinea" >Área de recursos</p>
 
+                    <div id="boton_bora_proyectos" class="clase_boton_bora_proyectos" ><button onclick="borra_proyecto()">Borra proyecto</button></div>
+
                     <div id="ayuda2" class="ayuda2_clase">
                         <p class="texto_ayuda">Aquí aparecerán los vídeos e imágenes que hayas cargado.</p>
                         <p class="texto_ayuda">Arrástralos al área de edición tantas veces como quieras para añadirlos a tu vídeo.</p>
@@ -781,6 +783,12 @@
 
                     myDropzone.on("addedfile", function (file) {
 
+if (document.getElementById("misRecursos").childElementCount != 0)
+{
+    console.log ("ASEGURANDO QUE ESTE VACIO");
+    
+
+
                         // Gestión de duplicados
                         if (this.files.length) {
                             var _i, _len;
@@ -793,6 +801,7 @@
                                     toastr.warning(this.files[_i].name + ' ya se había incluido.');
 
                                     this.removeFile(file);
+                                    _i = this.files.length; // Se evitan varios mensajes repetidos.
                                     // alert("No se puede añadir el mismo archivo varias veces!");
 
                                 }
@@ -801,7 +810,7 @@
                                 }
                             }
                         }
-
+}
                     });
 
                     // Sección para gestionar la recarga de la página (recorre los archivos en la variable thymeleaf "misArchivos"
