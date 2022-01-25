@@ -941,26 +941,20 @@
             document.getElementById('miZonaEdicion').style.maxWidth = window.innerWidth-30+ "px";
 
 
-/* document.addEventListener('load', (event) => {
-console.log('fully loaded and parsed');doSomething();
-});
+            // Muestra mensaje de cookies...
 
-function doSomething()
-{
-console.log ("PREVIOS !!! ");
-var mini_uploads = document.getElementsByClassName("dz-preview dz-complete dz-image-preview");
-if (mini_uploads != null && mini_uploads.length>0)
-{
-let longitud = mini_uploads.length;
-console.log ("PREVIOS = ",longitud);
-while ( document.getElementsByClassName("dz-preview dz-complete dz-image-preview") != null )
-{
-console.log ("QUITANDO  = ",mini_uploads[i]);
-document.getElementsByClassName("dz-preview dz-complete dz-image-preview")[0].remove();
-// mini_uploads[i].remove();// Se quitan todos los thumbnail. Si se pone en el complete se borran los que no han acabado aún
-}
-}
-} */
+            if (document.getElementById("misRecursos")!=null && document.getElementById("misRecursos").childNodes.length == 0) {
+
+                toastr.options.timeOut = 0;
+                toastr.options.extendedTimeOut = 0;
+                toastr.options.closeButton = true;
+
+                toastr.info("Esta página utiliza cookies propias para su correcto funcionamiento, y no usa cookies de terceros.");
+
+                toastr.options.timeOut = 5000; // Se restauran los timeouts para el resto de mensajes.
+                toastr.options.extendedTimeOut = 1000;
+            }
+
         </script>
 
 
@@ -969,6 +963,9 @@ document.getElementsByClassName("dz-preview dz-complete dz-image-preview")[0].re
     <div id="msjAyuda2">Ajusta con la barra el inicio y el fin del recorte de vídeo...</div> 
 
     <button id="boton_termina_proceso" class="clase_termina_proceso" onclick="termina_render()">Cancela proceso</button>
+
+
+    
 </body>
 
 </html>
