@@ -87,6 +87,8 @@ public class TFMControladorGeneraVideo {
 
 		String stderr = "";
 		String stdout = "";
+		byte[] resultado;
+
 
 		// Establecemos el proceso como iniciado (10%)
 		TFMUtils.setAvanceOperacion(idSesion, formateador.format(avance));
@@ -94,14 +96,21 @@ public class TFMControladorGeneraVideo {
 		// Recorremos la petición
 		for (int i = 0; i < comandos.size(); i++) {
 
-			// // Genera vídeo a partir de un texto
-			p = new ProcessBuilder(comandos.elementAt(i)).start();
+			// Si la sesión puede seguir haciendo renders (el usuario ha podido cancelarlo)
+			if (!TFMControladorParaProceso.isSesion_cancelada (idSesion)) {
+				// Genera vídeo a partir de un texto
+				p = new ProcessBuilder(comandos.elementAt(i)).start();
+			
+				// Almacena el id de sesión para este proceso
+				TFMUtils.almacena_proceso (idSesion, p);
+			
+				stderr = IOUtils.toString(p.getErrorStream(), Charset.defaultCharset());
+				stdout = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
 
-			stderr = IOUtils.toString(p.getErrorStream(), Charset.defaultCharset());
-			stdout = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
-
-			logger.debug("stderr {}", stderr);
-			logger.debug("stdout {} ", stdout);
+				logger.debug("stderr {}", stderr);
+				logger.debug("stdout {} ", stdout);
+			}
+			else{ logger.warn ("El proceso de render se canceló por petición del usuario."); }
 
 			// En esta sección se avanzará hasta el 30%
 			avance = avance + (40f / comandos.size());
@@ -127,81 +136,106 @@ public class TFMControladorGeneraVideo {
 		logger.info("Archivo destino = {} ", destinationFile);
 
 		// Establecemos el porcentaje de avance del proceso
-		TFMUtils.setAvanceOperacion(idSesion, "60");
+		TFMUtils.setAvanceOperacion(idSesion, "55");
 		
-		// Se lanza el proceso FFMPEG
-		p = new ProcessBuilder(Arrays.asList(rutaFFMPEG, "-y", "-i", cadenaConcat, "-vf",
-				/* OKWINDOWS "\"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:-1:-1:color=black" + "\"" , */
-				"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:-1:-1:color=black",
-				"-bsf:a", "aac_adtstoasc", "-movflags", "faststart", "-fflags", "+discardcorrupt",
-				"-f", "mp4", "-threads", "8", archivo_intermedio.toString())).start();
+		// Si la sesión puede seguir haciendo renders (el usuario ha podido cancelarlo)
+		if (!TFMControladorParaProceso.isSesion_cancelada (idSesion)) {
+			// Se lanza el proceso FFMPEG
+			p = new ProcessBuilder(Arrays.asList(rutaFFMPEG, "-y", "-i", cadenaConcat, "-vf",
+					/* OKWINDOWS "\"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:-1:-1:color=black" + "\"" , */
+					"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:-1:-1:color=black",
+					"-bsf:a", "aac_adtstoasc", "-movflags", "faststart", "-fflags", "+discardcorrupt",
+					"-f", "mp4", "-threads", "8", archivo_intermedio.toString())).start();
 
-		stderr = IOUtils.toString(p.getErrorStream(), Charset.defaultCharset());
-		stdout = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
-		logger.debug("stderr {}", stderr);
-		logger.debug("stdout {} ", stdout);
-
-
-		// Recuperamos las notas
-		String cadena_notas = generaCadenaNotas(((TFMPeticion) peticion.get(0)).getNotas(),
-				((TFMPeticion) peticion.get(0)).getPrecision());
-
-		logger.info("Cadena de notas recuperadas = {}", cadena_notas);
-
-		// Si no hay notas, el proceso ha terminado.
-		if (cadena_notas == null || cadena_notas.equals("")) {
-			// Establecemos el porcentaje de avance del proceso
-			TFMUtils.setAvanceOperacion(idSesion, "90");
-			
-			// ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			in = new FileInputStream(archivo_intermedio.toString());
-
-
-		} //
-		else // Hay notas
-		{
-			// Recuperamos los posibles archivos implicados en las notas.
-			Vector<String> archivos_notas = generaCadenaArchivosNotas(directorioDestinoSesion,
-					((TFMPeticion) peticion.get(0)).getNotas());
-
-			// Se crea una lista dinámicamente con los posibles elementos de la incrustación
-			// de notas
-			// Recuperamos los archivos implicados en la notas. Si son notas de texto no
-			// incluirán archivos,
-			// pero si son archivos de imagen hay que hacer referencia a ellos.
-			String[] lista_parametros = genera_lista_parametros_notas(archivo_intermedio.toString(),
-					destinationFile.toString(), archivos_notas, cadena_notas);
-
-			// Se lanza el proceso FFMPEG para la superposición de notas
-			/*
-			 * p = new ProcessBuilder(Arrays.asList(rutaFFMPEG, "-y", "-i", "dum.mp4",
-			 * cadenaConcat, "-vf",
-			 * "\"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:-1:-1:color=black"
-			 * + "\"",
-			 * "-bsf:a", "aac_adtstoasc", "-movflags", "faststart", "-fflags",
-			 * "+discardcorrupt",
-			 * "-f", "mp4", "-threads", "8", destinationFile.toString())).start();
-			 */
-			// Establecemos el porcentaje de avance del proceso
-			TFMUtils.setAvanceOperacion(idSesion, "75");
-			p = new ProcessBuilder(Arrays.asList(lista_parametros)).start();
+			// Almacena el id de sesión para este proceso
+			TFMUtils.almacena_proceso (idSesion, p);
 
 			stderr = IOUtils.toString(p.getErrorStream(), Charset.defaultCharset());
 			stdout = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
 			logger.debug("stderr {}", stderr);
 			logger.debug("stdout {} ", stdout);
 
+
+			// Recuperamos las notas
+			String cadena_notas = generaCadenaNotas(((TFMPeticion) peticion.get(0)).getNotas(),
+					((TFMPeticion) peticion.get(0)).getPrecision());
+
+			logger.info("Cadena de notas recuperadas = {}", cadena_notas);
+
+			// Si no hay notas, el proceso ha terminado.
+			if (cadena_notas == null || cadena_notas.equals("")) {
+				// Establecemos el porcentaje de avance del proceso
+				TFMUtils.setAvanceOperacion(idSesion, "90");
+				
+				// ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+				in = new FileInputStream(archivo_intermedio.toString());
+			} 
+			else // Hay notas
+			{
+				// Recuperamos los posibles archivos implicados en las notas.
+				Vector<String> archivos_notas = generaCadenaArchivosNotas(directorioDestinoSesion,
+						((TFMPeticion) peticion.get(0)).getNotas());
+
+				// Se crea una lista dinámicamente con los posibles elementos de la incrustación
+				// de notas
+				// Recuperamos los archivos implicados en la notas. Si son notas de texto no
+				// incluirán archivos,
+				// pero si son archivos de imagen hay que hacer referencia a ellos.
+				String[] lista_parametros = genera_lista_parametros_notas(archivo_intermedio.toString(),
+						destinationFile.toString(), archivos_notas, cadena_notas);
+
+
+				// Establecemos el porcentaje de avance del proceso
+				TFMUtils.setAvanceOperacion(idSesion, "65");
+
+				// Se lanza el proceso FFMPEG para la superposición de notas
+				// Si la sesión puede seguir haciendo renders (el usuario ha podido cancelarlo)
+				if (!TFMControladorParaProceso.isSesion_cancelada (idSesion)) {
+					p = new ProcessBuilder(Arrays.asList(lista_parametros)).start();
+
+					// Almacena el id de sesión para este proceso
+					TFMUtils.almacena_proceso (idSesion, p);
+
+					stderr = IOUtils.toString(p.getErrorStream(), Charset.defaultCharset());
+					stdout = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
+					logger.debug("stderr {}", stderr);
+					logger.debug("stdout {} ", stdout);
+				
+
+					// Establecemos el porcentaje de avance del proceso
+					TFMUtils.setAvanceOperacion(idSesion, "80");
+
+					// ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+					in = new FileInputStream(destinationFile.toString());
+				}
+				else{ logger.warn ("El proceso de render se canceló por petición del usuario."); }
+
+			}
 			// Establecemos el porcentaje de avance del proceso
-			TFMUtils.setAvanceOperacion(idSesion, "90");
-
-			// ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			in = new FileInputStream(destinationFile.toString());
+			TFMUtils.setAvanceOperacion(idSesion, "95");
+			if (in!=null) logger.info("Devolviendo array de bytes de {} bytes", in.available());
 		}
-		// Establecemos el porcentaje de avance del proceso
-		TFMUtils.setAvanceOperacion(idSesion, "100");
-		logger.info("Devolviendo array de bytes de {} bytes", in.available());
+		else{ logger.warn ("El proceso de render se canceló por petición del usuario."); }
 
-		return IOUtils.toByteArray(in);
+		// Si la sesión estaba invalidada se devuelve un resultado dummy.
+		if (TFMControladorParaProceso.isSesion_cancelada (idSesion)) 
+		{
+			logger.warn ("El proceso de render devolverá vacío porque el usuario pidió cancelarlo."); 
+
+			resultado =  "".getBytes();
+		}
+		else // Si la sesión era válida, se devuelve el vídeo generado.
+		{
+			resultado = IOUtils.toByteArray(in);
+		}
+
+		// Se permite al usuario nuevos renders
+		TFMControladorParaProceso.libera_sesion (idSesion) ;
+
+		// Se marca la operación como finalizada
+		TFMUtils.setAvanceOperacion(idSesion, "100");
+
+		return resultado;
 	}
 
 	/**
@@ -276,31 +310,6 @@ public class TFMControladorGeneraVideo {
 		// -pix_fmt yuv420p %options% %options3% -c:a copy
 
 		logger.debug("Cadena de inserción de archivos : {}", tmp.toString());
-
-		/*
-		 * ffmpeg -y -i 20210918_164036_CumpleJudith.mp4 -i imagen1.jpg -i
-		 * IMG_20210717_213139.jpg -filter_complex "
-		 * [1:v]scale2ref=(8/6)*ih/5/sar:ih/5[wm][outv];[outv][wm]overlay=20:20,
-		 * drawtext=fontfile=/Users/jac_n/AppData/Local/Temp/
-		 * tmpDirPrefix8568426333782101746/arial.ttf:text='NOTA
-		 * 1':fontcolor=0xffffff:fontsize=80:x=0:y=0:enable='between(t,7.23,16.46)',
-		 * drawtext=fontfile=/Users/jac_n/AppData/Local/Temp/
-		 * tmpDirPrefix8568426333782101746/verdanaz.ttf:text='NOTA
-		 * 2':fontcolor=0x9DA2F1:fontsize=100:x=174.6666:y=306.0:enable='between(t,2.24,
-		 * 1500)',
-		 * [2:v]scale2ref=(8/6)*ih/4/sar:ih/4[wm][outv];[outv][wm]overlay=400:400:enable
-		 * ='between(t,5,15)'" -pix_fmt yuv420p %options% %options3% -c:a copy tmp88.mp4
-		 */
-
-		/*
-		 * p = new ProcessBuilder(Arrays.asList(rutaFFMPEG, "-y", "-i", "dum.mp4",
-		 * cadenaConcat, "-vf",
-		 * "\"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:-1:-1:color=black"
-		 * + "\"",
-		 * "-bsf:a", "aac_adtstoasc", "-movflags", "faststart", "-fflags",
-		 * "+discardcorrupt",
-		 * "-f", "mp4", "-threads", "8", destinationFile.toString())).start();
-		 */
 
 		return tmp.toArray(new String[tmp.size()]);
 	}

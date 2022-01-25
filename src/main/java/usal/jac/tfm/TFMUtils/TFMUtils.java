@@ -30,6 +30,7 @@ public class TFMUtils {
     private static final Logger logger = LoggerFactory.getLogger(TFMUtils.class);
     public static String directorio_fuentes = "";
     private static Hashtable<String, String> avanceRenders = new Hashtable<String, String>();
+    private static Hashtable<String, Process> procesos = new Hashtable<String, Process>();
 
 
     /** 
@@ -427,16 +428,6 @@ public class TFMUtils {
         return directorio_fuentes;
     }
 
-    /**
-     * If we want to list all the files in the directory and skip further digging
-     * into sub-directories, we can simply use java.io.File#listFiles:
-     */
-/*     public static Set<String> listFilesUsingJavaIO(String dir) {
-        return Stream.of(new File(dir).listFiles())
-                .filter(file -> !file.isDirectory())
-                .map(File::getName)
-                .collect(Collectors.toSet());
-    } */
 
 
 
@@ -457,4 +448,29 @@ public class TFMUtils {
     }
 
 
+
+    
+    /** 
+     * Método para almacenar un proceso por sesión, en concreto el proceso que se arranca con FFMPEG y que llama
+     * al sistema operativo
+     * @param id_sesion
+     * @param proceso
+     */
+    public static void almacena_proceso (String id_sesion, Process proceso)
+    {
+        procesos.put(id_sesion, proceso);
+        logger.debug("almacena_proceso. Almacenado para sesion {} proceso {}", id_sesion, proceso.toString());
+    }
+
+    /** 
+     * Método para devolver el proceso que puede tener la sesión en curso.
+     * al sistema operativo
+     * @param id_sesion
+     */
+    public static Process recupera_proceso (String id_sesion)
+    {
+        logger.debug("recupera_proceso. Devolviendo proceso {} para sesion {}.", procesos.get(id_sesion), id_sesion );
+
+        return procesos.get(id_sesion);
+    }
 }

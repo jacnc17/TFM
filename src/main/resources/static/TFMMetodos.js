@@ -71,12 +71,18 @@ function actualiza_barra_progreso (tiempo)
         fetch("/getInfoOperacion/")
             .then(response => response.text())
             .then((response) => {
-                // alert(response);
-                console.log("actualiza_barra_progreso ", response);
+                // console.log("actualiza_barra_progreso ", response);
+                boton_termina_proceso.style.visibility = "visible";
 
                 if (response == '') {
                     document.getElementById("progreso").style.height="0px";
                     document.getElementById("progreso_actual").style.height="0px";
+                    document.getElementById("progreso_actual").textContent = "";
+
+                    document.getElementById("progreso_actual_spinner").style.visibility="hidden";
+
+                    document.getElementById("boton_termina_proceso").style.visibility="hidden";
+                    
                 }
                     
                 else
@@ -85,14 +91,27 @@ function actualiza_barra_progreso (tiempo)
                     {
                         document.getElementById("progreso").style.height="0px";
                         document.getElementById("progreso_actual").style.height="0px";
+                        document.getElementById("progreso_actual").textContent = "";
+                        toastr.success ("Vídeo generado correctamente");
+
+                        document.getElementById("progreso_actual_spinner").style.visibility="hidden";
+
+                        document.getElementById("boton_termina_proceso").style.visibility="hidden";
+
+
                         clearInterval(intervalo);
 
                     }
                     else 
                     {
-                        document.getElementById("progreso").style.height = "10px";
-                        document.getElementById("progreso_actual").style.height = "10px";
+                        document.getElementById("progreso").style.height = "20px";
+                        document.getElementById("progreso_actual").style.height = "20px";
                         document.getElementById("progreso_actual").style.width = response + "%";
+
+                        document.getElementById("progreso_actual_spinner").style.visibility="visible";
+
+                        document.getElementById("progreso_actual").textContent =  response + "%";
+
                     }
 
                 }
@@ -1540,7 +1559,6 @@ function borra_hovers () {
 // Método que borrará el proyecto y todos los archivos cargados. No reversible
 function borra_proyecto ()
 {
-    let message = "Mensajito";
     $('<div></div>').appendTo('body')
         .html('<div><h6>¿Quieres empezar un proyecto nuevo?<p/>ATENCIÓN: tendrás que subir de nuevo todos los archivos para usarlos otra vez.</h6></div>')
         .dialog({
@@ -1566,16 +1584,6 @@ function borra_proyecto ()
                             document.getElementById("misRecursos").textContent ='';
                             document.getElementById("miZonaEdicion").textContent ='';
 
-                            /* ;
-                            myDropzone.removeAllFiles();
-                            $(".dz-message").removeClass("hidden"); 
-var myDropzone = Dropzone.forElement("#imageFile")
-console.log ("Dropzone = "+myDropzone);
-
-myDropzone.removeAllFiles();*/
-
-
-
                             hashPropiedades = new Map(); // Propiedades de los vídeos recortados.
                             hashDuracionesOriginales = new Map();
                             hashPropiedadesNotas = new Map();  // Propiedades de las notas.
@@ -1594,6 +1602,17 @@ myDropzone.removeAllFiles();*/
             },
             close: function (event, ui) {
                 $(this).remove();
+            },
+            open: function() { // Tratamiendo de bug de jquery
+                $(this).closest(".ui-dialog")
+                .find(".ui-dialog-titlebar-close")
+                .removeClass("ui-button")
+                .removeClass("ui-corner-all")
+                .removeClass("ui-widget")
+                .removeClass("ui-button-icon-only")
+                .removeClass("ui-dialog-titlebar-close")
+                .addClass("btn-close")
+                .html("");
             }
         });
     
@@ -1811,21 +1830,38 @@ function lanzaFetch() {
             })
                 .then((data) => data.blob())
                 .then(response => {
-                    // https://www.codegrepper.com/code-examples/javascript/fetch+download+blob+file
-                    // console.log(response.type);
+                     console.log("RESPUESTA: ",response.type);
+                     console.log("RESPUESTA: ",response.size);
 
+                    // Si la operación devuelve 0 significa que fue cancelada por el usuario.
+                    // Un valor mayor que 0 se descargará automáticamente.
+                    if (response != null && response.size >0)
+                    {
+                        const dataType = response.type;
+                        const binaryData = [];
+                        binaryData.push(response);
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
+                        downloadLink.setAttribute('download', 'fichero.mp4');
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        downloadLink.remove();
 
-                    const dataType = response.type;
-                    const binaryData = [];
-                    binaryData.push(response);
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
-                    downloadLink.setAttribute('download', 'fichero.mp4');
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    downloadLink.remove();
+                        toastr.success ("Vídeo generado correctamente");
+                    }
 
-                    en_curso = 0;
+                    en_curso = 0; // Permite nuevas descargas
+                    
+                    // Se ocultan la barra de progreso y el botón
+                    document.getElementById("progreso").style.height="0px";
+                    document.getElementById("progreso_actual").style.height="0px";
+                    document.getElementById("progreso_actual").textContent = "";
+
+                    document.getElementById("progreso_actual_spinner").style.visibility="hidden";
+
+                    document.getElementById("boton_termina_proceso").style.visibility="hidden";
+                    clearInterval(intervalo);
+
                     // Se actualiza la frecuencia de refresco
                     // actualiza_barra_progreso(100000000);
                 })
@@ -2066,6 +2102,97 @@ function recalcula_propiedades_cookies ()
         document.cookie = "elementosEdicion."+ele+".fin = " + hashPropiedades.get (elementosEdicionFinal[ele].id).fin + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";  
     }
     // FIN gestión cookies
+}
+
+
+// Método para detener un render en curso.
+function termina_render() {
+    console.log("Solcitado fin del render!");
+
+    $('<div></div>').appendTo('body')
+        .html('<div><h6>¿Deseas detener el procesamiento del vídeo?</h6></div>')
+        .dialog({
+            modal: true,
+            title: 'Detener procesamiento',
+            zIndex: 10000,
+            autoOpen: true,
+            width: '400px',
+            resizable: false,
+            buttons: {
+                Sí: function () {
+                    $(this).dialog("close");
+
+/*                     // Se hace la petición de borrado
+                    fetch("/borraProyecto/")
+                    .then(response => response.text())
+                    .then((response) => {
+                        // Si tuvo éxito
+                        if (response == '') {
+                            console.log("Respuesta OK, borrando información del navegador");
+                            deleteGrupoCookies("notas");
+                            deleteGrupoCookies("elementosEdicion");
+                            document.getElementById("misRecursos").textContent ='';
+                            document.getElementById("miZonaEdicion").textContent ='';
+
+                            hashPropiedades = new Map(); // Propiedades de los vídeos recortados.
+                            hashDuracionesOriginales = new Map();
+                            hashPropiedadesNotas = new Map();  // Propiedades de las notas.
+
+                            toastr.success ("Información borrada correctamente.");
+                        }
+                        else // algún problema en el borrado!
+                        {
+                            toastr.error (response);
+                        }
+                    }) */
+
+
+                    // Se hace la petición de borrado
+                    fetch("/paraProceso/")
+                        .then(response => response.text())
+                        .then((response) => {
+                            // Si tuvo éxito
+                            if (response == '') {
+                                toastr.info("Proceso de generación cancelado.");
+
+                                // Se oculta la barra de progreso
+                                document.getElementById("progreso").style.height = "0px";
+                                document.getElementById("progreso_actual").style.height = "0px";
+                                document.getElementById("progreso_actual").textContent = "";
+                                document.getElementById("progreso_actual_spinner").style.visibility="hidden";
+
+                            }
+                            else // algún problema en el borrado!
+                            {
+                                toastr.error(response);
+                            }
+                        })
+                },
+                Cancelar: function () {
+                    $(this).dialog("close");
+                }
+            },
+            close: function (event, ui) {
+                $(this).remove();
+            },
+            open: function() { // Tratamiendo de bug de jquery
+                $(this).closest(".ui-dialog")
+                .find(".ui-dialog-titlebar-close")
+                .removeClass("ui-button")
+                .removeClass("ui-corner-all")
+                .removeClass("ui-widget")
+                .removeClass("ui-button-icon-only")
+                .removeClass("ui-dialog-titlebar-close")
+                .addClass("btn-close")
+                .html("");
+            }
+        });
+
+
+
+
+
+
 }
 
 

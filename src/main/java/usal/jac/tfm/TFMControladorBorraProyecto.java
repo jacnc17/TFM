@@ -2,19 +2,14 @@ package usal.jac.tfm;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -39,9 +34,11 @@ public class TFMControladorBorraProyecto {
 
 
     
+
+    
     /** 
      * Método para eliminar los contenidos de un proyecto del servidor, a petición del cliente.
-     * @return String
+     * @return String Resultado del borrado, considerando la posibilidad de que el directorio aún no se haya creado.
      * @throws IOException
      */
     @GetMapping("/borraProyecto")
@@ -67,7 +64,7 @@ public class TFMControladorBorraProyecto {
         } 
         catch (IllegalStateException iee) { iee.printStackTrace(); resultado = "¡Error capturando la sesión del usuario! Pulsa F5 e inténtalo de nuevo."; }
         catch (NullPointerException npe) { npe.printStackTrace(); resultado = "¡Error capturando el directorio del usuario! Pulsa F5 e inténtalo de nuevo."; }
-        catch (IllegalArgumentException iae) { iae.printStackTrace(); resultado = "¡Error capturando el directorio del usuario! Pulsa F5 e inténtalo de nuevo."; }
+        catch (IllegalArgumentException iae) { iae.printStackTrace(); if (iae.toString().indexOf("does not exist")==0)  resultado = "¡Error capturando el directorio del usuario! Pulsa F5 e inténtalo de nuevo."; }
         catch (IOException ioe) { ioe.printStackTrace(); resultado = "¡No pudieron borrarse los archivos! Inténtalo de nuevo en unos instantes"; }
 
         return resultado;

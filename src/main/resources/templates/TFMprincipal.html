@@ -162,9 +162,9 @@
             <div id="cloning" class="fila">
 
                 <div class="row" >
-                    <p class="texto_unilinea" >Área de recursos</p>
+                    <p class="texto_unilinea" style="align-self: end;padding-left: 0px !important;width: auto;">Área de recursos</p>
 
-                    <div id="boton_bora_proyectos" class="clase_boton_bora_proyectos" ><button onclick="borra_proyecto()">Borra proyecto</button></div>
+                    <div id="boton_borra_proyectos" class="clase_boton_borra_proyectos claseBoton2"  onclick="borra_proyecto()">Borrar proyecto</div>
 
                     <div id="ayuda2" class="ayuda2_clase">
                         <p class="texto_ayuda">Aquí aparecerán los vídeos e imágenes que hayas cargado.</p>
@@ -231,7 +231,7 @@
 
                     <div style="width:28%; margin:0 auto; text-align: center;">
                         <a href="#" class="claseBoton" style="text-decoration: none" onclick="muestra_capa_notas()">
-                            <span style="color:black">AÑADIR NOTAS</span>
+                            <span style="color:black">EDITAR NOTAS</span>
                         </a>
 
                         <a href="#" class="claseBoton " style="text-decoration: none; position: relative; top: 60px" onclick="lanzaFetch()">
@@ -242,9 +242,12 @@
                 </div>
             </div>
 
-            <div id="progreso" style="width:100%; height:0px; background-color:cornflowerblue;">
-                <div id="progreso_actual" style="width:0%;  height:0px; background-color:goldenrod;">
+            <div id="progreso" style="width:100%; height:0px; background-color:rgba(79, 180, 242, 1);display:flex;float:left;">
+                <div id="progreso_actual" style="width:0%;  height:0px; background-color:rgba(242, 208, 109, 1);; text-align:end">
 
+                </div>
+                <div id="progreso_actual_spinner" class="spinner-border text-dark" role="status" style="visibility: hidden">
+                    <span class="sr-only">Loading...</span>
                 </div>
             </div>
 
@@ -783,34 +786,34 @@
 
                     myDropzone.on("addedfile", function (file) {
 
-if (document.getElementById("misRecursos").childElementCount != 0)
-{
-    console.log ("ASEGURANDO QUE ESTE VACIO");
-    
+                        if (document.getElementById("misRecursos").childElementCount != 0)
+                        {
+                            console.log ("ASEGURANDO QUE ESTE VACIO");
+        
 
 
-                        // Gestión de duplicados
-                        if (this.files.length) {
-                            var _i, _len;
+                            // Gestión de duplicados
+                            if (this.files.length) {
+                                var _i, _len;
 
-                            // Recorremos todos los archivos para ver si ya estaba incluido y así evitar duplicados.
-                            for (_i = 0, _len = this.files.length; _i < _len - 1; _i++) // -1 to exclude current file
-                            {
-                                // Si ya existía, no se procesa.
-                                if (this.files[_i].name === file.name && this.files[_i].size == file.size) {
-                                    toastr.warning(this.files[_i].name + ' ya se había incluido.');
+                                // Recorremos todos los archivos para ver si ya estaba incluido y así evitar duplicados.
+                                for (_i = 0, _len = this.files.length; _i < _len - 1; _i++) // -1 to exclude current file
+                                {
+                                    // Si ya existía, no se procesa.
+                                    if (this.files[_i].name === file.name && this.files[_i].size == file.size) {
+                                        toastr.warning(this.files[_i].name + ' ya se había incluido.');
 
-                                    this.removeFile(file);
-                                    _i = this.files.length; // Se evitan varios mensajes repetidos.
-                                    // alert("No se puede añadir el mismo archivo varias veces!");
+                                        this.removeFile(file);
+                                        _i = this.files.length; // Se evitan varios mensajes repetidos.
+                                        // alert("No se puede añadir el mismo archivo varias veces!");
 
-                                }
-                                else {
-                                    // console.log("verificado " + file.name + "(" + file.size + ") contra " + this.files[_i].name + " (" + this.files[_i].size + ")");
+                                    }
+                                    else {
+                                        // console.log("verificado " + file.name + "(" + file.size + ") contra " + this.files[_i].name + " (" + this.files[_i].size + ")");
+                                    }
                                 }
                             }
                         }
-}
                     });
 
                     // Sección para gestionar la recarga de la página (recorre los archivos en la variable thymeleaf "misArchivos"
@@ -857,6 +860,7 @@ if (document.getElementById("misRecursos").childElementCount != 0)
                     let total_subiendo = document.getElementsByClassName("dz-preview").length;
                     total_archivos++;
                     // console.log ("terminaron "+ total_archivos+" de un total de "+total_subiendo);
+
                     // Si finalizaron las subidas de archivos
                     if (total_archivos >= total_subiendo) 
                     {
@@ -887,7 +891,22 @@ if (document.getElementById("misRecursos").childElementCount != 0)
 
 
 
+                },
+
+                // Hubo algún error en la carga!
+                error: function (file, response) {
+                    if (response!=null && response=="You can't upload files of this type.")
+                    {
+                        toastr.error('Tipo de archivo no permitido.');
+                    }
+                    else
+                    {
+                        toastr.error('Tipo de archivo no permitido.');
+                    }
+                    this.removeFile(file);
+
                 }
+
             });
 
             /*]]>*/
@@ -948,6 +967,8 @@ document.getElementsByClassName("dz-preview dz-complete dz-image-preview")[0].re
     </div>
     <div id="msjAyuda1">Ajusta con la barra la duración de la imagen...</div> 
     <div id="msjAyuda2">Ajusta con la barra el inicio y el fin del recorte de vídeo...</div> 
+
+    <button id="boton_termina_proceso" class="clase_termina_proceso" onclick="termina_render()">Cancela proceso</button>
 </body>
 
 </html>

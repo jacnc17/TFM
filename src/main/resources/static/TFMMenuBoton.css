@@ -1,4 +1,3 @@
-
 body {
   display: grid;
   font-family: fuente_custom;
@@ -59,24 +58,28 @@ body {
 
 
 .claseBoton2 {
-  position: absolute;
+  /*   position: absolute;
+ */
   margin: auto;
+  margin-right: 75px;
   padding: 19px 22px;
   transition: all 0.2s ease;
+  cursor: pointer ;
 }
 
 .claseBoton2:before {
   /*https://www.w3schools.com/css/css3_transitions.asp*/
   content: "";
   position: absolute;
-  top: 0;
-  left: 200px;
+  top: 0px;
+  left: 100px;
   display: block;
   border-radius: 28px;
   background: rgba(255, 171, 157, 0.5);
   width: 56px;
   height: 56px;
   transition: all 0.3s ease;
+  z-index: -1;
 }
 
 .claseBoton2 span {
@@ -90,9 +93,9 @@ body {
 }
 
 .claseBoton2:hover:before {
-  width: 100%;
+  width: 185%;
   background: #ffab9d;
-  left: 0px;
+  left: -24px;
 }
 
 .claseBoton2:active {
@@ -103,26 +106,40 @@ body {
 
 
 
- /* The snackbar - position it at the bottom and in the middle of the screen */
- /*https://www.w3schools.com/howto/howto_js_snackbar.asp*/
- #msjAyuda1 {
-  visibility: hidden; /* Hidden by default. Visible on click */
-  min-width: 250px; /* Set a default minimum width */
-  margin-left: -125px; /* Divide value of min-width by 2 */
-  background-color: rgba(191, 64, 36, 1);; /* background color */
-  color: #fff; /* White text color */
-  text-align: center; /* Centered text */
-  border-radius: 2px; /* Rounded borders */
-  padding: 16px; /* Padding */
-  position: fixed; /* Sit on top of the screen */
-  z-index: 1000; /* Add a z-index if needed */
-  left: 38%; /* Center the snackbar */
-  top: 420px; /* 30px from the bottom */
+/* The snackbar - position it at the bottom and in the middle of the screen */
+/*https://www.w3schools.com/howto/howto_js_snackbar.asp*/
+#msjAyuda1 {
+  visibility: hidden;
+  /* Hidden by default. Visible on click */
+  min-width: 250px;
+  /* Set a default minimum width */
+  margin-left: -125px;
+  /* Divide value of min-width by 2 */
+  background-color: rgba(191, 64, 36, 1);
+  ;
+  /* background color */
+  color: #fff;
+  /* White text color */
+  text-align: center;
+  /* Centered text */
+  border-radius: 2px;
+  /* Rounded borders */
+  padding: 16px;
+  /* Padding */
+  position: fixed;
+  /* Sit on top of the screen */
+  z-index: 1000;
+  /* Add a z-index if needed */
+  left: 38%;
+  /* Center the snackbar */
+  top: 420px;
+  /* 30px from the bottom */
 }
 
 /* Show the snackbar when clicking on a button (class added with JavaScript) */
 #msjAyuda1.show {
-  visibility: visible; /* Show the snackbar */
+  visibility: visible;
+  /* Show the snackbar */
   /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
   However, delay the fade out process for 2.5 seconds */
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
@@ -131,23 +148,37 @@ body {
 
 
 #msjAyuda2 {
-  visibility: hidden; /* Hidden by default. Visible on click */
-  min-width: 250px; /* Set a default minimum width */
-  margin-left: -125px; /* Divide value of min-width by 2 */
-  background-color: rgba(191, 64, 36, 1);; /* background color */
-  color: #fff; /* White text color */
-  text-align: center; /* Centered text */
-  border-radius: 2px; /* Rounded borders */
-  padding: 16px; /* Padding */
-  position: fixed; /* Sit on top of the screen */
-  z-index: 1000; /* Add a z-index if needed */
-  left: 38%; /* Center the snackbar */
-  top: 420px; /* 30px from the bottom */
+  visibility: hidden;
+  /* Hidden by default. Visible on click */
+  min-width: 250px;
+  /* Set a default minimum width */
+  margin-left: -125px;
+  /* Divide value of min-width by 2 */
+  background-color: rgba(191, 64, 36, 1);
+  ;
+  /* background color */
+  color: #fff;
+  /* White text color */
+  text-align: center;
+  /* Centered text */
+  border-radius: 2px;
+  /* Rounded borders */
+  padding: 16px;
+  /* Padding */
+  position: fixed;
+  /* Sit on top of the screen */
+  z-index: 1000;
+  /* Add a z-index if needed */
+  left: 38%;
+  /* Center the snackbar */
+  top: 420px;
+  /* 30px from the bottom */
 }
 
 /* Show the snackbar when clicking on a button (class added with JavaScript) */
 #msjAyuda2.show {
-  visibility: visible; /* Show the snackbar */
+  visibility: visible;
+  /* Show the snackbar */
   /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
   However, delay the fade out process for 2.5 seconds */
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
@@ -156,21 +187,49 @@ body {
 
 /* Animations to fade the snackbar in and out */
 @-webkit-keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 420px; opacity: 1;}
+  from {
+    top: 0;
+    opacity: 0;
+  }
+
+  to {
+    top: 420px;
+    opacity: 1;
+  }
 }
 
 @keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 420px; opacity: 1;}
+  from {
+    top: 0;
+    opacity: 0;
+  }
+
+  to {
+    top: 420px;
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes fadeout {
-  from {top: 420px; opacity: 1;}
-  to {top: 0; opacity: 0;}
+  from {
+    top: 420px;
+    opacity: 1;
+  }
+
+  to {
+    top: 0;
+    opacity: 0;
+  }
 }
 
 @keyframes fadeout {
-  from {top: 420px; opacity: 1;}
-  to {top: 0; opacity: 0;}
-} 
+  from {
+    top: 420px;
+    opacity: 1;
+  }
+
+  to {
+    top: 0;
+    opacity: 0;
+  }
+}
