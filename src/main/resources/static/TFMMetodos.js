@@ -63,6 +63,7 @@ function actualiza_barra_progreso (tiempo)
 {
     // Inicialmente limpiamos el posible intervalo previo
     clearInterval(intervalo);
+
     // console.log("actualiza_barra_progreso ", tiempo);
 
     // Se recompone el intervalo de consultas
@@ -92,7 +93,9 @@ function actualiza_barra_progreso (tiempo)
                         document.getElementById("progreso").style.height="0px";
                         document.getElementById("progreso_actual").style.height="0px";
                         document.getElementById("progreso_actual").textContent = "";
-                        toastr.success ("Vídeo generado correctamente");
+
+                        if (document.getElementById("miZonaEdicion") != null && document.getElementById("miZonaEdicion").childNodes.length >0)
+                            toastr.success ("Vídeo generado correctamente");
 
                         document.getElementById("progreso_actual_spinner").style.visibility="hidden";
 
@@ -115,6 +118,7 @@ function actualiza_barra_progreso (tiempo)
                     }
 
                 }
+                response == '';
             })
     }, tiempo);
 }
@@ -825,6 +829,41 @@ function genera_etiquetas_slide_notas() {
 }
 
 
+// Muestra un alert modal tipo JQuery
+function muestra_alert (mensaje)
+{
+    $('<div></div>').appendTo('body')
+    .html('<div><h6>'+mensaje+'</h6></div>')
+    .dialog({
+        modal: true,
+        title: 'Mensaje',
+        zIndex: 10000,
+        autoOpen: true,
+        width: '400px',
+        resizable: false,
+        buttons: {
+            Aceptar: function () {
+                $(this).dialog("close");
+            }
+        },
+        close: function (event, ui) {
+            $(this).remove();
+        },
+        open: function() { // Tratamiendo de bug de jquery para la X de borrado
+            $(this).closest(".ui-dialog")
+            .find(".ui-dialog-titlebar-close")
+            .removeClass("ui-button")
+            .removeClass("ui-corner-all")
+            .removeClass("ui-widget")
+            .removeClass("ui-button-icon-only")
+            .removeClass("ui-dialog-titlebar-close")
+            .addClass("btn-close")
+            .html("");
+        }
+    });
+}
+
+
 // Recupera la captura en un tiempo determinado de la composición final.
 function muestra_captura(tiempo, posicion, offset) {
     imagen = (document.getElementById("img_oculta_" + tabla_duraciones.get(tiempo)));
@@ -902,7 +941,7 @@ function muestra_capa_notas() {
     tabla_fragmentos = [];
 
     if (elementosEdicion == undefined || elementosEdicion.length == 0) {
-        alert ("¡No hay clips en la zona de edición!");
+        muestra_alert ("¡No hay clips en la zona de edición!");
     }
     else {
         // Recorremos el área de edición para mostrar los items EN ORDEN
@@ -1869,12 +1908,12 @@ function lanzaFetch() {
         }
         else // No hay elementos en la zona de edición
         {
-            alert("No hay clips en la zona de edición :( ");
+            muestra_alert("No hay clips en la zona de edición.<p/>Carga imágenes o vídeos y arrástralos a la zona de edición.");
         }
     }
     else // Hay otra llamada en curso
     {
-        alert("No se permiten llamadas duplicadas.");
+        muestra_alert("No se permiten llamadas duplicadas.");
     }
 
     // Se actualiza la frecuencia de refresco
