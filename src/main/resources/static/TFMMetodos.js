@@ -11,7 +11,7 @@ const mimesVideo = ['application/x-troff-msvideo', 'video/avi', 'video/msvideo',
 const mimesImagenes = ['image/jpeg', 'image/pjpeg', 'image/gif', 'image/png'];
 
 // Granularidad temporal para vídeos (100 = centésimas, 1000 = milésimas, 1 = segundos);
-const step = 100;
+const granularidad = 100;
 
 // Ajuste de tamaño (a más ratio, más grandes serán los recuadros)
 var ratio_visualizacion = 0.45;
@@ -125,13 +125,13 @@ function actualiza_barra_progreso (tiempo)
 
 // Funcion que mostrará el mensaje de ayuda en la ventana de recorte de imagen
 function muestraAyuda1() {
-    // Get the snackbar DIV
+    // Obtiene el DIV con el mensaje
     var x = document.getElementById("msjAyuda1");
 
-    // Add the "show" class to DIV
+    // Le asigna la clase "show"
     x.className = "show";
 
-    // After 3 seconds, remove the show class from DIV
+    // Le quita la clase "show" tras 3 segundos
     setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 }
 
@@ -141,12 +141,26 @@ function muestraAyuda2() {
     // Get the snackbar DIV
     var x = document.getElementById("msjAyuda2");
 
-    // Add the "show" class to DIV
+    // Le asigna la clase "show"
     x.className = "show";
 
-    // After 3 seconds, remove the show class from DIV
+    // Le quita la clase "show" tras 3 segundos
     setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 } 
+
+// Funcion que mostrará el mensaje de ayuda en la ventana de edición de notas
+function muestraAyuda3() {
+    // Get the snackbar DIV
+    var x = document.getElementById("msjAyuda3");
+
+    // Le asigna la clase "show"
+    x.className = "show";
+
+    // Le quita la clase "show" tras 3 segundos
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+}
+
+
 
 // Añade la capa oculta con el item que se mostrará cuando se quiera editar un elemento.
 function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
@@ -191,7 +205,11 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
 
             var cierra = document.createElement('div');
             cierra.innerHTML = '&check;';
-            cierra.style = "position: relative; position: relative; left: 75px; top: -15px; border:   white; background-color: #ededed; border-width: 2px; border-style: inset; height: 25px; border-radius: 50%; width: 25px; text-align: center; cursor: pointer; color: black;"
+            cierra.className = 'fondo3';
+            cierra.title = "Cerrar y guardar cambios";
+            cierra.style = "position: relative; left: 90px; top: -21px; border:2px inset white; height: 40px; border-radius: 50%; width: 40px; text-align: center; font-size: x-large; cursor: pointer; color: black;"
+
+            // cierra.style = "position: relative; position: relative; left: 75px; top: -15px; border:   white; background-color: #ededed; border-width: 2px; border-style: inset; height: 25px; border-radius: 50%; width: 25px; text-align: center; cursor: pointer; color: black;"
             cierra.onclick = function () { keep = 0; oculta_capa('capa_oculta_' + nombre_archivo);   recalcula_propiedades_cookies()  };
 
 
@@ -266,8 +284,11 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
 
             var cierra = document.createElement('div');
             cierra.innerHTML = '&check;';
+            cierra.className = 'fondo2';
+            cierra.title = "Cerrar y guardar cambios";
+            cierra.style = "position: relative; left: 90px; top: -21px; border:2px inset white; height: 40px; border-radius: 50%; width: 40px; text-align: center; font-size: x-large; cursor: pointer; color: black;"
 
-            cierra.style = "position: relative; position: relative; left: 75px; top: -15px;  background-color: #ededed;  border: white; border-width: 2px; border-style: inset; height: 25px; border-radius: 50%; width: 25px; text-align: center; cursor: pointer; color: black;"
+            // cierra.style = "position: relative; position: relative; left: 75px; top: -15px;  background-color: #ededed;  border: white; border-width: 2px; border-style: inset; height: 25px; border-radius: 50%; width: 25px; text-align: center; cursor: pointer; color: black;"
             cierra.onclick = function () {keep = 0; oculta_capa('capa_oculta_' + nombre_archivo);   recalcula_propiedades_cookies()  };
 
 
@@ -393,6 +414,19 @@ function borra() {
     borra_tooltips ()
 }
 
+// Método que borra las notas de las capas (en el proceso de borrado de notas).
+function borra_capas_notas ()
+{
+    // Se recupera el contenedor de notas
+    var contenedor_notas = document.getElementById("marco_oculto_notas");
+
+    // Si hay notas
+    if (contenedor_notas != null && contenedor_notas.childNodes.length > 0)
+    {
+        contenedor_notas.innerHTML = '';
+    }
+}
+
 
 // Función que se llamará para borrar posibles notas de ejecuciones anteriores, siempre que no haya items.
 function chequea_cookies ()
@@ -416,7 +450,7 @@ function get_duracion(itemID) {
 
     seconds = video.duration;
 
-    return seconds * step;
+    return seconds * granularidad;
 }
 
 
@@ -576,7 +610,7 @@ function genera_slide_rango(itemID, desde, hasta, duracion, nombre_orig) {
     mi_slider.style.margin = "auto";
 
     var video = document.getElementById("video_oculto_" + nombre_orig); // Se añade prefijo del vídeo intermedio mp4 (convertido en servidor).
-    video.currentTime = desde / step;
+    video.currentTime = desde / granularidad;
 
     $(function () {
         $("#slider-range").slider({
@@ -586,7 +620,7 @@ function genera_slide_rango(itemID, desde, hasta, duracion, nombre_orig) {
             max: duracion, // Hay que sacar la duración del vídeo
             values: [desde, hasta],
             create: function (event, ui) {
-                $("#amount").val("Recorte desde el segundo " + (desde / step) + " hasta el " + (hasta / step).toFixed(2));
+                $("#amount").val("Recorte desde el segundo " + (desde / granularidad) + " hasta el " + (hasta / granularidad).toFixed(2));
             },
             slide: function (event, ui) {
                 // console.log(ui);
@@ -595,14 +629,14 @@ function genera_slide_rango(itemID, desde, hasta, duracion, nombre_orig) {
                 // let hasta_anterior = hashPropiedades.get(itemID).fin;
 
                 if (ui.values[0] != desde_anterior) // Si ha cambiado el primer rango
-                    video.currentTime = ui.values[0] / step;
+                    video.currentTime = ui.values[0] / granularidad;
                 else // Se cambió el segundo rango.
-                    video.currentTime = ui.values[1] / step;
+                    video.currentTime = ui.values[1] / granularidad;
 
                 hashPropiedades.set(itemID, { nombre_original: nombre_orig, duracion_video: duracion, inicio: ui.values[0], fin: ui.values[1] });
 
-                let desde = (ui.values[0] / step);
-                let hasta = (ui.values[1] / step);
+                let desde = (ui.values[0] / granularidad);
+                let hasta = (ui.values[1] / granularidad);
                 $("#amount").val("Recorte desde el segundo " + desde + " hasta el " + hasta);
 
                 // Se recalcula el nuevo ancho
@@ -715,20 +749,84 @@ function genera_slide_notas(duracion) {
 
     let mi_slider_notas = document.createElement("div");
     mi_slider_notas.id = "slider_notas";
-    mi_slider_notas.style.width = "95%";
-    mi_slider_notas.style.margin = "auto";
-
+    mi_slider_notas.style = "width:95%; margin:auto; height:70px";
     /*  width: 80%;
      align-self: center;
      margin: auto; */
 
+    ////// Composición del fondo de la barra
+
+    // console.log("tabla_duraciones  = ",tabla_duraciones);
+    const _iterator1 = tabla_duraciones.keys();
+    var _ini = -1;
+    var _fin;
+    var _porcentaje;
+    var _div;
+
+    // Determinamos el clip al que pertenece el momento del slider.
+    // console.log ("====== duracion ",duracion);
+    _div = document.createElement("div");
+    _div.style = " margin: auto; display: flex;    height: 100%";
+
+    for (_i = 0; _i < tabla_duraciones.size; _i++) {
+
+        // ¿Primer rango? Si es así, se inicia el iterador, en caso contrario vendrá de la vuelta anterior del bucle.
+        if (_ini == -1) {
+            _ini = _iterator1.next().value;
+        }
+        console.log (_ini);
+
+        // ¿Último rango?
+        if (_i >= tabla_duraciones.size - 1) {
+            _fin = duracion;
+        }
+        else // Si no lo es, se busca el siguiente valor.
+        {
+            _fin = _iterator1.next().value;
+        }
+        // console.log(_fin);
+
+        // Se determina el % de la duración de cada clip respecto al total.
+        _porcentaje = (parseInt(_fin) - parseInt(_ini))/ parseInt(duracion); 
+        // console.log (_porcentaje);
+
+        // Cada uno de los fragmentos que habrá detrás de la barra de desplazamiento
+        let _fragmento = document.createElement ("div");
+        _fragmento.innerHTML = document.getElementById("miniatura_"+tabla_duraciones.get(_ini)).outerHTML;
+        
+        // Determinamos el tipo de archivo para establecer el color de fondo
+        if (_fragmento.innerHTML.indexOf ("tipo_contenido=\"vid\"") > 0)
+            _fragmento.className = "fondo2";
+        else   
+            _fragmento.className = "fondo1";
+
+        // Se compone el fragmento
+        _fragmento.style = "width: "+_porcentaje*granularidad+"%; border=0.2em; border-color:grey; border-width: 1px; border-style: solid; overflow:hidden;";
+
+        _div.appendChild(_fragmento); // Se añade cada fragmento de la barra.
+
+        _ini = _fin; // Se prepara el siguiente rango.
+    }
+    mi_slider_notas.innerHTML = _div.outerHTML;
+    // console.log ("====== FIN ");
+
+    ////// FIN composición del fondo de la barra
+
+
     $(function () {
         $("#slider_notas").slider({
             id: "mi_slider_notas_slider",
-            range: "min",
+            // range: "min",
             value: 0,
             min: 0,
             max: duracion,
+            range: false,
+            step: 10,
+            // Añadimos un estilo particular al botón
+            classes: {
+                "ui-slider-handle": "ui-mi-slider-handle" 
+            },
+
             create: function (event, ui) {
                 // console.log(tabla_duraciones);
                 muestra_captura(0, 0, tabla_fragmentos[0]);
@@ -740,14 +838,40 @@ function genera_slide_notas(duracion) {
                 $("#slider_notas").attr("pos", "0");
             },
             slide: function (event, ui) {
-                $("#posicion_nota").val("Posición: " + ui.value / step + " segundos.");
+                $("#posicion_nota").val("Duración total: "+ parseFloat((duracion/granularidad).toFixed(1))+" segundos, posición actual: " +  parseFloat((ui.value / granularidad).toFixed(1)) + " segundos.");
+
+                // Almacenamos en la variable "pos" la ubicación del slider.
+                $("#slider_notas").attr("pos", ui.value);
+
+                // Gestión de visibilidad de notas
+                let valor_slide = document.getElementById("slider_notas").getAttribute("pos");
+
+
+
+                const iterator1 = tabla_duraciones.keys();
+                var posicion = 0;
+                var inicio = tabla_duraciones.keys().next();
+                var actual;
+
+                // Determinamos el clip al que pertenece el momento del slider.
+                for (i = 0; i < tabla_duraciones.size; i++) {
+
+                    actual = iterator1.next();
+                    if (eval(ui.value) > eval(actual.value)) {
+                        posicion = i;
+                        inicio = actual;
+                    }
+
+                }
+
+                var offset = ui.value - inicio.value;
+                muestra_captura(inicio.value, posicion, offset);
 
                 // Actualizamos visibilidad de notas
-                notas_actualiza_visibilidad(ui.value);
-
+                notas_actualiza_visibilidad(valor_slide);
             },
             stop: function (event, ui) {
-                $("#posicion_nota").val("Posición: " + ui.value / step + " segundos.");
+                $("#posicion_nota").val("Duración total: "+ parseFloat((duracion/granularidad).toFixed(1))+" segundos, posición actual: " + parseFloat((ui.value / granularidad).toFixed(1)) + " segundos.");
 
                 // Almacenamos en la variable "pos" la ubicación del slider.
                 $("#slider_notas").attr("pos", ui.value);
@@ -793,8 +917,7 @@ function genera_slide_notas(duracion) {
             }
         });
         // console.log("EN principal");
-
-        $("#posicion_nota").val("Posición: 0.00 segundos.");
+        $("#posicion_nota").val("Duración total: "+ parseFloat((duracion/granularidad).toFixed(1))+" segundos, posición actual: 0.0 segundos.");
 
     });
 
@@ -891,7 +1014,7 @@ function muestra_captura(tiempo, posicion, offset) {
 
         // Se calcula el fotograma a mostrar
         var pos_real = inicio + offset;
-        video.currentTime = eval(pos_real / step);
+        video.currentTime = eval(pos_real / granularidad);
 
         // Se calcula cuando haya acabado la búsqueda, si no podría capturar la imagen del fotograma antes mostrado
         video.onseeked = (event) => {
@@ -964,7 +1087,7 @@ function muestra_capa_notas() {
             console.log('duracion = ', duracion, ', desde = ', desde, ', hasta = ', hasta);
 
             // Recogemos la duración total.
-            duracion_total = eval(duracion_total + duracion * step + (hasta - desde));
+            duracion_total = eval(duracion_total + duracion * granularidad + (hasta - desde));
             // OK para vídeo alert(hasta);
 
             // Almacenamos rangos 
@@ -979,7 +1102,7 @@ function muestra_capa_notas() {
         var div_notas = get_div_notas(duracion_total);
         div_notas.style.visibility = "visible";
 
-        console.log("Duración total = ", duracion_total / step);
+        console.log("Duración total = ", duracion_total / granularidad);
 
     }
 
@@ -995,18 +1118,58 @@ function get_div_notas(duracion) {
         divNotas.id = "capa_notas";
         divNotas.className = "capa_edicion_imagen";
 
-        divNotas.onclick = function () { oculta_capa('capa_notas'); };
+        // divNotas.onclick = function () { oculta_capa('capa_notas'); }; // OCULTA LA VENTANA DE EDICIÓN AL HACER CLIC EN CUALQUIER ÁREA
 
         var divIntermedia = document.createElement('div');
-        divIntermedia.onclick = function () { keep = 1; };
+        // divIntermedia.onclick = function () { keep = 1; };
         divIntermedia.className = "capa_intermedia_edicion_nota";
         divIntermedia.id = "capa_intermedia_edicion_notas";
+
+        // Marco de título, botón de cierre
+        var titulo = document.createElement('div');
+        titulo.style.display="table";
+        titulo.style.width="100%";
+        titulo.style.paddingLeft="20px";
+        titulo.style.paddingRight="00px";
+
+        var tituloMarco =  document.createElement('div');
+        tituloMarco.style.width="80%";
+        tituloMarco.style.paddingBottom="20px";
+        tituloMarco.style.paddingTop="30px";
+        tituloMarco.style.overflow="hidden";
+        tituloMarco.innerHTML = "<strong>EDICIÓN DE NOTAS:</strong>"; 
+        tituloMarco.style.display="table-cell";
+
+
+        var ayuda =  document.createElement('div');
+        ayuda.style.width="20%";
+        ayuda.style.height="20px";
+        ayuda.innerHTML="<a href='#' onclick='muestraAyuda3()'><strong>?</strong></a>";
+        ayuda.style.textAlign="right";
+        ayuda.style.display="table-cell";
+
+        var cierra = document.createElement('div');
+        cierra.innerHTML = '&check;';
+        cierra.className = 'capa_intermedia_edicion_nota';
+        cierra.title = "Cerrar y guardar cambios";
+        cierra.style = "position: relative; left: 75px; top: -21px; border:2px inset white; height: 40px; border-radius: 50%; width: 40px; text-align: center; font-size: x-large; cursor: pointer; color: black;"
+        cierra.onclick = function () { keep = 0; oculta_capa('capa_notas');   recalcula_propiedades_cookies()  };
+
+        titulo.append(tituloMarco);
+        titulo.append(ayuda);
+        titulo.append(cierra);
+
+        divIntermedia.appendChild(titulo);
+
+        // FIN  Marco de título, botón de cierre
+
+
 
         // Marco de edición de proporciones 16/9
         var divMarcoEdicion = document.createElement('div');
         divMarcoEdicion.className = "clase_marco_oculto_notas";
         divMarcoEdicion.id = "marco_oculto_notas";
-        divMarcoEdicion.onclick = function () { add_nota(event); };
+        divMarcoEdicion.onclick = function () { add_nota(event); return false; };
         divMarcoEdicion.oncontextmenu = function () { add_nota(event); return false; }; // Captura del botón derecho
 
 
@@ -1051,7 +1214,7 @@ function add_nota(evento) {
     var rect = document.getElementById("marco_oculto_notas").getBoundingClientRect();
     elemento = document.elementFromPoint(evento.clientX, evento.clientY).id;
     obj = document.elementFromPoint(evento.clientX, evento.clientY);
-    // console.log("add_nota. click en ", elemento, "con keep = ", keep, " en el objeto = ",obj);
+    console.log("add_nota. click en ", elemento, "con keep = ", keep, " en el objeto = ",obj);
 
     // Controlamos que no se haga click encima de otra nota (entonces querríamos editarla!)
     // if (keep == 0 && (elemento == "marco_oculto_notas" || elemento == "img_temporal")) {
@@ -1491,15 +1654,19 @@ function regenera_hovers ()
 
             var detalle_vid_txt =  document.createElement("span");
             detalle_vid_txt.id = "etiq_video_hover_"+nombre_elto;
-            var dur_orig = document.getElementById(nombre_elto).getAttribute("dur_orig");         /* hashDuracionesOriginales.get(nombre_elto) */
-            // dur_orig = hashDuracionesOriginales.get("1480958_file_example_AVI_1280_1_5MG.avi");
-            // console.log ("Buscando ", nombre_elto, " en ", hashDuracionesOriginales, ":", dur_orig);
-/*             console.log ("Buscando duracion________________________________________________");
-            console.log (document.getElementById(nombre_elto));
-            console.log ("Buscando duracion de ", nombre_elto, "  :", dur_orig); */
+            // var dur_orig = document.getElementById(nombre_elto).getAttribute("dur_orig");         /* hashDuracionesOriginales.get(nombre_elto) */
+            var dur_orig = setTimeout(hashDuracionesOriginales.get("1480958_file_example_AVI_1280_1_5MG.avi"), 1000);
 
-            // try { detalle_img_txt.innerHTML = nombre_elto.substring(nombre_elto.indexOf("_")+1) + "<br> Duración: "+dur_orig+" s." } catch (exc) {}
-            try { detalle_vid_txt.innerHTML = nombre_elto.substring(nombre_elto.indexOf("_")+1) } catch (exc) {}
+            // Se controla un posible error en la recuperación de la duración
+            if (dur_orig == null || dur_orig == undefined)
+                dur_orig = " (no pudo recuperarse la duración).";
+
+            // console.log ("Buscando ", nombre_elto, " en ", hashDuracionesOriginales, ":", dur_orig);
+            // console.log ("Buscando duracion________________________________________________");
+            // console.log (document.getElementById(nombre_elto));
+            // console.log ("Buscando duracion de ", nombre_elto, "  :", dur_orig);
+
+            try { detalle_vid_txt.innerHTML = nombre_elto.substring(nombre_elto.indexOf("_")+1) + "<br> Duración: " + dur_orig + " s."} catch (exc) {}
 
             detalle_vid_txt.style.alignContent = "left";
             detalle_vid_txt.style.position = "relative";
@@ -1627,6 +1794,8 @@ function borra_proyecto ()
                             hashDuracionesOriginales = new Map();
                             hashPropiedadesNotas = new Map();  // Propiedades de las notas.
 
+                            borra_capas_notas(); // Borramos los divs con las notas.
+
                             toastr.success ("Información borrada correctamente.");
                         }
                         else // algún problema en el borrado!
@@ -1738,9 +1907,9 @@ function lanzaFetch() {
                 if (Number.isNaN(hasta)) hasta = 0;
                 if (Number.isNaN(desde)) desde = 0;
 
-                console.log("duracion = ", duracion * step, ", hasta = ", hasta, ", desde = ", desde);
+                console.log("duracion = ", duracion * granularidad, ", hasta = ", hasta, ", desde = ", desde);
 
-                duracion_total = duracion_total + duracion * step + (hasta - desde);
+                duracion_total = duracion_total + duracion * granularidad + (hasta - desde);
 
                 // let fin_seccion = duracion_total;
 
@@ -1847,7 +2016,7 @@ function lanzaFetch() {
                     "duracion": duracion,
                     "desde": desde,
                     "hasta": hasta,
-                    "precision": step,
+                    "precision": granularidad,
                     "notas": notas
                 });
 
@@ -2005,12 +2174,13 @@ function regenera_miniatura(idSesion, id_imagen) {
         tipo = "vid";
     }
 
+    let _id = "miniatura_"+id_imagen;
     //console.log('regenera_miniatura: img = ', id_img);
     //console.log('regenera_miniatura: id_imagen = ', id_imagen);
 
     // let texto_alt = id_imagen + '.Haz click para fijar la duración.';
 
-    actual.innerHTML = "<img  class='clase_miniatura' src='" + id_img + "' img_original='" + id_imagen + "' tipo_contenido='" + tipo + "' onError='miniatura_esperando(\"" + id_imagen + "\"); setTimeout(() => {regenera_miniatura(\"" + idSesion + "\", \"" + id_imagen + "\")}, 500);'>";
+    actual.innerHTML = "<img id='"+_id+"' class='clase_miniatura' src='" + id_img + "' img_original='" + id_imagen + "' tipo_contenido='" + tipo + "' onError='miniatura_esperando(\"" + id_imagen + "\"); setTimeout(() => {regenera_miniatura(\"" + idSesion + "\", \"" + id_imagen + "\")}, 500);'>";
 }
 
 
@@ -2161,31 +2331,6 @@ function termina_render() {
                 Sí: function () {
                     $(this).dialog("close");
 
-/*                     // Se hace la petición de borrado
-                    fetch("/borraProyecto/")
-                    .then(response => response.text())
-                    .then((response) => {
-                        // Si tuvo éxito
-                        if (response == '') {
-                            console.log("Respuesta OK, borrando información del navegador");
-                            deleteGrupoCookies("notas");
-                            deleteGrupoCookies("elementosEdicion");
-                            document.getElementById("misRecursos").textContent ='';
-                            document.getElementById("miZonaEdicion").textContent ='';
-
-                            hashPropiedades = new Map(); // Propiedades de los vídeos recortados.
-                            hashDuracionesOriginales = new Map();
-                            hashPropiedadesNotas = new Map();  // Propiedades de las notas.
-
-                            toastr.success ("Información borrada correctamente.");
-                        }
-                        else // algún problema en el borrado!
-                        {
-                            toastr.error (response);
-                        }
-                    }) */
-
-
                     // Se hace la petición de borrado
                     fetch("/paraProceso/")
                         .then(response => response.text())
@@ -2251,8 +2396,12 @@ function limita_ancho(elemento) {
     // Para evitar problemas en la edición, se limita la posición inferior.
     if (margen_inferior_contenedor < posicion.bottom) {
         if (elemento.readOnly == false)
-            toastr.success('No es posible añadir texto fuera de la zona de edición');
+        {
+// console.log("elemento = ",elemento);
 
+            toastr.options.preventDuplicates = "true";
+            toastr.success('No es posible editar texto fuera de la zona de edición');
+        }
         elemento.readOnly = true;
     }
     else
@@ -2293,8 +2442,8 @@ var observer = new MutationObserver(function (mutations) {
         if (tipo_anadido && tipo_anadido.className && tipo_anadido.className == "item_edicion item_edicion_imagen") // Si es imagen
         {
             // Se almacena en la hash la duración original
-            // console.log("Mutation. Duración de " + tipo_anadido.id + "= " + duracion_defecto_img * step);
-            hashDuracionesOriginales.set(tipo_anadido.id, duracion_defecto_img * step);
+            // console.log("Mutation. Duración de " + tipo_anadido.id + "= " + duracion_defecto_img * granularidad);
+            hashDuracionesOriginales.set(tipo_anadido.id, duracion_defecto_img * granularidad);
 
             // Se ajusta el ancho de la miniatura
             document.getElementById(tipo_anadido.id).style.maxWidth = (ratio_visualizacion * 100) + "px"; // Ratio testado : 45px = 10segundos.
@@ -2314,7 +2463,7 @@ var observer = new MutationObserver(function (mutations) {
                     clip = response.substr(0, response.indexOf(","));
 
                     // Se almacena en la hash la duración original
-                    hashDuracionesOriginales.set(clip, duracion * step);
+                    hashDuracionesOriginales.set(clip, duracion * granularidad);
 
                     console.log ("SETTING duracion________________________________________________", duracion, ".", clip);
                     try { document.getElementById("etiq_video_hover_"+clip).innerHTML = clip.substring(clip.indexOf('_')+1) + "<br> Duración: "+Number(duracion).toFixed(2)+" s." } catch (exc) {console.log (exc);}

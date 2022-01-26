@@ -101,6 +101,9 @@
                 <div class="titulos_superior_opcion">
                     <a id="botonModal5" draggable="false">Créditos</a>
                 </div>
+                <div class="titulos_superior_opcion">
+                    <a id="botonModal6" draggable="false">Guía de uso</a>
+                </div>
             </div>
         </div>
 
@@ -404,6 +407,25 @@
             </div>
         </div>
 
+
+        <div id="modal_guia" class="modal"  >
+            <!-- Modal content -->
+            <div id="modal_guia_contenido" class="modal-contenido modal-contenido-scroll scroller">
+                <div class="fondo_modal2">
+                    <span id="boton_modal_guia" class="close" style="visibility:hidden; position: fixed; cursor:pointer; opacity:100%; top: 80px;  left: calc(85%);;" onclick="this.style.visibility='hidden';modal6.style.height='0px'; modal6.style.maxHeight = '0px'">&times;</span>
+                    <div id="modal_guia_ext"></div>
+                    <script>
+                        $(document).ready(function(){
+                           
+                           $('#modal_guia_ext').load("TFMGuiaDeUso.html");
+                        
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+
         <div id="modalImagenes" class="modalStickers" style="z-index: 50;" >
             <!-- Modal content -->
             <div class="modal-content" style=" max-height:400px; max-width:60%; overflow-y: auto;padding: 20px;    margin:0 auto;">
@@ -413,6 +435,8 @@
             </div>
         </div>
 
+
+        
 
         <script th:inline="javascript">
             function recarga_stickers(id_nota) {
@@ -450,21 +474,24 @@
             var modal3 = document.getElementById("modal_como_funciona");
             var modal4 = document.getElementById("modal_como_esta_hecho");
             var modal5 = document.getElementById("modal_creditos");
+            var modal6 = document.getElementById("modal_guia");
+            
 
             // Get the button that opens the modal
             var btn = document.getElementById("myBtn");
             var btn3 = document.getElementById("botonModal3");
             var btn4 = document.getElementById("botonModal4");
             var btn5 = document.getElementById("botonModal5");
+            var btn6 = document.getElementById("botonModal6");
 
             // Botón que abre el modal de imágenes
             var btn2 = document.getElementById("botonModalImagenes");
 
 
-            // Get the <span> element that closes the modal
+            // Recupera el elemento span que cierra el modal
             var span = document.getElementsByClassName("close")[0];
 
-            // When the user clicks the button, open the modal 
+            // Cuando se hace clic en el botón, se abre el modal.
             btn.onclick = function () {
                 // Recupero la altura del menú:
                 var altura_menu = document.getElementById("borde_superior").clientHeight;
@@ -477,7 +504,6 @@
 
             // Gestión de la pulsación del modal3
             btn3.onclick = function () {
-                //modal3.style.display = "block";
                 // Recupero la altura del menú:
                 var altura_menu = document.getElementById("borde_superior").clientHeight;
 
@@ -512,6 +538,20 @@
 
             }
 
+            // Gestión de la pulsación del modal6
+            btn6.onclick = function () {
+                // Recupero la altura del menú:
+                var altura_menu = document.getElementById("borde_superior").clientHeight;
+
+                document.getElementById("modal_guia_contenido").style.marginTop = altura_menu+'px';
+                modal6.style.height = "100%";
+                modal6.style.maxHeight = "100%";
+                document.getElementById("modal_guia").style.overflow = "auto"; 
+                document.getElementById("boton_modal_guia").style.visibility="visible";
+
+
+            }
+
             // When the user clicks on <span> (x), close the modal
             span.onclick = function () {
                 // modal.style.display = "none";
@@ -533,6 +573,11 @@
                 modal4.style.height = "0%";
                 modal5.style.maxHeight = "0%";  
                 modal5.style.height = "0%" ;
+                modal6.style.maxHeight = "0%";  
+                modal6.style.height = "0%" ;
+                document.getElementById("boton_modal_guia").style.visibility="hidden";
+
+
 
                 document.getElementById("modalImagenes").style.overflowy = "hidden"; /**/
                 modal2.style.height = "0%";
@@ -563,8 +608,11 @@
                     modal5.style.height = "0%"
                     modal5.style.maxHeight = "0%"
 
+                } else if (event.target == modal6) {
+                    modal6.style.height = "0%"
+                    modal6.style.maxHeight = "0%"
+                    document.getElementById("boton_modal_guia").style.visibility="hidden";
                 }
-
 
             }
 
@@ -961,6 +1009,7 @@
     </div>
     <div id="msjAyuda1">Ajusta con la barra la duración de la imagen...</div> 
     <div id="msjAyuda2">Ajusta con la barra el inicio y el fin del recorte de vídeo...</div> 
+    <div id="msjAyuda3">Desplázate por la línea de tiempo y haz clic sobre la imagen para crear una nota...</div> 
 
     <button id="boton_termina_proceso" class="clase_termina_proceso" onclick="termina_render()">Cancela proceso</button>
 

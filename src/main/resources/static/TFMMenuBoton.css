@@ -185,6 +185,31 @@ body {
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
+
+#msjAyuda3 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: rgba(191, 64, 36, 1);
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1000;
+  left: calc(50% - 270px);
+  top: 590px;
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#msjAyuda3.show {
+  visibility: visible;
+  -webkit-animation: fadein3 0.5s, fadeout3 0.5s 2.5s;
+  animation: fadein3 0.5s, fadeout3 0.5s 2.5s;
+}
+
+
+
 /* Animations to fade the snackbar in and out */
 @-webkit-keyframes fadein {
   from {
@@ -210,6 +235,31 @@ body {
   }
 }
 
+@-webkit-keyframes fadein3 {
+  from {
+    top: 0;
+    opacity: 0;
+  }
+
+  to {
+    top: 590px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadein3 {
+  from {
+    top: 0;
+    opacity: 0;
+  }
+
+  to {
+    top: 590px;
+    opacity: 1;
+  }
+}
+
+
 @-webkit-keyframes fadeout {
   from {
     top: 420px;
@@ -225,6 +275,30 @@ body {
 @keyframes fadeout {
   from {
     top: 420px;
+    opacity: 1;
+  }
+
+  to {
+    top: 0;
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes fadeout3 {
+  from {
+    top: 590px;
+    opacity: 1;
+  }
+
+  to {
+    top: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeout3 {
+  from {
+    top: 590px;
     opacity: 1;
   }
 

@@ -170,8 +170,8 @@ function recalcula_propiedades_reload() {
 
 
             // Se recalcula el nuevo ancho en el área de edición
-            document.getElementById(id_final).style.minWidth = eval(_fin - _inicio) / step * 10 * ratio_visualizacion + "px";
-            document.getElementById(id_final).style.maxWidth = eval(_fin - _inicio) / step * 10 * ratio_visualizacion + "px";
+            document.getElementById(id_final).style.minWidth = eval(_fin - _inicio) / granularidad * 10 * ratio_visualizacion + "px";
+            document.getElementById(id_final).style.maxWidth = eval(_fin - _inicio) / granularidad * 10 * ratio_visualizacion + "px";
 
 
         }
