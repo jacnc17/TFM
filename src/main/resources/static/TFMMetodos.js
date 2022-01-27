@@ -7,8 +7,8 @@ var keep = 0; // Permitirá controlar que se cierre la capa emergente cuando se 
 
 var en_curso = 0; // Indica si hay alguna llamada en curso 0=no hay llamadas en curso, 1=sí las hay, no se permitirán varias.
 
-const mimesVideo = ['application/x-troff-msvideo', 'video/avi', 'video/msvideo', 'video/x-msvideo', 'video/mp4', 'video/x-matroska'];
-const mimesImagenes = ['image/jpeg', 'image/pjpeg', 'image/gif', 'image/png'];
+const mimesVideo = ['video/webm','video/ogg','audio/ogg', 'application/x-troff-msvideo', 'video/avi', 'video/msvideo', 'video/x-msvideo', 'video/mp4', 'video/x-matroska', 'video/quicktime', 'video/x-quicktime', 'image/mov' ];
+const mimesImagenes = ['image/webp', 'image/jpeg', 'image/pjpeg', 'image/gif', 'image/png'];
 
 // Granularidad temporal para vídeos (100 = centésimas, 1000 = milésimas, 1 = segundos);
 const granularidad = 100;

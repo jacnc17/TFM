@@ -194,3 +194,100 @@ li.li_modal {
 #modal_guia_contenido::-webkit-scrollbar-thumb:window-inactive {
 	background: rgba(255,0,0,0.4); 
 }
+
+
+/* https://css-tricks.com/examples/WebKitScrollbars/ */
+#modal_creditos_contenido::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+ 
+/* Track */
+#modal_creditos_contenido::-webkit-scrollbar-track {
+    /* -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);  */
+    -webkit-border-radius: 1px;
+    border-radius: 2px;
+}
+ 
+/* Handle */
+#modal_creditos_contenido::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    background: rgba(79, 180, 242, 1); /* #29e;*/ 
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+#modal_creditos_contenido::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+/* https://css-tricks.com/examples/WebKitScrollbars/ */
+#modal_como_esta_hecho_contenido::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+ 
+/* Track */
+#modal_como_esta_hecho_contenido::-webkit-scrollbar-track {
+    /* -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);  */
+    -webkit-border-radius: 1px;
+    border-radius: 2px;
+}
+ 
+/* Handle */
+#modal_como_esta_hecho_contenido::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    background: rgba(79, 180, 242, 1); /* #29e;*/ 
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+#modal_como_esta_hecho_contenido::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+/* https://css-tricks.com/examples/WebKitScrollbars/ */
+#modal_como_funciona_contenido::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+ 
+/* Track */
+#modal_como_funciona_contenido::-webkit-scrollbar-track {
+    /* -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);  */
+    -webkit-border-radius: 1px;
+    border-radius: 2px;
+}
+ 
+/* Handle */
+#modal_como_funciona_contenido::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    background: rgba(79, 180, 242, 1); /* #29e;*/ 
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+#modal_como_funciona_contenido::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+/* https://css-tricks.com/examples/WebKitScrollbars/ */
+#modal_que_es_contenido::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+ 
+/* Track */
+#modal_que_es_contenido::-webkit-scrollbar-track {
+    /* -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);  */
+    -webkit-border-radius: 1px;
+    border-radius: 2px;
+}
+ 
+/* Handle */
+#modal_que_es_contenido::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    background: rgba(79, 180, 242, 1); /* #29e;*/ 
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+#modal_que_es_contenido::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}

@@ -37,6 +37,13 @@ public final class TFMConstantes {
         // Imágenes PNG
         mimes_PNG.add("image/png");
 
+        // Imágenes TIFF
+        // mimes_imagenes.add("image/tiff");
+        // mimes_imagenes.add("image/x-tiff");
+
+        // Imágenes WEBP
+        mimes_imagenes.add("image/webp");
+
         // Colector de MIMES de imágenes
         mimes_imagenes.addAll(mimes_JPG);
         mimes_imagenes.addAll(mimes_GIF);
@@ -53,6 +60,23 @@ public final class TFMConstantes {
 
         // Vídeos MKV
         mimes_video.add("video/x-matroska");
+
+        // Vídeos MOV
+        mimes_video.add("video/quicktime");
+        mimes_video.add("video/x-quicktime");
+        mimes_video.add("image/mov");
+
+        // Vídeos OGG
+        mimes_video.add("audio/ogg");
+        mimes_video.add("video/ogg");
+
+        // WMV
+        // mimes_video.add("video/x-ms-asf");
+        // mimes_video.add("video/x-ms-wmv");       
+
+        // WEBM
+        mimes_video.add("video/webm");
+        
 
     }
 

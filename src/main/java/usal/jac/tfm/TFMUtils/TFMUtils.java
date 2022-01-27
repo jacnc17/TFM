@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Hashtable;
@@ -161,6 +162,16 @@ public class TFMUtils {
             // Se recuperará el MIME
             String mimeType = URLConnection.guessContentTypeFromName(nombreArchivo);
 
+            // Si el mime es nulo, se intenta un método alternativo
+            if (mimeType == null)
+            {
+                logger.debug ("esVideo: mime type de {} no recuperado, probando método alternativo", nombreArchivo);
+
+                Path path = new File(nombreArchivo).toPath();
+                mimeType = Files.probeContentType(path);
+            }
+
+            // Se verifica si es vídeo (si no, será imagen)
             if (TFMUtils.es_MIME_video(mimeType))
                 resultado = true;
 

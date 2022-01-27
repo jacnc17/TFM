@@ -61,7 +61,18 @@ public class TFMControladorCargaArchivos {
 				
 				// Añado el mime
 				mimetype = URLConnection.guessContentTypeFromName(a.toString());
-				lista_mimes.add(URLConnection.guessContentTypeFromName(a.toString()));
+
+				// Si el mime es nulo, se intenta un método alternativo
+				if (mimetype == null)
+				{
+					log.debug ("esVideo: mime type de {} no recuperado, probando método alternativo", a.toString());
+
+					Path path = new File(a.toString()).toPath();
+					mimetype = Files.probeContentType(path);
+				}
+
+
+				lista_mimes.add(mimetype	);
 				log.info("mimetype añadido = {}", mimetype);
 
 				lista_nombres.add(dest + "/" + idSesion + "/" + a);
