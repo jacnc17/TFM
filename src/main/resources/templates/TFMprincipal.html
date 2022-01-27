@@ -806,6 +806,7 @@
                 // maxFiles: 3, // Limita el TOTAL de archivos que se pueden subir
                 // disablePreviews: true,
                 parallelUploads: 5,
+                maxFilesize: 50, // Máximo en MB que se pueden subir
                 processingmultiple() {
                     $('.progress-bar').show()
                 },
@@ -948,7 +949,20 @@
                     }
                     else
                     {
-                        toastr.error('Se produjo algún error en la carga. Recarga la página y prueba de nuevo.');
+                        // Recogemos el mensaje de error
+                        let msj_error = $(file.previewElement).find('.dz-error-message').text(response)[0].innerHTML;
+
+                        // Si el mensaje es de "tamaño superado", se procesa para mostrar en español
+                        if (msj_error != null && msj_error.indexOf("File is too big")>=0)
+                        {
+                            msj_error = msj_error.replace("File is too big", "El archivo '"+file.name+"' es demasiado grande");
+                            msj_error = msj_error.replace("Max filesize", "Máximo permitido");
+                            toastr.error(msj_error);
+                        }
+                        else // Otros errores
+                        {
+                            toastr.error('Se produjo algún error en la carga. Recarga la página y prueba de nuevo.');
+                        }
                     }
                     this.removeFile(file);
 

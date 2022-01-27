@@ -808,7 +808,7 @@ body::before {
 }
 
 #toast-container > div {
-    width: 450px;
+    width: 450px !important;
 }
 
 .ui-dialog .ui-dialog-titlebar {
