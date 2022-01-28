@@ -60,12 +60,14 @@ public class TFMControladorBorraProyecto {
             // Se borran los contenidos, dejando el directorio intacto
             logger.info("Se borran los contenidos, dejando {} intacto ", destinationFile.toString());
 
-            FileUtils.cleanDirectory(destinationFile.toFile());
+            // FileUtils.cleanDirectory(destinationFile.toFile());
+            FileUtils.deleteQuietly(destinationFile.toFile());
+            
         } 
         catch (IllegalStateException iee) { iee.printStackTrace(); resultado = "¡Error capturando la sesión del usuario! Pulsa F5 e inténtalo de nuevo."; }
         catch (NullPointerException npe) { npe.printStackTrace(); resultado = "¡Error capturando el directorio del usuario! Pulsa F5 e inténtalo de nuevo."; }
         catch (IllegalArgumentException iae) { iae.printStackTrace(); if (iae.toString().indexOf("does not exist")==0)  resultado = "¡Error capturando el directorio del usuario! Pulsa F5 e inténtalo de nuevo."; }
-        catch (IOException ioe) { ioe.printStackTrace(); resultado = "¡No pudieron borrarse los archivos! Inténtalo de nuevo en unos instantes"; }
+        // catch (IOException ioe) { ioe.printStackTrace(); resultado = "¡No pudieron borrarse los archivos! Inténtalo de nuevo en unos instantes"; }
 
         return resultado;
     }

@@ -90,7 +90,7 @@ function get_notas_cookies() {
 
     // Se crea el div de notas, inicialmente con duración dummy (se actualizará cuando se muestren las notas)
     get_div_notas(-1);
-
+    duracion_total_actual = 0;
 
     while (!fin) {
         var elto = getCookie("notas." + indice + ".id_nota");
