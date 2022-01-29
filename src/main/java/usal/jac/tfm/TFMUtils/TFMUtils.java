@@ -221,7 +221,9 @@ public class TFMUtils {
             String rutaFFMPEG) {
 
         // Definición de variables
-        String nombre_archivo = archivo.getOriginalFilename().replace(' ', '_');
+        String nombre_archivo = archivo.getOriginalFilename().replaceAll(" ", "_");
+        nombre_archivo = nombre_archivo.replaceAll("%20", "_");
+
         String nombre_miniatura = dirDestinoMiniatura + File.separator + "thumb_" + archivo.getSize() + "_"
                 + nombre_archivo
                 + ".jpg";
@@ -324,7 +326,8 @@ public class TFMUtils {
      */
     public static void generaMiniaturaImagen(MultipartFile archivo, String dirDestinoMiniatura) {
         // Definición de variables
-        String nombre_archivo = archivo.getOriginalFilename().replace(' ', '_');
+        String nombre_archivo = archivo.getOriginalFilename().replaceAll(" ", "_");
+        nombre_archivo = nombre_archivo.replaceAll("%20", "_");
 
         try {
 

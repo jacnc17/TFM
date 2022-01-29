@@ -198,7 +198,7 @@ body {
   position: fixed;
   z-index: 1000;
   left: calc(50% - 270px);
-  top: 590px;
+  top: 600px;
 }
 
 /* Show the snackbar when clicking on a button (class added with JavaScript) */
@@ -242,7 +242,7 @@ body {
   }
 
   to {
-    top: 590px;
+    top: 600px;
     opacity: 1;
   }
 }
@@ -254,7 +254,7 @@ body {
   }
 
   to {
-    top: 590px;
+    top: 600px;
     opacity: 1;
   }
 }
@@ -286,7 +286,7 @@ body {
 
 @-webkit-keyframes fadeout3 {
   from {
-    top: 590px;
+    top: 600px;
     opacity: 1;
   }
 
@@ -298,7 +298,7 @@ body {
 
 @keyframes fadeout3 {
   from {
-    top: 590px;
+    top: 600px;
     opacity: 1;
   }
 

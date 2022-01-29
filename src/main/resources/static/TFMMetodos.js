@@ -8,7 +8,7 @@ var keep = 0; // Permitirá controlar que se cierre la capa emergente cuando se 
 var en_curso = 0; // Indica si hay alguna llamada en curso 0=no hay llamadas en curso, 1=sí las hay, no se permitirán varias.
 
 const mimesVideo = ['video/webm','video/ogg','audio/ogg', 'application/x-troff-msvideo', 'video/avi', 'video/msvideo', 'video/x-msvideo', 'video/mp4', 'video/x-matroska', 'video/quicktime', 'video/x-quicktime', 'image/mov' ];
-const mimesImagenes = ['image/webp', 'image/jpeg', 'image/pjpeg', 'image/gif', 'image/png'];
+const mimesImagenes = [/* 'image/webp',  */'image/jpeg', 'image/pjpeg', 'image/gif', 'image/png'];
 
 // Granularidad temporal para vídeos (100 = centésimas, 1000 = milésimas, 1 = segundos);
 const granularidad = 100;
@@ -259,6 +259,10 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
         }
         else if (mimesVideo.some(i => mime.includes(i)))  // Gestión de vídeo en capa oculta. Debe esperarse a que FFMPEG lo trnansforme.
         {
+            nombre_archivo = nombre_archivo.replaceAll("%20","_");
+            nombre_archivo = nombre_archivo.replaceAll(" ","_");
+
+
             // Se asignan los atributos para la capa contenedora
             divIntermedia.className = "capa_intermedia_edicion_imagen";
             divIntermedia.id = "capa_intermedia_" + nombre_archivo + ".mp4";
@@ -305,10 +309,16 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
 
             // Marco de edición de proporciones 16/9
             var divMarcoEdicion = document.createElement('div');
-            divMarcoEdicion.className = "clase_marco_oculto";
+            divMarcoEdicion.className = "clase_marco_oculto_video";
 
-            divMarcoEdicion.style.maxHeight="400px";
-            divMarcoEdicion.style.height="400px";
+            // divMarcoEdicion.style.maxHeight="400px";
+            // divMarcoEdicion.style.height="400px";
+
+            nombre_archivo = nombre_archivo.replaceAll("%20","_");
+            nombre_archivo = nombre_archivo.replaceAll(" ","_");
+
+
+            // console.log ('A');
 
             // Creamos un elemento de vídeo mini (reducido en resolución) y se le asignan atributos.
             var origen_elemento_mini = getBase() + idSesion + '/miniaturas/mini_' + nombre_archivo + ".mp4";
@@ -316,16 +326,20 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             // videoElement.controls = "controls";
             videoElement.className = "clase_video_oculto";
             videoElement.id = 'video_oculto_' + nombre_archivo;
+            // console.log ('A: videoElement', videoElement);
 
             // Función onError
             videoElement.onerror = function ()  // En caso de error en la carga, se intenta recargar.
             {
+            // console.log ('B: videoElement', videoElement);
+              
                 setTimeout(function () { anadir_video_oculto(origen_elemento_mini, "video_oculto_" + nombre_archivo, mime); }, 1000);
             }
+            // console.log(document.getElementById('video_oculto_' + nombre_archivo));
 
             // Se asignan los elementos generados.
             videoElement.src = origen_elemento_mini;
-            console.log("Video. Se asignan los elementos generados.");
+            // console.log("C: videoElement.src "+videoElement.src);
 
 
             divMarcoEdicion.appendChild(titulo);   
@@ -452,6 +466,7 @@ function get_duracion(itemID) {
     // Recuperamos el elemento vídeo
     var video = document.getElementById("video_oculto_" + itemID); // Se añade prefijo del vídeo intermedio mp4 (convertido en servidor).
     var seconds;
+    // alert ("ENTRANDO");
     console.log("get_duracion : recuperando duración de  video_oculto_" + itemID + ", video = " + video + ", duracion =  " + video.duration + ",estado =" + video.readyState);
 
     seconds = video.duration;
@@ -612,8 +627,9 @@ function ventana_emergente(itemID) {
 function genera_slide_rango(itemID, desde, hasta, duracion, nombre_orig) {
     let mi_slider = document.createElement("div");
     mi_slider.id = "slider-range";
-    mi_slider.style.width = "95%";
-    mi_slider.style.margin = "auto";
+    mi_slider.style = "    width: 95%;    margin: auto;     margin-bottom: 20px;     margin-top: 30px;"
+
+
 
     var video = document.getElementById("video_oculto_" + nombre_orig); // Se añade prefijo del vídeo intermedio mp4 (convertido en servidor).
     video.currentTime = desde / granularidad;
@@ -676,6 +692,7 @@ function genera_etiquetas_slide_rango() {
     input_texto.readOnly = true;
     input_texto.style.outline = "none";
 
+    parrafo.style = "padding-top: 15px !important;     padding-bottom: 0px !important;"; 
     parrafo.appendChild(etiq);
     parrafo.appendChild(input_texto);
 
@@ -688,9 +705,10 @@ function genera_etiquetas_slide_rango() {
 function genera_slide(itemID, tiempo, nombre_orig) {
     let mi_slider = document.createElement("div");
     mi_slider.id = "slider-range-min";
-    mi_slider.style.width = "95%";
-    mi_slider.style.margin = "25px auto auto";
+    // mi_slider.style.width = "95%";
+    // mi_slider.style.margin = "25px auto auto";   
     // mi_slider.style.marginTop = "10px";
+    mi_slider.style = "    width: 95%;    margin: auto;     margin-bottom: 20px;     margin-top: 30px;"
 
     $(function () {
         $("#slider-range-min").slider({
@@ -755,7 +773,7 @@ function genera_slide_notas(duracion) {
 
     let mi_slider_notas = document.createElement("div");
     mi_slider_notas.id = "slider_notas";
-    mi_slider_notas.style = "width:95%; margin:auto; height:70px";
+    mi_slider_notas.style = "width:95%; margin:auto; height:70px; margin-bottom: 20px;";
     /*  width: 80%;
      align-self: center;
      margin: auto; */
@@ -953,7 +971,7 @@ function genera_etiquetas_slide_notas() {
     let input_texto = document.createElement("input");
 
     etiq.for = "posicion_nota";
-    parrafo.style =  "padding-top: 10px !important; padding-bottom: 25px !important; width: 75%";
+    parrafo.style =  "padding-top: 10px !important; padding-bottom: 25px !important; width: 100%";
 
     // etiq.textContent = "Posición: ";
 
@@ -1155,7 +1173,7 @@ function get_div_notas(duracion) {
         var tituloMarco =  document.createElement('div');
         tituloMarco.style.width="80%";
         tituloMarco.style.paddingBottom="20px";
-        tituloMarco.style.paddingTop="30px";
+        tituloMarco.style.paddingTop="60px";
         tituloMarco.style.overflow="hidden";
         tituloMarco.innerHTML = "<strong>EDICIÓN DE NOTAS</strong>"; 
         tituloMarco.style.display="table-cell";
@@ -1200,6 +1218,7 @@ function get_div_notas(duracion) {
 
         ////////////////////// PLAY
         let _boton = document.createElement("div")
+        _boton.id = "boton_play";
         var etiq_play = "Vista previa <img src='iconos/play-circle.svg' alt='Play' />";
         var etiq_stop = "Vista previa <img src='iconos/stop-circle.svg' alt='Stop' />";
 
@@ -1218,7 +1237,6 @@ function get_div_notas(duracion) {
             {
                 reproduciendo = 0;
                 document.getElementById('play').innerHTML = etiq_play; 
-
             }
         }
         divIntermedia.appendChild(_boton);
@@ -1287,7 +1305,7 @@ function procesa_play ()
             $("#posicion_nota").val(_texto);
             
             // $("#slider_notas").call("#slider_notas");
-            console.log ("Esperando ",_ms_objetivo - (new Date()).getMilliseconds());
+            // console.log ("Esperando ",_ms_objetivo - (new Date()).getMilliseconds());
 
 
             ////////////////////////////////////////////// VISUALIZACIÓN
@@ -1332,6 +1350,16 @@ function procesa_play ()
         else
         {
             console.log ("Se llegó al fin");
+            reproduciendo = 0;
+
+            var _boton_play = document.getElementById("boton_play");
+
+            if (_boton_play != null)
+            {
+                var etiq_play = "Vista previa <img src='iconos/play-circle.svg' alt='Stop' />";
+
+                _boton.innerHTML = "<span id='play' style='position:relative; height:10px'>"+etiq_play+"</span>"; // play-circle.svg
+            }
         }
     }
 }
@@ -1572,9 +1600,14 @@ function anadir_item_editor(nombre_archivo, mimetypeArchivo     ) {
 
     // Se determina la capa que se ha arrastrado a la zona de dropzone.
     var iDiv = document.getElementById(nombre_archivo);
+    // console.log("4" + nombre_archivo);
+    // console.log("4" + mimetypeArchivo);
 
     // Se añade sólo si no existía antes.
     if (!iDiv) {
+        nombre_archivo = nombre_archivo.replaceAll (" ","_");
+        nombre_archivo = nombre_archivo.replaceAll ("%20","_");
+        
         iDiv = document.createElement('div');
         iDiv.id = nombre_archivo;
 
@@ -1586,6 +1619,7 @@ function anadir_item_editor(nombre_archivo, mimetypeArchivo     ) {
         // En función del mime, se asignan los estilos.
         if (mimesVideo.some(v => mimetypeArchivo.includes(v))) {
             iDiv.className = 'item_edicion item_edicion_video';
+
         } else if (mimesImagenes.some(i => mimetypeArchivo.includes(i))) {
             iDiv.className = 'item_edicion item_edicion_imagen';
         }
@@ -1599,7 +1633,7 @@ function anadir_item_editor(nombre_archivo, mimetypeArchivo     ) {
 
 
     // Gestión de elemento HOVER
-    console.log ("Gestión de elemento HOVER",iDiv);
+    // console.log ("Gestión de elemento HOVER",iDiv);
     iDiv.addEventListener('mouseover', function (evento) {
         muestra_hover(iDiv);
     });
@@ -1683,9 +1717,13 @@ function regenera_hovers ()
     {
         let nombre_elto = recursos[i].id;
 
-        console.log ('Recorremos la lista de recursos : ',nombre_elto);
+        nombre_elto = nombre_elto.replaceAll(" ","_");
+        nombre_elto = nombre_elto.replaceAll("%20","_");
+        
 
-        console.log(document.getElementById("img_oculta_" + nombre_elto));
+
+
+        // console.log(document.getElementById("img_oculta_" + nombre_elto));
         if (document.getElementById("img_oculta_" + nombre_elto) != null) {
             // console.log("BINGO! SE ENCONTRO img_oculta_" + nombre_elto);
     
@@ -1715,11 +1753,10 @@ function regenera_hovers ()
             info.append(detalle_img_txt);
 
             // Se añade la imagen de hover
-           // detalle.append(detalle_img_txt);
-           detalle.append(info);
-           detalle.append(detalle_img);
+            // detalle.append(detalle_img_txt);
+            detalle.append(info);
+            detalle.append(detalle_img);
 
- 
             
             document.getElementById(nombre_elto).appendChild(detalle);
 
@@ -1754,27 +1791,33 @@ function regenera_hovers ()
             // Fin gestión elemento HOVER
         }
         else if (document.getElementById("video_oculto_" + nombre_elto) != null) {
-            // console.log ("Es un vídeo: ",nombre_elto);
+
+            // console.log ('Recorremos la lista de recursos : >>>>>>>>>>>>>>>>>>>>>>>>>> ',nombre_elto);
+
+
             var detalle = document.createElement("div");
             detalle.id = "hover_"+nombre_elto;
             detalle.className="capa_hover_vid";
+            /*             console.log ('1: ',nombre_elto);
+            console.log (nombre_elto); */
 
             // Recuperamos la miniatura
             var miniatura;
+            /* console.log ('1:  '+document.getElementById(nombre_elto) ); */
+
+
             var referencia =  document.getElementById(nombre_elto);
             if (referencia.childNodes[0])
             {
                 miniatura = referencia.childNodes[0].src;
                 // console.log ("Es un vídeo: miniatura ",miniatura);
             }
-
             var detalle_img = document.createElement("img");
             detalle_img.src = miniatura; 
             detalle_img.className ="capa_hover_imagen";
             detalle_img.style.display= "table-row";
 
- 
-            
+         
             var info =   document.createElement("div");
             info.style.fontFamily="fuente_custom";
             info.style.width="100%";
@@ -1807,11 +1850,11 @@ function regenera_hovers ()
             info.append(detalle_vid_txt);
 
             // Se añade la imagen de hover
-           // detalle.append(detalle_img_txt);
-           detalle.append(info);
-           detalle.append(detalle_img);
+            // detalle.append(detalle_img_txt);
+            detalle.append(info);
+            detalle.append(detalle_img);
 
-           document.getElementById(nombre_elto).appendChild(detalle);
+            document.getElementById(nombre_elto).appendChild(detalle);
 
 
             // Gestión de elemento HOVER
@@ -2289,8 +2332,14 @@ function oculta_todas_notas() {
 // Busca la miniatura
 function regenera_miniatura(idSesion, id_imagen) {
     // let actual = document.getElementById('misRecursos').childNodes[document.getElementById('misRecursos').childNodes.length - 1];
+    id_imagen = id_imagen.replaceAll (' ','_');
+    id_imagen = id_imagen.replaceAll ('%20','_');
+
+
     let actual = document.getElementById(id_imagen);
-    //console.log("actual = ", actual);
+    // console.log("D: actual = ", actual);
+    // console.log("D: id_imagen = ", id_imagen);
+    // console.log("id_imagen REVISADO= ", id_imagen);
 
     var id_img = getBase() + idSesion + '/miniaturas/thumb_' + id_imagen;
     var tipo = "img"; // Indica si el tipo de contenido es imagen o vídeo
@@ -2602,7 +2651,8 @@ var observer = new MutationObserver(function (mutations) {
                     // Se almacena en la hash la duración original
                     hashDuracionesOriginales.set(clip, duracion * granularidad);
 
-                    console.log ("SETTING duracion________________________________________________", duracion, ".", clip);
+                    // console.log ("SETTING duracion________________________________________________", clip, ". >",  duracion ,"<");
+                    // console.log ("SETTING duracion________________________________________________",  document.getElementById("etiq_video_hover_"+clip));
                     try { document.getElementById("etiq_video_hover_"+clip).innerHTML = clip.substring(clip.indexOf('_')+1) + "<br> Duración: "+Number(duracion).toFixed(2)+" s." } catch (exc) {console.log (exc);}
 
                     // OK console.log("Mutation. VIDEO " + clip + ", duracion = " + duracion);

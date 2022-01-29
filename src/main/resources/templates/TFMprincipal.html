@@ -147,7 +147,7 @@
                                 <div id="DIVdropzoneELEMENTOSfondo" class="DIVdropzoneELEMENTOSfondo">
                             
                                 </div>
-                                <form action="/upload" class="dropzone needsclick" id="DIVdropzoneELEMENTOS">
+                                <form action="/upload" class="dropzone needsclick" id="DIVdropzoneELEMENTOS" method="POST">
                             
                                     <div class="dz-message needsclick">
                                         <button id="botonZona" type="button" class="dz-button"></button>
@@ -802,10 +802,12 @@
                 // addRemoveLinks: true,
 
 
-                acceptedFiles: "image/webp,image/jpeg,image/png,image/gif,.mp4,.mkv,.avi,video/quicktime,video/x-quicktime,image/mov,video/ogg,.ogg,video/webm,.webm,",
+                // acceptedFiles: "image/webp,image/jpeg,image/png,image/gif,.mp4,.mkv,.avi,video/quicktime,video/x-quicktime,image/mov,video/ogg,.ogg,video/webm,.webm,",
                 // maxFiles: 3, // Limita el TOTAL de archivos que se pueden subir
                 // disablePreviews: true,
-                parallelUploads: 5,
+                acceptedFiles: "image/jpeg,image/png,image/gif,.mp4,.mkv,.avi,video/quicktime,video/x-quicktime,image/mov,video/ogg,.ogg,video/webm,.webm,",
+
+                parallelUploads: 500,
                 maxFilesize: 50, // Máximo en MB que se pueden subir
                 processingmultiple() {
                     $('.progress-bar').show()
@@ -827,16 +829,42 @@
 
                     });
 
+
+                    this.on("queuecomplete", function (file) {
+                        // console.log("All files have uploaded ");
+                        // location.reload(); // Recarga reload de la página para consolidar objetos en el DOM
+                    });
+
                     myDropzone.on("complete", function (file) {
-                         console.log("Terminó ",file);
+                        // console.log("Terminó ",file);
+
+                        // if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                        //         doSomething();
+                        //     }
+
+                        //  let ult_rec = getCookie('ultima_recarga');
+                        // if ( ult_rec==null || eval(ult_rec) + 1000 < new Date().getTime()) 
+                        // {   
+                        //     console.log (ult_rec);
+                        //     console.log (eval(ult_rec) + 1000 );
+                        //     document.cookie = "ultima_recarga = " + new Date().getTime() + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
+
+                        //     location.reload(); // Recarga reload de la página para consolidar objetos en el DOM
+                        // }
+                        // else 
+                        // {
+                        //     document.cookie = "ultima_recarga = " + new Date().getTime() + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
+                        // } 
                         // $('.dz-preview').remove(); // Se quita el thumbnail.
+                        regenera_hovers();
                     });
 
                     myDropzone.on("addedfile", function (file) {
-
+                        // console.log ("this.files.length = " + this.files.length );
                         if (document.getElementById("misRecursos").childElementCount != 0)
                         {
-                            console.log ("ASEGURANDO QUE ESTE VACIO");
+                            // console.log ("ASEGURANDO QUE ESTE VACIO");
+
 
                             // Gestión de duplicados
                             if (this.files.length) {
@@ -973,9 +1001,9 @@
 
 
             /// Gestión de la recarga
-            window.onbeforeunload = function () {
+/*             window.onbeforeunload = function () {
                 return "Nono";
-            }
+            } */
 
             // Nos aseguramos que al cambiar su tamaño, el div de elementos no supere el ancho de la página
             // (esto no se consigue con un width=100% porque los elementos se añaden dinámicamente).
@@ -1008,7 +1036,7 @@
                 toastr.options.extendedTimeOut = 0;
                 toastr.options.closeButton = true;
 
-                toastr.info("Esta página utiliza cookies propias para su correcto funcionamiento, y no usa cookies de terceros.");
+                toastr.info("Esta página utiliza cookies propias para su correcto funcionamiento, y no usa cookies de terceros.<br/><button type='button' class='btn btn-info'>Aceptar</button>");
 
                 toastr.options.timeOut = 5000; // Se restauran los timeouts para el resto de mensajes.
                 toastr.options.extendedTimeOut = 1000;

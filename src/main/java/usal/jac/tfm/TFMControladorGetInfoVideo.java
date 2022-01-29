@@ -45,6 +45,10 @@ public class TFMControladorGetInfoVideo {
 		String resultado = "";
 		Process p; // Variable de proceso con la que se ejecutará ffprobe
 
+		// Procesa los espacios en blanco como _
+		id = id.replaceAll(" ", "_");
+		id = id.replaceAll("%20", "_");
+		
 		logger.info ("Recuperando duración del archivo de vídeo '{}' mediante ffprobe.", id);
 
 		// Nombre final del archivo cuya info queremos recuperar.
@@ -58,9 +62,13 @@ public class TFMControladorGetInfoVideo {
 		resultado = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
 
 		// Capturamos y devolvemos la duración del archivo en segundos (con precisión de millonésima de segundo! : 12.24000)
-		while (resultado.equals(""))
+		int max_reintentos = 15;
+		while (resultado.equals("") && max_reintentos > 0)
 		{
-			logger.info ("Duración de vídeo '{}' no recuperada. Reintentando. ", id	);
+			logger.info ("Duración de vídeo '{}' no recuperada. Reintentandolo. ", id	);
+
+			max_reintentos --;
+			logger.info ("Duración de vídeo no recuperada, reintentos restantes = {}",max_reintentos);
 
 			try{Thread.sleep(2000); } catch (Exception e) { e.printStackTrace(); } // TODO: paralelizar! Controlar número reintentos.
 	
@@ -71,6 +79,7 @@ public class TFMControladorGetInfoVideo {
 			p = new ProcessBuilder(Arrays.asList(rutaFFPROBRE, "-v", "error", "-show_entries", "format=duration",
 				"-of", "default=noprint_wrappers=1:nokey=1", destinationFile.toString())).start();
 			resultado = IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
+
 
 
 		}
