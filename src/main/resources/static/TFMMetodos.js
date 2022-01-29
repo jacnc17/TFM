@@ -53,8 +53,12 @@ var intervalo;
 // Variable para almacenar la duración en un determinado momento
 var duracion_total_actual = 0;
 
-// Variable para controlar el botón de play
-var reproduciendo = 0;
+// Variable para controlarla vista previa
+var reproduciendo = 0;  // Variable para controlar el botón de play
+var etiq_play = "Vista previa <img src='iconos/play-circle.svg' alt='Play' />";
+var etiq_stop = "Vista previa <img src='iconos/stop-circle.svg' alt='Stop' />";
+
+
 
 // Función que recupera la dirección base de la URL
 function getBase() {
@@ -174,6 +178,11 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
         // console.log("anadir_capa_oculta: CREANDO CAPA OCULTA PARA '" + nombre_archivo + ",', mime = ", mime);
 
         var iDiv = document.createElement('div');
+
+        nombre_archivo = nombre_archivo.replaceAll (" ", "_");
+        nombre_archivo = nombre_archivo.replaceAll ("%20", "_");
+        
+
         iDiv.id = "capa_oculta_" + nombre_archivo;
         iDiv.className = "capa_edicion_imagen";
         // iDiv.onclick = function () { oculta_capa('capa_oculta_' + nombre_archivo);   recalcula_propiedades_cookies()  };
@@ -188,17 +197,23 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             divIntermedia.id = "capa_intermedia_" + nombre_archivo;
 
             // Marco de título, botón de cierre
+            var titulo0 = document.createElement('h1');
+            titulo0.innerHTML = "DURACIÓN DE IMAGEN"
+            titulo0.style="margin:0px;";
+
+
             var titulo = document.createElement('div');
+            titulo.id = "recorte_imagen_nombre_archivo";
             titulo.style.display="table";
             titulo.style.width="100%";
-            titulo.style.paddingLeft="20px";
+            /* titulo.style.paddingLeft="20px"; */
             titulo.style.paddingRight="00px";
 
             var tituloMarco =  document.createElement('div');
             tituloMarco.style.width="80%";
-            tituloMarco.style.paddingBottom="20px";
+            tituloMarco.style.paddingBottom="5px"; 
             tituloMarco.style.overflow="hidden";
-            tituloMarco.innerHTML = "<strong>Imagen: "+nombre_archivo.substring(nombre_archivo.indexOf("_")+1)+"</strong>"; 
+            tituloMarco.innerHTML = "Archivo: "+nombre_archivo.substring(nombre_archivo.indexOf("_")+1)+""; 
             tituloMarco.style.display="table-cell";
 
 
@@ -244,6 +259,7 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             // Se asignan los elementos generados.
             imgElement.src = origen_elemento_mini;
 
+            divMarcoEdicion.appendChild(titulo0);   
             divMarcoEdicion.appendChild(titulo);   
 
             divMarcoEdicion.appendChild(imgElement);
@@ -269,6 +285,11 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             divIntermedia.style.backgroundColor = "rgb(218, 129, 136)"; // #da8188 rgb(218, 129, 136)
 
             // Marco de título, botón de cierre
+            var titulo0 = document.createElement('h1');
+            titulo0.innerHTML = "RECORTE DE VÍDEO"
+            titulo0.style="margin:0px;";
+
+
             var titulo = document.createElement('div');
             titulo.style.display="table";
             titulo.style.width="100%";
@@ -279,10 +300,8 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             tituloMarco.style.width="80%";
             tituloMarco.style.paddingBottom="10px";
             tituloMarco.style.overflow="hidden";
-            tituloMarco.innerHTML = "<strong>Vídeo: "+nombre_archivo.substring(nombre_archivo.indexOf("_")+1)+"</strong>"; 
+            tituloMarco.innerHTML = "<strong>Archivo: "+nombre_archivo.substring(nombre_archivo.indexOf("_")+1)+"</strong>"; 
             tituloMarco.style.display="table-cell";
-
-
 
             var ayuda =  document.createElement('div');
             ayuda.style.width="20%";
@@ -301,7 +320,7 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             // cierra.style = "position: relative; position: relative; left: 75px; top: -15px;  background-color: #ededed;  border: white; border-width: 2px; border-style: inset; height: 25px; border-radius: 50%; width: 25px; text-align: center; cursor: pointer; color: black;"
             cierra.onclick = function () {keep = 0; oculta_capa('capa_oculta_' + nombre_archivo);   recalcula_propiedades_cookies()  };
 
-
+            
             titulo.append(tituloMarco);
             titulo.append(ayuda);
             titulo.append(cierra);
@@ -317,9 +336,6 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             nombre_archivo = nombre_archivo.replaceAll("%20","_");
             nombre_archivo = nombre_archivo.replaceAll(" ","_");
 
-
-            // console.log ('A');
-
             // Creamos un elemento de vídeo mini (reducido en resolución) y se le asignan atributos.
             var origen_elemento_mini = getBase() + idSesion + '/miniaturas/mini_' + nombre_archivo + ".mp4";
             var videoElement = document.createElement('video');
@@ -331,8 +347,7 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             // Función onError
             videoElement.onerror = function ()  // En caso de error en la carga, se intenta recargar.
             {
-            // console.log ('B: videoElement', videoElement);
-              
+                // console.log ('B: videoElement', videoElement);
                 setTimeout(function () { anadir_video_oculto(origen_elemento_mini, "video_oculto_" + nombre_archivo, mime); }, 1000);
             }
             // console.log(document.getElementById('video_oculto_' + nombre_archivo));
@@ -342,6 +357,7 @@ function anadir_capa_oculta(nombre_archivo, idSesion, mime) {
             // console.log("C: videoElement.src "+videoElement.src);
 
 
+            divMarcoEdicion.appendChild(titulo0);   
             divMarcoEdicion.appendChild(titulo);   
 
 
@@ -574,6 +590,9 @@ function ventana_emergente(itemID) {
     // alert(mimetypeArchivo);
 
     let capa = document.getElementById('capa_oculta_' + nombre_original);
+
+    console.log ("ventana_emergente. nombre_original", nombre_original);
+
     let capa_edicion = capa.childNodes[0]; // La capa oculta tendrá sólo un hijo
     let elemento = document.createElement("div");
     elemento.id = "layer_info_activa";
@@ -642,7 +661,7 @@ function genera_slide_rango(itemID, desde, hasta, duracion, nombre_orig) {
             max: duracion, // Hay que sacar la duración del vídeo
             values: [desde, hasta],
             create: function (event, ui) {
-                $("#amount").val("Recorte desde el segundo " + (desde / granularidad) + " hasta el " + (hasta / granularidad).toFixed(2));
+                $("#amount").val("Rango actual: desde el segundo " + (desde / granularidad) + " hasta el " + (hasta / granularidad).toFixed(2));
             },
             slide: function (event, ui) {
                 // console.log(ui);
@@ -659,7 +678,7 @@ function genera_slide_rango(itemID, desde, hasta, duracion, nombre_orig) {
 
                 let desde = (ui.values[0] / granularidad);
                 let hasta = (ui.values[1] / granularidad);
-                $("#amount").val("Recorte desde el segundo " + desde + " hasta el " + hasta);
+                $("#amount").val("Rango actual: desde el segundo " + desde + " hasta el " + hasta);
 
                 // Se recalcula el nuevo ancho
                 // console.log("genera_slide_rango = recalculando ancho. Nueva duracion = " + hasta + " - " + desde);
@@ -740,6 +759,10 @@ function genera_slide(itemID, tiempo, nombre_orig) {
 // JQUERY https://jqueryui.com/slider/#rangemin
 function genera_etiquetas_slide() {
     let parrafo = document.createElement("p");
+    parrafo.id = "parrafo_texto_duracion_slide_imagen";
+    parrafo.style = "padding: 0px !important;     margin-left: 20px !important;";
+
+
     let etiq = document.createElement("label");
     let input_texto = document.createElement("input");
 
@@ -798,7 +821,7 @@ function genera_slide_notas(duracion) {
         if (_ini == -1) {
             _ini = _iterator1.next().value;
         }
-        console.log (_ini);
+        // console.log (_ini);
 
         // ¿Último rango?
         if (_i >= tabla_duraciones.size - 1) {
@@ -1121,7 +1144,7 @@ function muestra_capa_notas() {
             if (!hasta)
                 hasta = 0;
 
-            console.log('duracion = ', duracion, ', desde = ', desde, ', hasta = ', hasta);
+            // ('duracion = ', duracion, ', desde = ', desde, ', hasta = ', hasta);
 
             // Recogemos la duración total.
             duracion_total = eval(duracion_total + duracion * granularidad + (hasta - desde));
@@ -1173,11 +1196,14 @@ function get_div_notas(duracion) {
         var tituloMarco =  document.createElement('div');
         tituloMarco.style.width="80%";
         tituloMarco.style.paddingBottom="20px";
-        tituloMarco.style.paddingTop="60px";
+        tituloMarco.style.paddingTop="30px";
         tituloMarco.style.overflow="hidden";
-        tituloMarco.innerHTML = "<strong>EDICIÓN DE NOTAS</strong>"; 
+        tituloMarco.innerHTML = "<h1>EDICIÓN DE NOTAS</h1>";
+        // class="colorpick btn btn-default boton_texto" value="#ffffff"
+        // style="height: 34px; width: 40px; transform:scale(0.7);margin: -9px;" title="Elige un color y acepta con ENTER">"; 
         tituloMarco.style.display="table-cell";
 
+        
 
         var ayuda =  document.createElement('div');
         ayuda.style.width="20%";
@@ -1187,15 +1213,23 @@ function get_div_notas(duracion) {
         ayuda.style.display="table-cell";
 
         var cierra = document.createElement('div');
-        cierra.innerHTML = '&check;';
+        cierra.innerHTML = "&check;";
         cierra.className = 'capa_intermedia_edicion_nota';
         cierra.title = "Cerrar y guardar cambios";
-        cierra.style = "position: relative; left: 75px; top: -21px; border:2px inset white; height: 40px; border-radius: 50%; width: 40px; text-align: center; font-size: x-large; cursor: pointer; color: black;"
-        cierra.onclick = function () { keep = 0; oculta_capa('capa_notas');   recalcula_propiedades_cookies()  };
+        cierra.style = "position: relative; left: 75px; top: 3px; border:2px inset white; height: 40px; border-radius: 50%; width: 40px; text-align: center; font-size: x-large; cursor: pointer; color: black;"
+        cierra.onclick = function () { keep = 0; almacena_notas_cookies(); recalcula_propiedades_cookies();  oculta_capa('capa_notas');  };
+
+        var botonColor = document.createElement ('input');
+        botonColor.id='cpGeneral';
+        botonColor.type='color';
+        // botonColor.style = "position: relative; left: 75px; top: 0px; border:2px inset white; height: 40px; border-radius: 50%; width: 40px; text-align: center; font-size: x-large; cursor: pointer; color: black;"
+        botonColor.style='position: relative; left: 75px;visibility:hidden; height: 0px;';
+        botonColor.addEventListener("change", addNota_watch2, false);
 
         titulo.append(tituloMarco);
         titulo.append(ayuda);
         titulo.append(cierra);
+        titulo.append(botonColor);
 
         divIntermedia.appendChild(titulo);
 
@@ -1219,8 +1253,7 @@ function get_div_notas(duracion) {
         ////////////////////// PLAY
         let _boton = document.createElement("div")
         _boton.id = "boton_play";
-        var etiq_play = "Vista previa <img src='iconos/play-circle.svg' alt='Play' />";
-        var etiq_stop = "Vista previa <img src='iconos/stop-circle.svg' alt='Stop' />";
+
 
         // _boton.style = "height: 20px;position: relative;background-color: yellow;";
         // _boton.innerHTML = "<span id='play' style='position:relative; height:10px'>Play!</span>";
@@ -1349,7 +1382,7 @@ function procesa_play ()
         }
         else
         {
-            console.log ("Se llegó al fin");
+            // console.log ("Se llegó al fin");
             reproduciendo = 0;
 
             var _boton_play = document.getElementById("boton_play");
@@ -1358,7 +1391,11 @@ function procesa_play ()
             {
                 var etiq_play = "Vista previa <img src='iconos/play-circle.svg' alt='Stop' />";
 
-                _boton.innerHTML = "<span id='play' style='position:relative; height:10px'>"+etiq_play+"</span>"; // play-circle.svg
+                _boton_play.innerHTML = "<span id='play' style='position:relative; height:10px'>"+etiq_play+"</span>"; // play-circle.svg
+            }
+            else 
+            {
+                console.log ("No se actualiza el botón");
             }
         }
     }
@@ -1371,7 +1408,12 @@ function add_nota(evento) {
     var rect = document.getElementById("marco_oculto_notas").getBoundingClientRect();
     elemento = document.elementFromPoint(evento.clientX, evento.clientY).id;
     obj = document.elementFromPoint(evento.clientX, evento.clientY);
-    console.log("add_nota. click en ", elemento, "con keep = ", keep, " en el objeto = ",obj);
+    // console.log("add_nota. click en ", elemento, "con keep = ", keep, " en el objeto = ",obj);
+
+    // Se detiene la reproducción de vista previa!
+    reproduciendo = 0;
+    document.getElementById('play').innerHTML = etiq_play; 
+
 
     // Controlamos que no se haga click encima de otra nota (entonces querríamos editarla!)
     if (keep == 0 && (elemento == "marco_oculto_notas" || elemento == "img_temporal")) {
@@ -1441,7 +1483,7 @@ function add_nota(evento) {
         if (posY > 380) 
             posY = 380;
 
-        console.log("posY = ", posY);
+        // console.log("posY = ", posY);
         nota.style.top = posY + 'px';
 
         // Se hace foco en el recuadro de texto
@@ -1459,9 +1501,14 @@ function add_nota(evento) {
             drag: function (event, ui) {
                 limita_ancho(recuadro_texto);
                 var pos_y = ui.position.top;
+
+console.log ("29ENE: pos_y = ",pos_y);
+
                 if (pos_y < -30) // Ajuste considerando alto de la barra de menús.
                 {
+
                     ui.position.top = -30;
+console.log ("29ENE: pos_y ACTUALIZADA! = ",pos_y);
                 }
 
 
@@ -1539,14 +1586,34 @@ function add_nota(evento) {
 
 // Método que vigila los cambios de color de un texto.
 function addNota_watch(event) {
-    // console.log(event);
-    // console.log(event.target);
+     console.log(event);
+     console.log(event.target);
     nombre_nota = event.target;
 
     let input_asociado = event.target.getAttribute("input_asociado");
 
     if (input_asociado != null)
         document.getElementById(input_asociado).style.color = event.target.value;
+
+}
+
+
+// Método que vigila los cambios de color de un texto.
+function addNota_watch2(event) {
+    console.log("addNota_watch2", event.target);
+    console.log("addNota_watch2", event.target.value);
+    console.log(event);
+   // nombre_nota = event.target;
+
+    let color = event.target.value;
+
+   let input_asociado = cpGeneral.getAttribute("id_recuadro_texto");
+   console.log("addNota_watch2", input_asociado);
+
+    if (input_asociado != null) {
+        document.getElementById(input_asociado).style.color = "" + color;
+        document.getElementById(input_asociado).setAttribute("colorHEX", color); // El simpático lo asigna en RGB en el input y no se puede pasar al color
+    }
 
 }
 
@@ -2082,14 +2149,14 @@ function lanzaFetch() {
                 if (Number.isNaN(hasta)) hasta = 0;
                 if (Number.isNaN(desde)) desde = 0;
 
-                console.log("duracion = ", duracion * granularidad, ", hasta = ", hasta, ", desde = ", desde);
+                // console.log("duracion = ", duracion * granularidad, ", hasta = ", hasta, ", desde = ", desde);
 
                 duracion_total = duracion_total + duracion * granularidad + (hasta - desde);
 
                 // let fin_seccion = duracion_total;
 
-                console.log(" duracion_total = " + duracion_total, ", hasta = ", hasta, ", desde = ", desde);
-                console.log(" hashPropiedadesNotas = ", hashPropiedadesNotas);
+                // console.log(" duracion_total = " + duracion_total, ", hasta = ", hasta, ", desde = ", desde);
+                // console.log(" hashPropiedadesNotas = ", hashPropiedadesNotas);
 
                 // Si estamos en el primer elemento, procesamos las notas.
                 if (ele == 0) {
@@ -2098,7 +2165,7 @@ function lanzaFetch() {
 
                     if (marco_notas != null && marco_notas != undefined) {
                         let notas_DOM = marco_notas.childNodes;
-                        console.log("notas = ", notas_DOM);
+                       // console.log("notas = ", notas_DOM);
 
                         // Recorremos las notas en orden
                         for (nota = 0; nota < notas_DOM.length; nota++) {
@@ -2131,12 +2198,12 @@ function lanzaFetch() {
                                     var  inicio_nota =  hashPropiedadesNotas.get(id_posicion);
                                     var  fin_nota =  hashPropiedadesNotas.get("fin_"+id_nota); // Recuperamos el par ini_ fin_*/
 
-                            console.log("VERIFICANDO NOTA ", id_nota);
-                            console.log(" inicio_nota = " + inicio_nota, ", fin_nota = ", fin_nota);
+                            // console.log("VERIFICANDO NOTA ", id_nota);
+                            // console.log(" inicio_nota = " + inicio_nota, ", fin_nota = ", fin_nota);
 
                             id_nota = id_nota.substr(5);
-                            console.log("La nota ", id_nota, " pertenece a este rango");
-                            console.log("Inicio = ", inicio_nota, ", fin =  ", fin_nota);
+                            // console.log("La nota ", id_nota, " pertenece a este rango");
+                            // console.log("Inicio = ", inicio_nota, ", fin =  ", fin_nota);
 
                             // Recuperamos la información de la nota, ya sea del recuadro de texto o de 
                             let texto_nota = "";;
@@ -2158,9 +2225,9 @@ function lanzaFetch() {
                                     img_nota = img_nota.substring(img_nota.lastIndexOf("/") + 1); // Se deja sólo el nombre del archivo.
 
                                     // Se incluye el tamaño de la nota original en el JSON
-                                //  tamano_nota = document.getElementById("NOTA_" + id_nota + "_imagen_nota").getAttribute("tam_original");
+                                    //  tamano_nota = document.getElementById("NOTA_" + id_nota + "_imagen_nota").getAttribute("tam_original");
 
-                                    console.log ("FETCH: tamaño original =", document.getElementById("NOTA_" + id_nota + "_imagen_nota").naturalWidth + "x" + document.getElementById("NOTA_" + id_nota + "_imagen_nota").naturalHeight);
+                                    // console.log ("FETCH: tamaño original =", document.getElementById("NOTA_" + id_nota + "_imagen_nota").naturalWidth + "x" + document.getElementById("NOTA_" + id_nota + "_imagen_nota").naturalHeight);
                                     tamano_nota = document.getElementById("NOTA_" + id_nota + "_imagen_nota").naturalWidth + "x" + document.getElementById("NOTA_" + id_nota + "_imagen_nota").naturalHeight
 
                                     // Como estilo se incluye la altura máxima
@@ -2215,8 +2282,8 @@ function lanzaFetch() {
             })
                 .then((data) => data.blob())
                 .then(response => {
-                     console.log("RESPUESTA: ",response.type);
-                     console.log("RESPUESTA: ",response.size);
+                    // console.log("RESPUESTA: ",response.type);
+                    // console.log("RESPUESTA: ",response.size);
 
                     // Si la operación devuelve 0 significa que fue cancelada por el usuario.
                     // Un valor mayor que 0 se descargará automáticamente.
@@ -2571,19 +2638,24 @@ function termina_render() {
 // Esto se hacer porque al escribir en el recuadro y exceder los límites de la capa se desplazaban todos los 
 // demás elementos a la izquierda.
 function limita_ancho(elemento) {
+
+    // console.log("limita_ancho elemento = ",elemento);
+
+
     var posicion = elemento.getBoundingClientRect();
     var margen_derecho_contenedor = document.getElementById("marco_oculto_notas").getBoundingClientRect().right;
     var margen_inferior_contenedor = document.getElementById("marco_oculto_notas").getBoundingClientRect().bottom;
 
     elemento.style.maxWidth = eval(margen_derecho_contenedor - posicion.left) + "px";
     elemento.style.width = eval(margen_derecho_contenedor - posicion.left) + "px";
-    // console.log("margen_inferior_contenedor = ",margen_inferior_contenedor, ", posicion = ",posicion);
+    // 29ENE console.log("limita_ancho margen_inferior_contenedor = ",margen_inferior_contenedor, ", posicion = ",posicion);
+    // 29ENE console.log("limita_ancho margen_inferior_contenedor = ",margen_inferior_contenedor, ", posicion.bottom = ",posicion.bottom);
 
     // Para evitar problemas en la edición, se limita la posición inferior.
     if (margen_inferior_contenedor < posicion.bottom) {
         if (elemento.readOnly == false)
         {
-// console.log("elemento = ",elemento);
+            // console.log("elemento = ",elemento);
 
             toastr.options.preventDuplicates = "true";
             toastr.success('No es posible editar texto fuera de la zona de edición');

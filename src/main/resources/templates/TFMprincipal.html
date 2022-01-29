@@ -265,9 +265,10 @@
                         <img src="/bootstrap/images/type-h2.svg"alt="H2" title="Tamaño medio"/></button>
                     <button class="btn btn-default botonH3" onclick="notasH3(this.parentNode.parentNode.getAttribute('id'))" style="transform:scale(0.7);margin: -9px;">
                         <img src="/bootstrap/images/type-h3.svg" alt="H3" title="Tamaño pequeño"/></button>
-                    <input id="colorpicker" type="color" class="colorpick btn btn-default boton_texto" value="#ffffff"
-                        style="height: 34px; width: 40px; transform:scale(0.7);margin: -9px;" title="Elige un color y acepta con ENTER">
-
+                    <button id="colorpick" type="color" class="colorpick btn btn-default boton_texto" value="#ffffff"
+                        style="height: 34px; width: 40px; transform:scale(0.7);margin: -9px;" 
+                        onclick="colorea(this.parentNode.parentNode.getAttribute('id'))" title="Elige un color y acepta con ENTER">
+                        <img src="/bootstrap/images/palette.svg" alt="Color" title="Color de texto_ayuda"/></button>
                     <button class="btn btn-default boton_texto" onclick="notasToggleNegrita(this.parentNode.parentNode.getAttribute('id'))"
                         style="transform:scale(0.7);margin: -9px;">
                         <img src="/bootstrap/images/type-bold.svg" alt="Negrita" title="Texto en negrita"/></button>
@@ -1011,7 +1012,7 @@
                 /* heightOutput.textContent = window.innerHeight; */
                 /* widthOutput.textContent = window.innerWidth; */
                 /* console.log("ANCHO: ",document.getElementById('misRecursos').offsetWidth); */
-                console.log("ANCHO: ",window.innerWidth);
+                /* console.log("ANCHO: ",window.innerWidth); */
 
                 document.getElementById('misRecursos').style.width = window.innerWidth-14+ "px";
                 document.getElementById('misRecursos').style.maxWidth = window.innerWidth-14+ "px";

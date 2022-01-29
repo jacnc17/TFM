@@ -179,12 +179,12 @@ function get_notas_cookies() {
 
             // Se establece el punto de inicio
             // nota_set_inicio(0); // Empieza en la posición del slide
-           // hashPropiedadesNotas.set("ini_" + nota.id, 0);
-           // nota_set_fin_hasta_final(nota.id);  // Por defecto acaba en el fin del video.
+            // hashPropiedadesNotas.set("ini_" + nota.id, 0);
+            // nota_set_fin_hasta_final(nota.id);  // Por defecto acaba en el fin del video.
 
             // Se hace foco en el recuadro de texto
-            limita_ancho(recuadro_texto);
-            recuadro_texto.focus();
+            // 29ENE limita_ancho(recuadro_texto);
+            // 29ENE recuadro_texto.focus();
 
             // Se recogen los cambios en el color picker
             nota.addEventListener("change", addNota_watch, false);
@@ -194,10 +194,14 @@ function get_notas_cookies() {
             $(nota).draggable({
                 drag: function (event, ui) {
                     limita_ancho(recuadro_texto);
-                    var pos_y = ui.position.top;
-                    if (pos_y < -30) // Ajuste considerando alto de la barra de menús.
+                    var pos_y = ui.position.top + 32 ;
+console.log ("29ENE: pos_y = ",pos_y);
+
+                    if (pos_y < 0) // Ajuste considerando alto de la barra de menús.
                     {
-                        ui.position.top = -30;
+    
+                        ui.position.top = -32;
+console.log ("29ENE: pos_y ACTUALIZADA! = ",pos_y);
                     }
 
    
@@ -309,15 +313,23 @@ function almacena_notas_cookies ()
 
     // Si hay alguna nota
     if (notas != null && notas != undefined) {
+
+        // 29ENE console.log ("ALMACENA NOTAS COOKIES");
+
+
+
         // Definición de variables.
         var fin = false;
         var indice = 0;
         var cont = 0;
         var capa;
 
+        // 29ENE console.log ("ALMACENA NOTAS COOKIES2");
 
         // Se van recorriendo todas las notas
         while (indice < notas.childNodes.length) {
+            // 29ENE console.log ("ALMACENA NOTAS COOKIES3");
+
             // Evitamos la imagen temporal
             if (notas.childNodes[indice].id != "img_temporal") {
                 // Recuperamos el id de la nota y su posición.
@@ -354,14 +366,14 @@ function almacena_notas_cookies ()
                 // document.cookie = "notas." + cont + ".izquierda = " + notas.childNodes[indice].style.left + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
                 // document.cookie = "notas." + cont + ".arriba = " + notas.childNodes[indice].style.top + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
 
-                // console.log ("almacena_notas_cookies = ",notas);
+                // 29ENE console.log ("almacena_notas_cookies = ",notas);
                 cont++;
             }
 
                 indice++;
 
 
-            // console.log ("almacena_notas_cookies");
+            // 29ENE console.log ("almacena_notas_cookies");
 
         }
 
@@ -370,3 +382,28 @@ function almacena_notas_cookies ()
     // console.log ("almacena_notas_cookies = ",notas);
 }
 
+
+
+
+// Configura y abre el color picker
+function colorea (id_nota)
+{
+    // alert (id_nota);
+    let id_recuadro_texto = "recuadro" + id_nota.substring(5); // El id de nota viene con prefijo NOTA_
+    // let color_actual = document.getElementById(id_recuadro_texto).style.color;
+    let color_actual = document.getElementById(id_recuadro_texto).getAttribute("colorHEX");
+
+    // Se le indica al picker qué recuadro se está editando
+    cpGeneral.setAttribute("id_recuadro_texto",id_recuadro_texto);
+    console.log("colorea: color = ",color_actual);
+
+
+    if (color_actual == null || color_actual == '') 
+        color_actual = "#FFFFFF";
+    
+    // Se pone en el picker el color
+    console.log("colorea: color = ",color_actual);
+    cpGeneral.value = color_actual;
+
+    cpGeneral.click();
+}

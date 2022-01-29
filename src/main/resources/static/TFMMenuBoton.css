@@ -171,7 +171,7 @@ body {
   /* Add a z-index if needed */
   left: 38%;
   /* Center the snackbar */
-  top: 420px;
+  top: 460px;
   /* 30px from the bottom */
 }
 
@@ -181,8 +181,8 @@ body {
   /* Show the snackbar */
   /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
   However, delay the fade out process for 2.5 seconds */
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  -webkit-animation: fadein2 0.5s, fadeout2 0.5s 2.5s;
+  animation: fadein2 0.5s, fadeout2 0.5s 2.5s;
 }
 
 
@@ -197,8 +197,8 @@ body {
   padding: 16px;
   position: fixed;
   z-index: 1000;
-  left: calc(50% - 270px);
-  top: 600px;
+  left: calc(50% - 210px);
+  top: 520px;
 }
 
 /* Show the snackbar when clicking on a button (class added with JavaScript) */
@@ -218,7 +218,7 @@ body {
   }
 
   to {
-    top: 420px;
+    top: 460px;
     opacity: 1;
   }
 }
@@ -230,7 +230,31 @@ body {
   }
 
   to {
-    top: 420px;
+    top: 460px;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadein2 {
+  from {
+    top: 0;
+    opacity: 0;
+  }
+
+  to {
+    top: 460px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadein2 {
+  from {
+    top: 0;
+    opacity: 0;
+  }
+
+  to {
+    top: 460px;
     opacity: 1;
   }
 }
@@ -242,7 +266,7 @@ body {
   }
 
   to {
-    top: 600px;
+    top: 520px;
     opacity: 1;
   }
 }
@@ -254,7 +278,7 @@ body {
   }
 
   to {
-    top: 600px;
+    top: 520px;
     opacity: 1;
   }
 }
@@ -262,7 +286,7 @@ body {
 
 @-webkit-keyframes fadeout {
   from {
-    top: 420px;
+    top: 460px;
     opacity: 1;
   }
 
@@ -274,7 +298,31 @@ body {
 
 @keyframes fadeout {
   from {
-    top: 420px;
+    top: 460px;
+    opacity: 1;
+  }
+
+  to {
+    top: 0;
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes fadeout2 {
+  from {
+    top: 460px;
+    opacity: 1;
+  }
+
+  to {
+    top: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeout2 {
+  from {
+    top: 460px;
     opacity: 1;
   }
 
@@ -298,7 +346,7 @@ body {
 
 @keyframes fadeout3 {
   from {
-    top: 600px;
+    top: 520px;
     opacity: 1;
   }
 
