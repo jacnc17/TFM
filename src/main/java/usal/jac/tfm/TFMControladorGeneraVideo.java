@@ -346,6 +346,8 @@ public class TFMControladorGeneraVideo {
 			double tiempo_inicio = 0;
 			double tiempo_fin = 0;
 
+			float escala = 2 ; // originalmente 1.538461538
+
 			// Se recorre el detalle de las notas (incluido en la primera nota)
 			for (int n = 0; n < notas.size(); n++) {
 				// Gestión del texto de la nota.
@@ -389,8 +391,8 @@ public class TFMControladorGeneraVideo {
 					posY = posY.replace("px", "");
 
 					// Se consideran dimensiones originales de 640 x 360. Se multiplican por 1.5 para llegar a 1280 x 720
-					posX = "" + (10 + (Float.parseFloat(posX) * 1.538461538)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468
-					posY = "" + (45 + (Float.parseFloat(posY) * 1.538461538)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
+					posX = "" + (10 + (Float.parseFloat(posX) * escala)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468
+					posY = "" + (45 + (Float.parseFloat(posY) * escala)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
 
 					// [1:v]scale2ref=(8/6)*ih/5/sar:ih/5[wm][outv];[outv][wm]overlay=20:20, Se recupera el tamaño de la imagen original, que viene en formato anchoxalto
 					// (ej 800x600)
@@ -414,7 +416,7 @@ public class TFMControladorGeneraVideo {
 						resultado = resultado + ",";
 
 					resultado = resultado + "[" + (total_imagenes_notas) + ":v]scale2ref="
-							+ ((float) ancho / alto) * 1.538461538 * max_alto + "/sar:" + (1.538461538 * max_alto);
+							+ ((float) ancho / alto) * escala * max_alto + "/sar:" + (escala * max_alto);
 					resultado = resultado + "[wm][outv];[outv][wm]overlay=" + posX + ":" + posY;
 					resultado = resultado + duracion;
 
@@ -440,21 +442,26 @@ public class TFMControladorGeneraVideo {
 					// Se consideran dimensiones originales de 640 x 360. Se multiplican por 1.5 para llegar a 1280 x 720
 					// Es necesario realizar un ajuste en función del alto renderizado. El motivo es que el 0,0 para ffmpeg difiere en función de 
 					// si es una línea con caracteres "bajos" tipo aeom, o con caracteres "altos" tipo dbtli . Por eso hay que hacer un ajuste adicional
-					posX = "" + (10 + (Float.parseFloat(posX) * 1.538461538)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468
+					posX = "" + (10 + (Float.parseFloat(posX) * escala)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468
+
+
+/* 
+Ventana editor = 625.567 x 349.988 
+ */
 
 					////////////////// Bloque de gestión del tamaño de fuente y posición en el eje y (vertical)
 					tam = notas.get(n).getTam();
 					if (tam == null || tam.equals("") || tam.equals("1em")) {
-						tam = "20";
-						posY = "" + ((60 + (Float.parseFloat(posY)) * 1.538461538)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
+						tam = "30";
+						posY = "" + ((90 + (Float.parseFloat(posY)) * escala)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
 
 					} else if (tam.equals("3em")) {
-						tam = "63";
-						posY = "" + ((115 + (Float.parseFloat(posY)) * 1.538461538)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
+						tam = "90";
+						posY = "" + ((170 + (Float.parseFloat(posY)) * escala)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
 
 					} else if (tam.equals("6em")) {
-						tam = "136";
-						posY = "" + ((190 + (Float.parseFloat(posY)) * 1.538461538)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
+						tam = "175";
+						posY = "" + ((300 + (Float.parseFloat(posY)) * escala)) + "-th"; // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
 					}
 
 					///////////// Bloque de gestión de estilos
