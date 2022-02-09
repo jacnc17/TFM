@@ -14,19 +14,22 @@ function get_sesion_anterior() {
     {
         console.log ("No hay un id de proyecto");
 
-/*         fetch("/getIdProyecto")
+        /* 
+        fetch("/getIdProyecto")
         .then(response => response.text())
         .then((response) => {
             document.cookie = "id_proyecto = " + response + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";
         })
-        .catch(err => console.log(err)) */
+        .catch(err => console.log(err)) 
+        */
         id_proyecto = -1;
     }
     else // Ya había un proyecto anterior
     {
-        console.log ("HABIA ANTES un id de proyecto : ", id_proyecto);
+        // console.log ("HABIA ANTES un id de proyecto : ", id_proyecto);
     }
-        fetch("/actualizaIdProyecto/"+id_proyecto)
+
+    fetch("/actualizaIdProyecto/"+id_proyecto)
         .then(response => response.text())
         .then((response) => {
             document.cookie = "id_proyecto = " + response + "; expires=Thu, 1 Jan 2122 12:00:00 UTC";

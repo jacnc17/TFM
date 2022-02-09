@@ -104,8 +104,10 @@ function actualiza_barra_progreso (tiempo)
                         document.getElementById("progreso_actual").style.height="0px";
                         document.getElementById("progreso_actual").textContent = "";
 
-                        if (document.getElementById("miZonaEdicion") != null && document.getElementById("miZonaEdicion").childNodes.length >0)
+                        if (document.getElementById("miZonaEdicion") != null && document.getElementById("miZonaEdicion").childNodes.length >0) {
                             toastr.success ("Vídeo generado correctamente");
+                            browser.downloads.showDefaultFolder();
+                        }
 
                         document.getElementById("progreso_actual_spinner").style.visibility="hidden";
 
@@ -813,6 +815,7 @@ function genera_slide_notas(duracion) {
     // Determinamos el clip al que pertenece el momento del slider.
     // console.log ("====== duracion ",duracion);
     _div = document.createElement("div");
+    _div.id =  "barra_desplazamiento";
     _div.style = " margin: auto; display: flex;    height: 100%; overflow: hidden";
 
     for (_i = 0; _i < tabla_duraciones.size; _i++) {
@@ -870,6 +873,9 @@ function genera_slide_notas(duracion) {
     // console.log ("====== FIN ");
 
     ////// FIN composición del fondo de la barra
+
+
+
 
 
     $(function () {
@@ -1167,6 +1173,9 @@ function muestra_capa_notas() {
         duracion_total_actual = duracion_total;
     }
 
+    // Franja de notas
+    actualiza_franja_notas();
+
 }
 
 
@@ -1217,7 +1226,7 @@ function get_div_notas(duracion) {
         cierra.className = 'capa_intermedia_edicion_nota';
         cierra.title = "Cerrar y guardar cambios";
         cierra.style = "position: relative; left: 75px; top: 3px; border:2px inset white; height: 40px; border-radius: 50%; width: 40px; text-align: center; font-size: x-large; cursor: pointer; color: black;"
-        cierra.onclick = function () { keep = 0; almacena_notas_cookies(); recalcula_propiedades_cookies();  oculta_capa('capa_notas');  };
+        cierra.onclick = function () { keep = 0; almacena_notas_cookies(); recalcula_propiedades_cookies();  oculta_capa('capa_notas'); oculta_dialogos();  };
 
         var botonColor = document.createElement ('input');
         botonColor.id='cpGeneral';
@@ -1250,14 +1259,18 @@ function get_div_notas(duracion) {
         divIntermedia.appendChild(divMarcoEdicion);
         divIntermedia.appendChild(genera_etiquetas_slide_notas());
 
-        ////////////////////// PLAY
+        //////////////////////// BARRA DE BOTONES
+        let _barra_botones = document.createElement("div");
+        _barra_botones.id = "barra_botones_edicion_notas";
+        _barra_botones.style = "display:  table; width: 100%; /* background-color: orange */";
+        //////////// PLAY
         let _boton = document.createElement("div")
         _boton.id = "boton_play";
 
 
         // _boton.style = "height: 20px;position: relative;background-color: yellow;";
         // _boton.innerHTML = "<span id='play' style='position:relative; height:10px'>Play!</span>";
-        _boton.style = "width: 100%;position: relative; padding-left: 35px; padding-bottom: 10px;";
+        _boton.style = "display:  table-cell;width: 50%;position: relative; padding-left: 35px; padding-bottom: 10px; /* background-color:red; */ ";
         _boton.innerHTML = "<span id='play' style='position:relative; height:10px'>"+etiq_play+"</span>"; // play-circle.svg
 
         _boton.onclick = function () {
@@ -1272,9 +1285,20 @@ function get_div_notas(duracion) {
                 document.getElementById('play').innerHTML = etiq_play; 
             }
         }
-        divIntermedia.appendChild(_boton);
-        //////////////////////
+        _barra_botones.appendChild(_boton);
+        ////////////
 
+        //////////// BOTÓN BORRA TODAS NOTAS
+        let _borra_todas_notas = document.createElement('div')
+        _borra_todas_notas.id = "borrar_todas_notas_icono";
+        _borra_todas_notas.style = "text-align: right !important; display:  table-cell; width: 50%;position: relative; padding-right: 30px; padding-bottom: 10px; /* background-color:blue */";
+        _borra_todas_notas.innerHTML = "Borrar todas las notas <a onclick='borra_todas_notas();'><img src='/bootstrap/images/trash.svg'></a>";
+        _barra_botones.appendChild(_borra_todas_notas);
+
+        ////////////
+
+        divIntermedia.appendChild(_barra_botones);
+        //////////////////////// FIN BARRA DE BOTONES
 
 
         // Consideramos la posibilidad de que no haya aún duración calculada (puede pasar si se recarga 
@@ -1284,10 +1308,8 @@ function get_div_notas(duracion) {
 
         divNotas.appendChild(divIntermedia);
 
+
         document.getElementById("principal").appendChild(divNotas);
-
-
-
 
     }
     else // Hay que actualizar la duración
@@ -1298,7 +1320,13 @@ function get_div_notas(duracion) {
 
         var divIntermedia = document.getElementById("capa_intermedia_edicion_notas");
         divIntermedia.appendChild(genera_slide_notas(duracion));
+
+
     }
+
+
+
+
 
     divNotas.style.zIndex = "1000";
 
@@ -1395,11 +1423,114 @@ function procesa_play ()
             }
             else 
             {
-                console.log ("No se actualiza el botón");
+                // console.log ("No se actualiza el botón");
             }
         }
     }
 }
+
+// Método que actualiza la visibilidad de la franja de notas
+function actualiza_franja_notas() {
+    /////////////////////////////////////////// CAPA VISIBILIDAD DE NOTAS
+    let mi_slider_notas = document.getElementById('slider_notas');
+
+    // Borramos la anterior
+    if (document.getElementById('barra_notas') != null)
+        document.getElementById('barra_notas').remove();
+
+    // Creo una barra para las notas y la posiciono sobre el slider.
+    let barra_notas = document.createElement("div");
+    barra_notas.style = "/* background-color:yellow;  */width:100%; height:0px; top: -50px ; position:relative; /* opacity:.5 */";
+    barra_notas.id = "barra_notas";
+    mi_slider_notas.appendChild(barra_notas);
+
+
+    // Estructura para generar las etiquetas sobre la barra de notas
+    let mapa_etiquetas_notas = new Map();
+
+    // Recorro la lista de notas
+    for (i =0; i< hashPropiedadesNotas.size; i++)
+    {
+        // Recorremos las claves 
+        let id_posicion = Array.from(hashPropiedadesNotas.keys())[i];
+        // console.log("VISIBILIDAD: chequeando ", id_posicion, " con valor ", hashPropiedadesNotas.get(id_posicion));
+
+        let rango = id_posicion.substr(0, 3);
+
+        // Comprobamos si encontramos un tag de inicio.
+        if (rango == "ini") {
+            let id_nota = id_posicion.substr(4);
+
+            let valor_ini = hashPropiedadesNotas.get(id_posicion);
+            // let valor_fin = hashPropiedadesNotas.get("fin_" + id_nota);
+
+            let marca =  document.createElement("a");
+            marca.style = "text-decoration: none !important; width:20px; overflow:hidden; top: -25px; position:absolute;   opacity:1 ; cursor: pointer;";
+            marca.id  = "marca"+id_nota;
+
+            marca.innerHTML = "o";
+            marca.innerHTML = "<img src='imagenes/icons8-note-48.png' style='width:100%' />";
+
+            console.log (">> valor_ini "+valor_ini);
+            console.log (">> duracion_total_actual "+duracion_total_actual);
+
+
+            // Cálculo de la posición de la marca 
+            let _izquierda = parseInt((parseInt(valor_ini)/ parseInt(duracion_total_actual))*100);
+            // console.log (">> _izquierda "+_izquierda);
+
+            if (_izquierda > 100 ) {
+                // console.log (">> _izquierda MAYOR QUE 100");
+
+                marca.style.left = "100%";                
+                marca.style.visibility = "hidden";
+            } else {
+                // console.log (">> _izquierda MENOR QUE 100");
+
+                marca.style.left =_izquierda + "%";
+            }
+
+            // marca.style.left =  + "%";
+            /* if (valor_ini == null ||valor_ini == '0') // Caso especial: 0
+                marca.style.left = "0%"; 
+            else
+                marca.style.left =parseInt((parseInt(valor_ini)/ parseInt(duracion_total_actual))*100)+1 + "%"; */ 
+
+            // Control de visibilidad de notas (para que no aparezcan a la derecha).
+            
+
+
+            // Se actualizan las etiquetas
+            let sufijo  = ' nota.';
+            var _total = 0;
+            if (mapa_etiquetas_notas.has ( marca.style.left )) {
+                _total = mapa_etiquetas_notas.get ( marca.style.left );
+                sufijo = ' notas.';
+            }
+
+            // Se incrementa el contador
+            _total ++ ; 
+
+            // Se escribe la nota
+            marca.setAttribute('title', _total + sufijo); 
+
+
+            // Se incrementa el mapa de etiquetas para esa posición temporal 
+            mapa_etiquetas_notas.set (marca.style.left, _total);
+
+            // console.log ("VISIBILIDAD: Marca = "+marca+", valor_ini = "+valor_ini+", duración: "+duracion_total_actual);
+            // console.log (marca);
+
+
+            barra_notas.appendChild(marca);
+        }
+    }
+
+    /////////////////////////////////////////// FIN CAPA VISIBILIDAD DE NOTAS
+}
+
+
+
 
 
 // Método que añadirá una nota
@@ -1480,10 +1611,12 @@ function add_nota(evento) {
         let posY = evento.clientY - rect.top - 25; // Se añade ajuste para que el cuadro de edición coincida con el punto de click, en lugar de que coincida el menú.
         // console.log("posY = ", posY);
 
-        if (posY > 380) 
-            posY = 380;
+        console.log("posY = ", posY);
+ 
+        // Ajuste posición tope
+        if (posY > 300) 
+            posY = 288; // Se evita que se cree una nota fuera  del área de edición.
 
-        // console.log("posY = ", posY);
         nota.style.top = posY + 'px';
 
         // Se hace foco en el recuadro de texto
@@ -1502,13 +1635,13 @@ function add_nota(evento) {
                 limita_ancho(recuadro_texto);
                 var pos_y = ui.position.top;
 
-console.log ("29ENE: pos_y = ",pos_y);
+                //  console.log ("29ENE: pos_y = ",pos_y);
 
                 if (pos_y < -30) // Ajuste considerando alto de la barra de menús.
                 {
 
                     ui.position.top = -30;
-console.log ("29ENE: pos_y ACTUALIZADA! = ",pos_y);
+                    // console.log ("29ENE: pos_y ACTUALIZADA! = ",pos_y);
                 }
 
 
@@ -1552,6 +1685,9 @@ console.log ("29ENE: pos_y ACTUALIZADA! = ",pos_y);
 
         // Se registra la cookie con la nota (inicialmente sin más propiedades)
         add_cookie_nota (nota.id, nota.style.left, nota.style.top , "1em", "", "", "clase_recuadro_texto", 0, Number.MAX_VALUE );
+        
+        // Actualiza la franja de notas 
+        actualiza_franja_notas() ;
 
 
     }
@@ -1632,12 +1768,18 @@ function nota_borra(id_nota) {
     // Se borran los tooltips 
     borra_tooltips ()
     // console.log(hashPropiedadesNotas);
+
+    // Actualiza la franja de notas
+    actualiza_franja_notas();
 }
 
 // Expande la nota a lo largo de todo el vídeo
 function nota_expande(id_nota) {
     hashPropiedadesNotas.set("ini_" + id_nota, 0);
     nota_set_fin_hasta_final(id_nota);
+
+    // Actualiza la franja de notas
+    actualiza_franja_notas();
 }
 
 
@@ -1645,18 +1787,27 @@ function nota_expande(id_nota) {
 function nota_set_inicio(id_nota) {
     hashPropiedadesNotas.set("ini_" + id_nota, document.getElementById("slider_notas").getAttribute("pos"));
     // console.log(hashPropiedadesNotas);
+
+    // Actualiza la franja de notas
+    actualiza_franja_notas();
 }
 
 // Establece el final de la nota a la posición del slider.
 function nota_set_fin(id_nota) {
     hashPropiedadesNotas.set("fin_" + id_nota, document.getElementById("slider_notas").getAttribute("pos"));
     // console.log(hashPropiedadesNotas);
+
+    // Actualiza la franja de notas
+    actualiza_franja_notas();
 }
 
 // Establece el final de la nota al fin del vídeo.
 function nota_set_fin_hasta_final(id_nota) {
     hashPropiedadesNotas.set("fin_" + id_nota, Number.MAX_VALUE);
     // console.log(hashPropiedadesNotas);
+
+    // Actualiza la franja de notas
+    actualiza_franja_notas();
 }
 
 // Método que, cada vez que se añade un archivo en la dropzone, crea un nuevo elemento 
@@ -2092,6 +2243,125 @@ function borra_proyecto ()
 }
 
 
+
+// Método que borrará todas las notas del proyecto. No reversible.
+function borra_todas_notas ()
+{
+    $("<div></div>").appendTo('body')
+        .html('<div><h6>¿Quieres eliminar todas las notas del proyecto?</h6></div>')
+        .dialog({
+            id: "dialogo_borra_notas",
+            modal: true,
+            title: 'Borrar todas las notas',
+            zIndex: '2000',
+            autoOpen: true,
+            width: '400px',
+            resizable: false,
+            buttons: {
+                Sí: function () {
+                    $(this).dialog("close");
+
+                    // Borramos las notas de la capa visible
+                    let notas_visibles = hashPropiedadesNotas.keys();
+                    console.log ("notas_visibles = ",notas_visibles);
+
+                    let nota  = notas_visibles.next();
+                    // Se eliminan todos los elementos que no sean la imagen de fondo.
+                    while (!nota.done)
+                    {
+                        // Las notas están en formato "ini_" o "fin_"
+                        nota = nota.value.substring(4);
+
+                        // Una vez quitado el prefijo, eliminamos la nota (si no ha sido eliminada antes
+                        if (document.getElementById(nota)!=null)
+                            document.getElementById(nota).remove();
+                        
+                        nota  = notas_visibles.next();
+                    }
+
+                    hashPropiedadesNotas = new Map();  // Propiedades de las notas.
+                    deleteGrupoCookies("notas");
+
+                    // borra_capas_notas(); // Borramos los divs con las notas.
+                    actualiza_franja_notas (); // Actualizamos la franja de notas (no habrá ninguna)
+                
+                    
+
+/*                     // Se hace la petición de borrado
+                    fetch("/borraProyecto/")
+                    .then(response => response.text())
+                    .then((response) => {
+                        // Si tuvo éxito
+                        if (response == '') {
+                            console.log("Respuesta OK, borrando información del navegador");
+                            deleteGrupoCookies("notas");
+                            deleteGrupoCookies("elementosEdicion");
+                            document.getElementById("misRecursos").textContent ='';
+                            document.getElementById("miZonaEdicion").textContent ='';
+
+                            hashPropiedades = new Map(); // Propiedades de los vídeos recortados.
+                            hashDuracionesOriginales = new Map();
+                            hashPropiedadesNotas = new Map();  // Propiedades de las notas.
+
+                            borra_capas_notas(); // Borramos los divs con las notas.
+
+                            toastr.success ("Información borrada correctamente.");
+
+                            Dropzone.forElement('#DIVdropzoneELEMENTOS').removeAllFiles(true)
+                        }
+                        else // algún problema en el borrado!
+                        {
+                            toastr.error (response);
+                        }
+                    }) */
+                },
+                Cancelar: function () {
+                    $(this).dialog("close");
+                }
+            },
+            close: function (event, ui) {
+                $(this).remove();
+            },
+            open: function() { // Tratamiendo de bug de jquery
+                $(this).closest(".ui-dialog")
+                .find(".ui-dialog-titlebar-close")
+                .removeClass("ui-button")
+                .removeClass("ui-corner-all")
+                .removeClass("ui-widget")
+                .removeClass("ui-button-icon-only")
+                .removeClass("ui-dialog-titlebar-close")
+                .addClass("btn-close")
+                .html("");
+            }
+        });
+    
+
+    
+}
+
+
+// Método que oculta los diálogos abiertos
+function oculta_dialogos()
+{
+
+    let capas = document.getElementsByClassName("ui-widget-overlay");
+
+
+
+    for (i = 0; i<capas.length; i++) {
+        console.log(capas[i]);
+        capas[i].remove();
+    }
+
+    let dialogos = document.getElementsByClassName("ui-dialog");
+
+    for (j = 0; j<dialogos.length;j++) {
+        console.log(dialogos[j]);
+
+        dialogos[j].remove();
+    }
+}
+
 // Se borran los posibles tooltips "rebeldes" -> bug en firefox 
 function borra_tooltips ()
 {
@@ -2353,6 +2623,15 @@ function oculta_capa(id_capa) {
     else
         keep = 0;
 
+
+    // ocultamos los tooltips "rebeldes"
+    for (i = 0; i<document.getElementsByClassName('ui-tooltip-content').length; i++)
+    {
+        document.getElementsByClassName('ui-tooltip-content')[i].style.visibility='hidden';
+        document.getElementsByClassName('ui-tooltip')[i].style.visibility='hidden';
+         // ui-tooltip ui-corner-all ui-widget-shadow ui-widget ui-widget-content
+    }
+
     // Se obliga a parar la reproducción
     reproduciendo = 0;
 }
@@ -2422,7 +2701,7 @@ function regenera_miniatura(idSesion, id_imagen) {
 
     // Si es un vídeo, hay que buscar el .jpg
     if (mimesVideo.some(v => mime_type.includes(v))) {
-        console.log ("regenera_miniatura. Es un vídeo");
+        // console.log ("regenera_miniatura. Es un vídeo");
         id_img += ".jpg";
         tipo = "vid";
     }
@@ -2658,7 +2937,7 @@ function limita_ancho(elemento) {
             // console.log("elemento = ",elemento);
 
             toastr.options.preventDuplicates = "true";
-            toastr.success('No es posible editar texto fuera de la zona de edición');
+            toastr.warning('No es posible editar texto fuera de la zona de edición');
         }
         elemento.readOnly = true;
     }

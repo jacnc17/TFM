@@ -95,7 +95,7 @@ function get_notas_cookies() {
     while (!fin) {
         var elto = getCookie("notas." + indice + ".id_nota");
 
-        console.log ("get_notas_cookies");
+        // console.log ("get_notas_cookies");
 
         if (elto == null || elto == "" || elto == undefined) {
             fin = true;
@@ -130,14 +130,14 @@ function get_notas_cookies() {
 
             // TODO: recuperar atributos de la cookie si es una imagen
 
-            console.log ("hashPropiedadesNotas  =",hashPropiedadesNotas);
-            console.log ("hashPropiedadesNotas desde =",getCookie("notas." + indice + ".desde"));
-            console.log ("hashPropiedadesNotas hasta =",getCookie("notas." + indice + ".hasta"));
+            // console.log ("hashPropiedadesNotas  =",hashPropiedadesNotas);
+            // console.log ("hashPropiedadesNotas desde =",getCookie("notas." + indice + ".desde"));
+            // console.log ("hashPropiedadesNotas hasta =",getCookie("notas." + indice + ".hasta"));
 
             // Se asigna el rango de cada nota según lo almacenado en las cookies.
             hashPropiedadesNotas.set("ini_"+nota.id, getCookie("notas." + indice + ".desde"));
             hashPropiedadesNotas.set("fin_"+nota.id, getCookie("notas." + indice + ".hasta"));
-            console.log ("hashPropiedadesNotas  =",hashPropiedadesNotas);
+            // console.log ("hashPropiedadesNotas  =",hashPropiedadesNotas);
 
             let barraMenu = nota.getElementsByClassName("barraMenu")[0];
 
@@ -195,13 +195,13 @@ function get_notas_cookies() {
                 drag: function (event, ui) {
                     limita_ancho(recuadro_texto);
                     var pos_y = ui.position.top + 32 ;
-console.log ("29ENE: pos_y = ",pos_y);
+                    // console.log ("29ENE: pos_y = ",pos_y);
 
                     if (pos_y < 0) // Ajuste considerando alto de la barra de menús.
                     {
     
                         ui.position.top = -32;
-console.log ("29ENE: pos_y ACTUALIZADA! = ",pos_y);
+                        // console.log ("29ENE: pos_y ACTUALIZADA! = ",pos_y);
                     }
 
    
@@ -224,7 +224,7 @@ console.log ("29ENE: pos_y ACTUALIZADA! = ",pos_y);
                     else if (getCookie("notas." + indice + ".tipo_nota") == 'img' ) // Es una imagen
                     {
                         // Recuperamos los atributos de la imagen
-                        console.log ("get_notas_cookies: es imagen!");
+                        // console.log ("get_notas_cookies: es imagen!");
                         let id_recuadro_imagen = $(nota)[0].id+"_imagen_nota";
                         let tam = document.getElementById(id_recuadro_imagen).style.maxHeight;
                         let desde = hashPropiedadesNotas.get("ini_" + $(nota)[0].id);
@@ -232,7 +232,7 @@ console.log ("29ENE: pos_y ACTUALIZADA! = ",pos_y);
                         let src =  document.getElementById(id_recuadro_imagen).src;
                         let tam_original = getCookie("notas." + indice + ".tam_original");
 
-                        console.log ("get_notas_cookies. Actualizando cookie: ", id_recuadro_imagen, "  en rango (",desde,":",hasta,", src = ",src, ",tam = ", tam, ", tam_original =", tam_original);
+                        // console.log ("get_notas_cookies. Actualizando cookie: ", id_recuadro_imagen, "  en rango (",desde,":",hasta,", src = ",src, ",tam = ", tam, ", tam_original =", tam_original);
 
                         add_cookie_imagen ( $(nota)[0].id, ui.position.left+"px", ui.position.top+"px", tam,  desde, hasta, src, tam_original);
                     }
@@ -270,7 +270,7 @@ console.log ("29ENE: pos_y ACTUALIZADA! = ",pos_y);
             }
             else 
             {
-                console.log ("get_notas_cookies: NO! es imagen2 !", getCookie("notas." + indice + ".tipo_nota"));
+                // console.log ("get_notas_cookies: NO! es imagen2 !", getCookie("notas." + indice + ".tipo_nota"));
             }
 
             indice++;

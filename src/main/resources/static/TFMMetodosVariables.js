@@ -39,7 +39,7 @@ function get_variables_edicion() {
     while (!fin) {
         var elto = getCookie("elementosEdicion." + indice + ".nombre"); // nombre_original
         // console.log("> Se intenta recuperar la cookie = elementosEdicion." ,indice , ".nombre_original");
-        console.log("   Cookie recuperada = ", elto);
+        // console.log("   Cookie recuperada = ", elto);
 
         if (elto == null || elto == "" || elto == undefined) {
             fin = true;
@@ -117,11 +117,11 @@ function deleteGrupoCookies(prefijo) {
 // Función llamada para recalcular las propiedades por recarga, recuperando los datos de las posibles 
 // cookies que haya.
 function recalcula_propiedades_reload() {
-    console.log('Recalculando propiedades tras recarga...');
+    // console.log('Recalculando propiedades tras recarga...');
 
     // Método para recuperar los elementos que hay en el área de edición
     let elementosEdicion = document.getElementById("miZonaEdicion").childNodes;
-     console.log (elementosEdicion);
+    // console.log (elementosEdicion);
     let nombre_capa;
     let mime_objeto;
     let tmpPropiedades = new Map();
@@ -132,7 +132,7 @@ function recalcula_propiedades_reload() {
     for (let ele = 0; ele < elementosEdicion.length; ele++) {
         nombre_capa = elementosEdicion[ele].id;
 
-        console.log('El elemento NO estaba antes, generando sus propiedades');
+        // console.log('El elemento NO estaba antes, generando sus propiedades');
         // Se calcula el timestamp para darle un id único 
         timeStampInMs = window.performance && window.performance.now && window.performance.timing && window.performance.timing.navigationStart ? window.performance.now() + window.performance.timing.navigationStart : Date.now();
 
@@ -143,7 +143,7 @@ function recalcula_propiedades_reload() {
         mime_objeto = elementosEdicion[ele].getAttribute("mime-type");
 
         // Se le da un ID válido
-        console.log ("ASIGNANDO TIMESTAMP", Date.now()+Math.random());
+        // console.log ("ASIGNANDO TIMESTAMP", Date.now()+Math.random());
         elementosEdicion[ele].id = id_final;
         elementosEdicion[ele].setAttribute("data-nombre", nombre_capa);       
 

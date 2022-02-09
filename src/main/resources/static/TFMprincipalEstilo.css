@@ -661,6 +661,8 @@ h6 {
 
 
 
+
+
 .mt-5 {
     margin-top: 0px !important;
 }
@@ -843,6 +845,10 @@ body::before {
 
 .ui-dialog .ui-dialog-titlebar {
     background-color: rgba(242, 208, 109, 1);
+}
+
+.ui-dialog {
+    z-index: 1000 !important ;
 }
 
 .ui-dialog-title

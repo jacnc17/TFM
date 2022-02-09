@@ -391,8 +391,8 @@ public class TFMControladorGeneraVideo {
 					posY = posY.replace("px", "");
 
 					// Se consideran dimensiones originales de 640 x 360. Se multiplican por 1.5 para llegar a 1280 x 720
-					posX = "" + (10 + (Float.parseFloat(posX) * escala)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468
-					posY = "" + (45 + (Float.parseFloat(posY) * escala)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
+					posX = "" + (15 + (Float.parseFloat(posX) * escala)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468
+					posY = "" + (55 + (Float.parseFloat(posY) * escala)); // Relación entre el vídeo final 1280x720 y la versión de edición 832x468 + el alto de la barra
 
 					// [1:v]scale2ref=(8/6)*ih/5/sar:ih/5[wm][outv];[outv][wm]overlay=20:20, Se recupera el tamaño de la imagen original, que viene en formato anchoxalto
 					// (ej 800x600)
